@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+
+<config>
+    <modules>
+        <Soularpanic_TRSReports>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Soularpanic_TheRetroFitSourceTheme/>
+            </depends>
+        </Soularpanic_TRSReports>
+    </modules>
+</config>

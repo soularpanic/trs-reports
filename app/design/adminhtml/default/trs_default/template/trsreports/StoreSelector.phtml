@@ -1,0 +1,8 @@
+<div id="store_selector_container">
+    <?php $selectedStoreIds = $this->getSelectedStoreIds(); ?>
+    <?php foreach($this->getStores() as $id => $store): ?>
+        <input type="checkbox" class="trsReportStoreSelectCheckbox" name="trsstore_<?php echo $id?>" value="<?php echo $id ?>"
+            <?php if(in_array($id, $selectedStoreIds)) { echo "checked='checked'"; } ?> />
+        <label for="trsstore_<?php echo $id ?>"><?php echo $store ?></label>
+    <?php endforeach; ?>
+</div>

@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<config>
+    <modules>
+        <Soularpanic_TRSReports>
+            <version>0.0.1</version>
+        </Soularpanic_TRSReports>
+    </modules>
+
+    <global>
+        <models>
+            <trsreports>
+                <class>Soularpanic_TRSReports_Model</class>
+                <resourceModel>trsreports_resource</resourceModel>
+            </trsreports>
+            <trsreports_resource>
+                <class>Soularpanic_TRSReports_Model_Resource</class>
+            </trsreports_resource>
+        </models>
+
+        <blocks>
+            <trsreports>
+                <class>Soularpanic_TRSReports_Block</class>
+            </trsreports>
+        </blocks>
+
+        <helpers>
+            <trsreports>
+                <class>Soularpanic_TRSReports_Helper</class>
+            </trsreports>
+        </helpers>
+    </global>
+
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Soularpanic_TRSReports before="Mage_Adminhtml">Soularpanic_TRSReports</Soularpanic_TRSReports>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+
+    <adminhtml>
+        <layout>
+            <updates>
+                <trsreports>
+                    <file>TRSReports.xml</file>
+                </trsreports>
+            </updates>
+        </layout>
+    </adminhtml>
+</config>
