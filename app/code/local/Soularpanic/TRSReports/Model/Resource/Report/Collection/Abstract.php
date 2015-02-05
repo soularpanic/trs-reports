@@ -75,8 +75,11 @@ abstract class Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract
         $this->_sortDir = $sortDir;
     }
 
-    protected function _applyCustomFilter()
-    {
+    public function log($message) {
+        Mage::helper('trsreports')->log($message);
+    }
+
+    protected function _applyCustomFilter() {
         $_field = $this->_sort === null ? $this->_defaultSort : $this->_sort;
         $_dir = $this->_sortDir ? $this->_sortDir : 'ASC';
         if ($_field !== null) {

@@ -1,8 +1,8 @@
 <?php
 abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Container_Abstract
-extends Mage_Adminhtml_Block_Widget_Grid_Container
-{
-    protected $_blockGroup = "trs";
+    extends Mage_Adminhtml_Block_Widget_Grid_Container {
+
+    protected $_blockGroup = "trsreports";
     protected $_reportTag = null;
 
     public function __construct() {

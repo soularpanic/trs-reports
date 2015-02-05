@@ -17,6 +17,15 @@
             </trsreports_resource>
         </models>
 
+        <resources>
+            <trsreports_setup>
+                <setup>
+                    <module>Soularpanic_TRSReports</module>
+                    <class>Soularpanic_TRSReports_Model_Resource_Setup</class>
+                </setup>
+            </trsreports_setup>
+        </resources>
+
         <blocks>
             <trsreports>
                 <class>Soularpanic_TRSReports_Block</class>
