@@ -57,6 +57,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailabilityPlusTrans
 
             ->where('attribute_set_name is not null and attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")')
             ->group("{$_orderTable}.product_id");
+        $this->log("SQL:\n".$this->getSelect()->__toString());
     }
 
     protected function _applyDateRangeFilter()

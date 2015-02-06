@@ -5,7 +5,7 @@ class Soularpanic_TRSReports_Helper_Data
     const LOG_FILENAME = 'trs_reports.log';
 
     public function log($message) {
-        if (Mage::getStoreConfig('dev/trs/trs_reports_log_enabled')) {
+        if (Mage::getStoreConfig('trs_logging/logs/trs_reports_log')) {
             Mage::log($message, null, self::LOG_FILENAME);
         }
     }

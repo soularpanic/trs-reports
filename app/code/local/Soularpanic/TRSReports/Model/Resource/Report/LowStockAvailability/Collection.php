@@ -17,31 +17,42 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
         $_productVarcharTable = 'catalog_product_entity_varchar';
         $_attributeSetTable = 'eav_attribute_set';
 
+        $_supplierSql = "(select pps_product_id as product_id, group_concat(sup_name separator ', ') as names from purchase_product_supplier
+                            left join purchase_supplier
+                            on purchase_product_supplier.pps_supplier_num = purchase_supplier.sup_id
+                            group by pps_product_id)";
+
+        $_qtyOrdered = "sum(qty_invoiced)";
+        $_startDate = "if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at)";
+        $_endDate = "'{$this->_to}'";
+        $_elapsedDays = "TIMESTAMPDIFF(DAY, {$_startDate}, {$_endDate})";
+        $_weeklyRate = "7 * {$_qtyOrdered} / {$_elapsedDays}";
+        $_availableQty = "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)";
+
+
+
         $_select = $this->getSelect();
         $_select->from($_productTable, ['sku'])
             ->where('type_id = "simple"')
             ->joinLeft($_productVarcharTable,
                 "{$_productVarcharTable}.attribute_id = '71' and {$_productVarcharTable}.entity_id = {$_productTable}.entity_id",
-                array('name' => 'value'))
+                ['name' => 'value'])
             ->joinLeft($_attributeSetTable,
                 "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
-                array('attribute_set_name'))
+                ['attribute_set_name'])
             ->joinLeft($_orderTable,
                 "{$_orderTable}.product_id = {$_productTable}.entity_id and {$_orderTable}.created_at between '{$this->_from}' and '{$this->_to}'",
-                array('period' => 'created_at',
-                    'total_qty_ordered' => "sum(qty_ordered)",
-                    'time' => "TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}')",
-                    'rate' => "7 * sum(qty_ordered) / TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}')"))
+                [ 'period' => 'created_at',
+                    'total_qty_ordered' => $_qtyOrdered,
+                    'time' => $_elapsedDays,
+                    'rate' => $_weeklyRate ])
             ->joinLeft($_stockTable,
                 "{$_orderTable}.product_id = {$_stockTable}.product_id",
-                array('available_qty' => "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)",
-                    'remaining_stock_weeks' => "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty) / (7 * sum({$_orderTable}.qty_ordered) / TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}'))"))
-            ->joinLeft (array('suppliers' => new Zend_Db_Expr("(select pps_product_id as product_id, group_concat(sup_name separator ', ') as names from purchase_product_supplier
-left join purchase_supplier
-on purchase_product_supplier.pps_supplier_num = purchase_supplier.sup_id
-group by pps_product_id)")),
+                [ 'available_qty' => "{$_availableQty}",
+                    'remaining_stock_weeks' => "{$_availableQty} / {$_weeklyRate}" ])
+            ->joinLeft (['suppliers' => new Zend_Db_Expr($_supplierSql)],
                 "suppliers.product_id = {$_productTable}.entity_id",
-                array('supplier_name' => 'names'))
+                [ 'supplier_name' => 'names' ])
             ->where('attribute_set_name is not null and attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")')
             ->group("{$_productTable}.entity_id");
         $this->log("LowStockAvailability SQL:\n".$_select->__toString());
@@ -49,14 +60,6 @@ group by pps_product_id)")),
 
     protected function _applyDateRangeFilter()
     {
-        // Remember that field PERIOD is a DATE(YYYY-MM-DD) in all databases including Oracle
-//        if ($this->_from !== null) {
-//            $this->getSelect()->where("{$this->getResource()->getMainTable()}.created_at >= ?", $this->_from);
-//        }
-//        if ($this->_to !== null) {
-//            $this->getSelect()->where("{$this->getResource()->getMainTable()}.created_at <= ?", $this->_to);
-//        }
-
         return $this;
     }
 
