@@ -6,7 +6,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailabilityPlusTran
 
     public function __construct()
     {
-        $this->_headerText = Mage::helper('reports')->__('Low Stock by Availability Plus In-Transit (15 Week Sales Average)');
+        $this->_headerText = Mage::helper('reports')->__('Low Stock by Availability Plus In-Transit (5 Week Sales Average)');
         parent::__construct();
     }
 }

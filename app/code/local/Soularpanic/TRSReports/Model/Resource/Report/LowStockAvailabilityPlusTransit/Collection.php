@@ -16,48 +16,66 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailabilityPlusTrans
 
         $_productTable = 'catalog_product_entity';
         $_attributeSetTable = 'eav_attribute_set';
-        $_purchaseOrderItemsTable = 'purchase_order_product';
-        $_purchaseOrderTable = 'purchase_order';
-        $this->getSelect()->from($_orderTable,
-            array('name',
-                'period' => 'created_at',
-                'total_qty_ordered' => "sum(qty_ordered)",
-                'time' => "TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}')",
-                'rate' => "7 * sum(qty_ordered) / TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}')"))
-            ->where("product_type = 'simple'")
-            ->joinLeft($_productTable,
-                "{$_orderTable}.product_id = {$_productTable}.entity_id",
-                array('sku'))
+        $_purchaseOrdersTable = 'purchase_orders';
+
+        $_purchaseOrderSql = "(select
+                                po_data.pps_product_id as product_id
+                                , sum(po_data.pop_qty) - sum(po_data.pop_supplied_qty) as incoming_qty
+                                , concat_ws(',', po_data.po_string) as encoded_pos
+                                , concat_ws(', ', po_data.sup_name) as suppliers
+                                from(select
+                                    pps.pps_product_id
+                                    , pop.pop_supplied_qty
+                                    , pop.pop_qty
+                                    , ps.sup_name
+                                    , concat_ws('::', po.po_num, ps.sup_name, po.po_order_id, po.po_supply_date) as po_string
+                                    from purchase_product_supplier as pps
+                                        left join purchase_supplier as ps
+                                            on pps.pps_supplier_num = ps.sup_id
+                                        left join purchase_order_product as pop
+                                            on pop.pop_product_id = pps.pps_product_id
+                                                and pop.pop_supplied_qty < pop.pop_qty
+                                        left join purchase_order as po
+                                            on po.po_num = pop.pop_order_num
+                                                and po.po_status in('new','waiting_for_delivery')
+                                    where po.po_num is not null) as po_data
+                                group by po_data.pps_product_id)";
+
+
+        $_qtyOrdered = "sum(qty_invoiced)";
+        $_startDate = "if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at)";
+        $_endDate = "'{$this->_to}'";
+        $_elapsedDays = "TIMESTAMPDIFF(DAY, {$_startDate}, {$_endDate})";
+        $_weeklyRate = "(7 * {$_qtyOrdered} / {$_elapsedDays})";
+        $_availableQty = "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)";
+        $_inTransitQty = "ifnull({$_purchaseOrdersTable}.incoming_qty, 0)";
+        $_totalQty = "{$_inTransitQty} + {$_availableQty}";
+
+        $this->getSelect()->from($_productTable, ['sku'])
+            ->where("type_id = 'simple'")
+            ->joinLeft($_orderTable,
+                "{$_orderTable}.product_id = {$_productTable}.entity_id and {$_orderTable}.created_at between '{$this->_from}' and '{$this->_to}'",
+                [ 'name',
+                    'period' => 'created_at',
+                    'total_qty_ordered' => $_qtyOrdered,
+                    'time' => $_elapsedDays,
+                    'rate' => $_weeklyRate ])
             ->joinLeft($_attributeSetTable,
                 "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
-                array('attribute_set_name'))
+                [ 'attribute_set_name' ])
             ->joinLeft($_stockTable,
                 "{$_orderTable}.product_id = {$_stockTable}.product_id",
-                array('available_qty' => "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)"))
-            ->joinLeft($_purchaseOrderItemsTable,
-                "{$_purchaseOrderItemsTable}.pop_product_id = {$_stockTable}.product_id and {$_purchaseOrderItemsTable}.pop_supplied_qty < {$_purchaseOrderItemsTable}.pop_qty",
-                array('incoming_qty' => "ifnull({$_purchaseOrderItemsTable}.pop_qty, 0)",
-                    'total_qty' => "(ifnull({$_purchaseOrderItemsTable}.pop_qty, 0) + {$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)",
-                    'remaining_stock_weeks' => "(ifnull({$_purchaseOrderItemsTable}.pop_qty, 0) + {$_stockTable}.qty - {$_stockTable}.stock_reserved_qty) / (7 * sum({$_orderTable}.qty_ordered) / TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}'))"))
-            ->joinLeft($_purchaseOrderTable,
-                "{$_purchaseOrderItemsTable}.pop_order_num = {$_purchaseOrderTable}.po_num and {$_purchaseOrderTable}.po_status in('new', 'waiting_for_delivery')",
-                array(
-                    "po_id" => "po_num",
-                    "po_number" => "po_order_id",
-                    "po_supply_date"))
-//            ->joinLeft($_productSupplierTable,
-//                "{$_orderTable}.product_id = {$_productSupplierTable}.pps_product_id",
-//                array())
-            ->joinLeft(array('sup1' => $_supplierTable),
-                "sup1.sup_id = {$_purchaseOrderTable}.po_sup_num",
-                array('supplier_name' => 'sup1.sup_name'))
-//            ->joinLeft(array('sup2' => $_supplierTable),
-//                "sup2.sup_id = {$_productSupplierTable}.pps_supplier_num",
-//                array('supplier_name' => "(ifnull(sup2.sup_name, sup1.sup_name))"))
-
+                [ 'available_qty' => $_availableQty ])
+            ->joinLeft([$_purchaseOrdersTable => new Zend_Db_Expr($_purchaseOrderSql)],
+                "{$_purchaseOrdersTable}.product_id = {$_orderTable}.product_id",
+                [ 'encoded_pos',
+                    'incoming_qty' => $_inTransitQty,
+                    'remaining_stock_weeks' => "({$_totalQty}) / {$_weeklyRate}",
+                    'suppliers',
+                    'total_qty' => $_totalQty])
             ->where('attribute_set_name is not null and attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")')
             ->group("{$_orderTable}.product_id");
-        $this->log("SQL:\n".$this->getSelect()->__toString());
+        $this->log("Low Stock Availability + in Transit SQL:\n".$this->getSelect()->__toString());
     }
 
     protected function _applyDateRangeFilter()

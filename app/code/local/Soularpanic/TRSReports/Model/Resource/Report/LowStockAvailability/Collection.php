@@ -26,7 +26,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
         $_startDate = "if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at)";
         $_endDate = "'{$this->_to}'";
         $_elapsedDays = "TIMESTAMPDIFF(DAY, {$_startDate}, {$_endDate})";
-        $_weeklyRate = "7 * {$_qtyOrdered} / {$_elapsedDays}";
+        $_weeklyRate = "(7 * {$_qtyOrdered} / {$_elapsedDays})";
         $_availableQty = "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)";
 
 

@@ -61,8 +61,8 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailabilityPlusTran
         }
         $this->addColumn('supplier_name', array(
             'header'    => 'Supplier',
-            'index'     => 'supplier_name',
-            'filter_index' => 'sup1.sup_id',
+            'index'     => 'suppliers',
+            'filter_index' => 'suppliers',
             'sortable'  => true,
             'type' => 'options',
             'options' => $supplierOptions
@@ -100,9 +100,10 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailabilityPlusTran
 
         $this->addColumn('po_supply_date', array(
             'header'    => 'Expected Delivery Date',
-            'index'     => 'po_supply_date',
+            'index'     => 'encoded_pos',
             'sortable'  => true,
-            'renderer'  => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrderArrivalDate',
+            'renderer'  => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_ArrivalDate'
+//            'renderer'  => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrderArrivalDate',
         ));
 //        $this->addExportType('*/*/exportSalesCsv', Mage::helper('adminhtml')->__('CSV'));
 //        $this->addExportType('*/*/exportSalesExcel', Mage::helper('adminhtml')->__('Excel XML'));
