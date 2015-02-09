@@ -1,0 +1,399 @@
+<?xml version="1.0"?>
+
+<layout>
+    <soularpanic_trstheme_report_js>
+        <reference name="head">
+            <action method="addItem">
+                <type>js_css</type>
+                <name>calendar/calendar-win2k-1.css</name>
+            </action>
+            <action method="addItem">
+                <type>js</type>
+                <name>calendar/calendar.js</name>
+            </action>
+            <action method="addItem">
+                <type>js</type>
+                <name>calendar/calendar-setup.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/moment.min.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsgraphs.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trscharts.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/trsreports.css</name>
+            </action>
+            <action method="removeItem">
+                <type>js</type>
+                <script>fileuploader/filepop.js</script>
+            </action>
+        </reference>
+    </soularpanic_trstheme_report_js>
+
+    <adminhtml_admin_trsreports_index>
+        <update handle="soularpanic_trstheme_report_js"/>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports_dashboardinit.js</script>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_graphControl" name="graphControls" template="trsreports/GraphControl.phtml">
+                <action method="setDataStoreUrl"><url>adminhtml/admin_trsreports/fetchItemsSold</url></action>
+                <action method="setTitle"><title>ERP Reporting Overview</title></action>
+                <block type="core/html_calendar" name="html_calendar" as="html_calendar" template="page/js/calendar.phtml"/>
+            </block>
+            <block type="trsreports/adminhtml_report_graph" name="lineGraph" template="trsreports/GraphCanvas.phtml">
+                <action method="setGraphId"><id>itemsLineGraph</id></action>
+                <action method="setGraphWidth"><width>1100</width></action>
+                <action method="setGraphHeight"><height>250</height></action>
+            </block>
+            <block type="page/html_wrapper" name="auxData">
+                <block type="trsreports/adminhtml_report_graph" name="pieGraph" template="trsreports/GraphCanvas.phtml">
+                    <action method="setGraphId"><id>itemsPieGraph</id></action>
+                </block>
+                <block type="core/template" name="topSold"  template="trsreports/ChartTopSold.phtml"/>
+                <block type="core/template" name="aggregates"  template="trsreports/ChartAggregates.phtml"/>
+                <block type="trsreports/adminhtml_report_movers" template="trsreports/BiggestMovers.phtml" name="biggest_movers" as="biggest_movers" />
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_index>
+
+    <adminhtml_admin_trsreports_productsales>
+        <update handle="soularpanic_trstheme_report_js"/>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports_productsalesinit.js</script>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_graphControl" name="graphControls" template="trsreports/GraphControl.phtml">
+                <action method="setTitle"><title>Individual Product Sales</title></action>
+                <action method="setDataStoreUrl"><url>adminhtml/admin_trsreports/fetchSalesReportData</url></action>
+                <action method="setFromDaysAgoDefault"><daysAgo>56</daysAgo></action>
+                <block type="core/html_calendar" name="html_calendar" as="html_calendar" template="page/js/calendar.phtml"/>
+                <block type="adminhtml/widget_button" name="toggle.product.select.button">
+                    <action method="setLabel"><label>Toggle Product Select</label></action>
+                    <action method="setId"><id>productToggle</id></action>
+                </block>
+                <block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid"/>
+            </block>
+            <block type="trsreports/adminhtml_report_graph" name="lineGraph" template="trsreports/GraphCanvas.phtml">
+                <action method="setGraphId"><id>itemsLineGraph</id></action>
+                <action method="setGraphWidth"><width>1100</width></action>
+                <action method="setGraphHeight"><height>250</height></action>
+            </block>
+            <block type="trsreports/adminhtml_report_ProductSales" name="sales.grid.container"/>
+        </reference>
+    </adminhtml_admin_trsreports_productsales>
+
+    <adminhtml_admin_trsreports_productsgrid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid"/>
+        </block>
+    </adminhtml_admin_trsreports_productsgrid>
+
+    <adminhtml_admin_trsreports_profitandsales>
+        <update handle="soularpanic_trstheme_report_js"/>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports_profitandsalesinit.js</script>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_graphControl" name="graphControls" template="trsreports/GraphControl.phtml">
+                <action method="setTitle"><title>Profits and Sales</title></action>
+                <action method="setDataStoreUrl"><url>adminhtml/admin_trsreports/fetchSalesReportData</url></action>
+                <action method="setFromDaysAgoDefault"><daysAgo>56</daysAgo></action>
+                <block type="core/html_calendar" name="html_calendar" as="html_calendar" template="page/js/calendar.phtml"/>
+                <block type="adminhtml/widget_button" name="toggle.product.select.button">
+                    <action method="setLabel"><label>Toggle Product Select</label></action>
+                    <action method="setId"><id>productToggle</id></action>
+                </block>
+                <block type="trsreports/adminhtml_report_graphControl_storeSelector" name="foo" as="foo" template="trsreports/StoreSelector.phtml"/>
+                <block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid">
+                    <action method="setEnableMassaction"><enable>true</enable></action>
+                </block>
+            </block>
+            <block type="trsreports/adminhtml_report_graph" name="lineGraph" template="trsreports/GraphCanvas.phtml">
+                <action method="setGraphId"><id>itemsLineGraph</id></action>
+                <action method="setGraphWidth"><width>1100</width></action>
+                <action method="setGraphHeight"><height>250</height></action>
+            </block>
+            <block type="trsreports/adminhtml_report_ProfitAndSales" name="sales.grid.container"/>
+        </reference>
+    </adminhtml_admin_trsreports_profitandsales>
+
+    <adminhtml_admin_trsreports_productsgridwithmassaction>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid">
+                <action method="setEnableMassaction"><enable>true</enable></action>
+            </block>
+        </block>
+    </adminhtml_admin_trsreports_productsgridwithmassaction>
+
+    <adminhtml_admin_trsreports_attributesetsales>
+        <update handle="soularpanic_trstheme_report_js"/>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports_attributesetsalesinit.js</script>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_graphControl" name="graphControls" template="trsreports/GraphControl.phtml">
+                <action method="setTitle"><title>Category Product Sales</title></action>
+                <action method="setDataStoreUrl"><url>adminhtml/admin_trsreports/fetchAttributeSetSalesReportData</url></action>
+                <action method="setFromDaysAgoDefault"><daysAgo>56</daysAgo></action>
+
+                <block type="core/html_calendar" name="html_calendar" as="html_calendar" template="page/js/calendar.phtml"/>
+                <block type="adminhtml/widget_button" name="toggle.product.select.button">
+                    <action method="setLabel"><label>Toggle Product Select</label></action>
+                    <action method="setId"><id>productToggle</id></action>
+                </block>
+
+                <block type="trsreports/adminhtml_catalog_product_AttributeSetSelector_grid" name="attrset.grid"/>
+            </block>
+            <block type="trsreports/adminhtml_report_graph" name="lineGraph" template="trsreports/GraphCanvas.phtml">
+                <action method="setGraphId"><id>itemsLineGraph</id></action>
+                <action method="setGraphWidth"><width>1100</width></action>
+                <action method="setGraphHeight"><height>250</height></action>
+            </block>
+            <block type="trsreports/adminhtml_report_ProductSales" name="sales.grid.container"/>
+        </reference>
+    </adminhtml_admin_trsreports_attributesetsales>
+
+    <adminhtml_admin_trsreports_lowstockavailability>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/trsreports.css</name>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_LowStockAvailability" name="low.stock.availability.container" template="report/grid/container.phtml">
+                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                    <action method="setFieldVisibility">
+                        <field>report_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>period_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>to</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>from</field>
+                        <visibility>0</visibility>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_lowstockavailability>
+
+    <adminhtml_admin_trsreports_lowstockavailabilityplustransit>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/trsreports.css</name>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_LowStockAvailabilityPlusTransit" name="low.stock.availability.plus.transit" template="report/grid/container.phtml">
+                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                    <action method="setFieldVisibility">
+                        <field>report_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>period_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>to</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>from</field>
+                        <visibility>0</visibility>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_lowstockavailabilityplustransit>
+
+    <adminhtml_admin_trsreports_futureforecast>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/trsreports.css</name>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_FutureForecast" name="future.forecast" template="report/grid/container.phtml">
+                <block type="trsreports/adminhtml_report_FutureForecast_form" name="grid.filter.form">
+                    <action method="setFieldVisibility">
+                        <field>report_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>period_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>to</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>from</field>
+                        <visibility>0</visibility>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_futureforecast>
+
+    <adminhtml_admin_trsreports_outofstock>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_OutOfStock" name="out.of.stock.container" template="report/grid/container.phtml">
+                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                    <action method="setFieldVisibility">
+                        <field>report_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>period_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>from</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>to</field>
+                        <visibility>0</visibility>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_outofstock>
+
+    <adminhtml_admin_trsreports_instockvalue>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_InStockValue" name="in.stock.value.container" template="report/grid/container.phtml">
+                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                    <action method="setFieldVisibility">
+                        <field>report_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>period_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>from</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>to</field>
+                        <visibility>0</visibility>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_instockvalue>
+
+    <adminhtml_admin_trsreports_intransitvalue>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_InTransitValue" name="in.transit.value.container" template="report/grid/container.phtml">
+                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                    <action method="setFieldVisibility">
+                        <field>report_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>period_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>from</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>to</field>
+                        <visibility>0</visibility>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_intransitvalue>
+
+    <adminhtml_admin_trsreports_purchaseorderoverview>
+        <reference name="content">
+
+            <block type="trsreports/adminhtml_report_PurchaseOrderOverview" name="purchase.order.overview.container" template="report/grid/container.phtml">
+
+                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                    <action method="setFieldVisibility">
+                        <field>report_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>period_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>from</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>to</field>
+                        <visibility>0</visibility>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_purchaseorderoverview>
+</layout>

@@ -1,0 +1,17 @@
+<div class="biggestMoversContainer">
+    <?php foreach($this->getMovers() as $_movers): ?>
+        <h3><?php echo $_movers->getLabel() ?> (<?php echo $_movers->getStartDate() ?> to Now)</h3>
+        <table class="trsChart">
+            <thead>
+            <th>Name</th>
+            <th>Qty</th>
+            </thead>
+            <?php foreach ($_movers->getItems() as $_item): ?>
+                <tr>
+                    <td><?php echo $_item->getName() ?></td>
+                    <td><?php echo $_item->getTotalQtyOrdered() ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php endforeach; ?>
+</div>

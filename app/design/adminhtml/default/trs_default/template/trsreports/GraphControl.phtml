@@ -1,0 +1,56 @@
+<div class="report_header_container">
+    <h1><?php echo $this->getTitle() ?></h1>
+    <div class="report_controls_container">
+        <div id="from_date_container">
+            <label for="from_date">From:</label>
+            <input type="text" id="from_date" name="from_date" value="<?php echo $this->getFromDate() ?>"/>
+            <img title="Select date" id="from_date_btn" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif'; ?>"  class="v-middle"/>
+        </div>
+        <div id="to_date_container">
+            <label for="to_date">To:</label>
+            <input type="text" id="to_date" name="to_date" value="<?php echo $this->getToDate() ?>"/>
+            <img title="Select date" id="to_date_btn" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif'; ?>"  class="v-middle"/>
+        </div>
+        <div id='granularity_container' class="radioButtonBar">
+            <?php $checked = "checked='checked'"; ?>
+            <input type="radio"
+                   value="month"
+                   name="granularity"
+                   id="month_granularity"
+                   data-parseStr="YYYY-MM"
+                <?php if("month" === $this->getGranularity()) { echo $checked; } ?>/>
+            <label for="month_granularity">Month</label>
+
+            <input type="radio"
+                   value="week"
+                   name="granularity"
+                   id="week_granularity"
+                   data-parseStr="GGGG-WW"
+                <?php if("week" === $this->getGranularity()) { echo $checked; } ?> />
+            <label for="week_granularity">Week</label>
+
+            <input type="radio"
+                   value="day"
+                   name="granularity"
+                   id="day_granularity"
+                   data-parseStr="YYYY-MM-DD"
+                <?php if("day" === $this->getGranularity()) { echo $checked; } ?> />
+            <label for="day_granularity">Day</label>
+
+            <input type="radio"
+                   value="hour"
+                   name="granularity"
+                   id="hour_granularity"
+                   data-parseStr="YYYY-MM-DD HH"
+                   data-formatStr="MMM DD, hA"
+                <?php if("hour" === $this->getGranularity()) { echo $checked; } ?> />
+            <label for="hour_granularity">Hour</label>
+        </div>
+        <input type="button" id="fetchButton" value="Get Data!"/>
+    </div>
+    <div id="graph_metadata" data-url="<?php echo Mage::helper('adminhtml')->getUrl($this->getDataStoreUrl()) ?>"/>
+</div>
+
+<?php echo $this->getChildHtml(); ?>
+
+

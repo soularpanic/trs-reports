@@ -1,0 +1,131 @@
+.report_controls_container {
+    min-height: 55px;
+}
+
+#fetchButton {
+    float: right;
+    clear: right;
+    margin: 5px 10px 0px 0px;
+}
+
+#from_date_container {
+    float: left;
+    padding: 5px 0px 5px 10px;
+}
+
+#to_date_container {
+    float: left;
+    padding: 5px 0px 5px 20px;
+}
+
+.radioButtonBar label {
+    border-left: 1px solid #E27932;
+    color: #FFFFFF;
+    background: #DD4B00;
+    float: right;
+    padding: 2px 4px 2px 4px;
+    cursor: pointer;
+    margin: 5px 0px 5px 0px;
+}
+
+.radioButtonBar label:last-of-type {
+    border-left: none;
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    padding-left: 6px;
+}
+
+.radioButtonBar label:first-of-type {
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    padding-right: 6px;
+    margin-right: 10px;
+}
+
+.radioButtonBar input[type="radio"]:checked+label {
+    background: #C13F00;
+}
+
+.radioButtonBar input[type="radio"] {
+    display: none;
+}
+
+.trsGraph {
+    border: 1px solid #000;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#itemsPieGraph {
+    float: right;
+    margin: 10px;
+}
+
+#aggregateTableContainer {
+    float: right;
+    margin: 10px;
+}
+
+.chartTopSoldContainer {
+    float: right;
+    margin: 10px;
+}
+
+.biggestMoversContainer {
+    float: left;
+    margin: 10px
+}
+
+table.trsChart {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+table.trsChart th {
+    background: #000;
+    color: #FFF;
+    padding: 3px 10px 3px 10px;
+}
+
+table.trsChart td {
+    padding: 1px 3px;
+}
+
+table.trsChart tr:nth-child(even) {
+    background: #FF8F00;
+}
+
+table.trsChart tr:nth-child(odd) {
+    background: #BABABA;
+}
+
+tr.subtotals td {
+    border-bottom: 12px solid #FF8F00;
+}
+
+tr.critical .stockCell {
+    background-color: #fa0000;
+}
+
+tr.critical.even .stockCell {
+    background-color: #c90000;
+}
+
+tr.warning .stockCell {
+    background-color: #f3f300;
+}
+
+tr.warning.even .stockCell {
+    background-color: #cfcf00;
+}
+
+tr.good .stockCell {
+    background-color: #00d500;
+}
+
+tr.good.even .stockCell {
+    background-color: #00bd00;
+}
