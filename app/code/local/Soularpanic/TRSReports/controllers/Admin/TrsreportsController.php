@@ -7,6 +7,12 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $this->renderLayout();
     }
 
+    public function excludeAction() {
+        $reportCode = $this->getRequest()->getParam('report_code');
+        $skus = $this->getRequest()->getParam('sku');
+        $this->_redirectReferer();
+    }
+
     public function fetchItemsSoldAction() {
         $salesData = Mage::helper('trsreports/report_graph_data')->getItemsSoldData($this->_getFrom(), $this->_getTo(), $this->_getGranularity());
 

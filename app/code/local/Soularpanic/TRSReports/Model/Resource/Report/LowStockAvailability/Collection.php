@@ -32,7 +32,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
 
 
         $_select = $this->getSelect();
-        $_select->from($_productTable, ['sku'])
+        $_select->from($_productTable, [ 'sku' ])
             ->where('type_id = "simple"')
             ->joinLeft($_productVarcharTable,
                 "{$_productVarcharTable}.attribute_id = '71' and {$_productVarcharTable}.entity_id = {$_productTable}.entity_id",
