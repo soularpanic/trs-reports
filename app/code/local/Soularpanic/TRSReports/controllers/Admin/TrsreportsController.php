@@ -24,6 +24,10 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
             }
 
             $exclusion = Mage::getModel('trsreports/excludedproduct');
+            $exclusion->setProductId($id);
+            $exclusion->setReportId($reportCode);
+            $exclusion->save();
+
 
         }
         $this->_redirectReferer();
