@@ -2,6 +2,10 @@
 class Soularpanic_TRSReports_Admin_TrsreportsController
     extends Mage_Adminhtml_Controller_Report_Abstract {
 
+    public function log($message) {
+        Mage::helper('trsreports')->log($message);
+    }
+
     public function indexAction() {
         $this->loadLayout();
         $this->renderLayout();
@@ -10,6 +14,18 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
     public function excludeAction() {
         $reportCode = $this->getRequest()->getParam('report_code');
         $skus = $this->getRequest()->getParam('sku');
+        $product = Mage::getModel('catalog/product');
+        foreach ($skus as $sku) {
+            $id = $product->getIdBySku($sku);
+            if (!$id) {
+                $this->log("Could not resolve sku '{$sku}'!");
+                Mage::getSingleton('adminhtml/session')->addError("Could not resolve sku '{$sku}'!");
+                continue;
+            }
+
+            $exclusion = Mage::getModel('trsreports/excludedproduct');
+
+        }
         $this->_redirectReferer();
     }
 
