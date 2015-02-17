@@ -7,13 +7,12 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
     protected $_selectedColumns    = array();
     protected $_defaultSort = 'remaining_stock_weeks';
 
-    protected function _initSelect()
-    {
+    protected function _initSelect() {
         $_orderTable = $this->getResource()->getMainTable();
         $_stockTable = 'cataloginventory_stock_item';
         $_productSupplierTable = 'purchase_product_supplier';
         $_supplierTable = 'purchase_supplier';
-        $_productTable = 'catalog_product_entity';
+        $_productTable = $this->getProductTable(); //'catalog_product_entity';
         $_productVarcharTable = 'catalog_product_entity_varchar';
         $_attributeSetTable = 'eav_attribute_set';
 

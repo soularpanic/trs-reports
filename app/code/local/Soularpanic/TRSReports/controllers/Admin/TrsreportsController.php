@@ -11,6 +11,22 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $this->renderLayout();
     }
 
+    public function manageAction() {
+        $this->loadLayout();
+        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_manage_exclusions.grid');
+        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
+
+        $today = date('m/d/Y');
+        $fiveWeeksAgo = date('m/d/Y', time() - (5 * 7 * 24 * 60 * 60));
+        $this->_initReportAction(array(
+                $gridBlock,
+                $filterFormBlock
+            ),
+            array('from' => $fiveWeeksAgo,
+                'to' => $today));
+        $this->renderLayout();
+    }
+
     public function excludeAction() {
         $reportCode = $this->getRequest()->getParam('report_code');
         $skus = $this->getRequest()->getParam('sku');
@@ -27,9 +43,22 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
             $exclusion->setProductId($id);
             $exclusion->setReportId($reportCode);
             $exclusion->save();
-
-
         }
+
+        $this->_redirectReferer();
+    }
+
+    public function unexcludeAction() {
+        $exclusionIds = $this->getRequest()->getParam('entity_id');
+        foreach ($exclusionIds as $exclusionId) {
+            $exclusion = Mage::getModel('trsreports/excludedproduct')->load($exclusionId);
+            if (!$exclusion) {
+                $this->log("Could not find an exclusion with ID of $exclusionId!");
+                continue;
+            }
+            $exclusion->delete();
+        }
+
         $this->_redirectReferer();
     }
 

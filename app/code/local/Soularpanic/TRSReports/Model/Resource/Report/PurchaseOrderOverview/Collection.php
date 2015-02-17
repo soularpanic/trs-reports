@@ -53,9 +53,8 @@ class Soularpanic_TRSReports_Model_Resource_Report_PurchaseOrderOverview_Collect
         );
     }
 
-    protected function _initSelect()
-    {
-        $_productTable = 'catalog_product_entity';
+    protected function _initSelect() {
+        $_productTable = $this->getProductTable(); //'catalog_product_entity';
         $_attributeSetTable = 'eav_attribute_set';
         $_purchaseOrderTable = 'purchase_order';
         $_purchaseOrderProductTable = 'purchase_order_product';

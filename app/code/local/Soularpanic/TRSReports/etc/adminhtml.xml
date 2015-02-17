@@ -46,6 +46,10 @@
                             <title>Profit and Sales</title>
                             <action>adminhtml/admin_trsreports/profitandsales</action>
                         </trsreport_profitandsales>
+                        <trsreport_manage>
+                            <title>Manage Reports</title>
+                            <action>adminhtml/admin_trsreports/manage</action>
+                        </trsreport_manage>
                     </children>
                 </trsreports>
             </children>
@@ -90,6 +94,9 @@
                                     <trsreport_profitandsales module="trs">
                                         <title>Profit and Sales</title>
                                     </trsreport_profitandsales>
+                                    <trsreport_manage>
+                                        <title>Manage Reports</title>
+                                    </trsreport_manage>
                                 </children>
                             </trsreports>
                         </children>

@@ -396,4 +396,33 @@
             </block>
         </reference>
     </adminhtml_admin_trsreports_purchaseorderoverview>
+
+    <adminhtml_admin_trsreports_manage>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_manage_exclusions" name="manage.exclusions.container" template="report/grid/container.phtml">
+                <!--<block type="adminhtml/report_filter_form" name="grid.filter.form">-->
+                    <!--<action method="setFieldVisibility">-->
+                        <!--<field>report_type</field>-->
+                        <!--<visibility>0</visibility>-->
+                    <!--</action>-->
+                    <!--<action method="setFieldVisibility">-->
+                        <!--<field>period_type</field>-->
+                        <!--<visibility>0</visibility>-->
+                    <!--</action>-->
+                    <!--<action method="setFieldVisibility">-->
+                        <!--<field>show_empty_rows</field>-->
+                        <!--<visibility>0</visibility>-->
+                    <!--</action>-->
+                    <!--<action method="setFieldVisibility">-->
+                        <!--<field>from</field>-->
+                        <!--<visibility>0</visibility>-->
+                    <!--</action>-->
+                    <!--<action method="setFieldVisibility">-->
+                        <!--<field>to</field>-->
+                        <!--<visibility>0</visibility>-->
+                    <!--</action>-->
+                <!--</block>-->
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_manage>
 </layout>

@@ -17,9 +17,13 @@ abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract
 
     protected function _addCustomFilter($collection, $filterData)
     {
-        $collection->setSortKey($filterData['sort']);
-        $collection->setSortDir($filterData['dir']);
-        $collection->setCustomFilterData($filterData);
+        $_filterData = $filterData;
+        if (!$_filterData['report_code']) {
+            $_filterData['report_code'] = $this->_getReportCode();
+        }
+        $collection->setSortKey($_filterData['sort']);
+        $collection->setSortDir($_filterData['dir']);
+        $collection->setCustomFilterData($_filterData);
         return $this;
     }
 
@@ -27,11 +31,15 @@ abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract
         parent::_prepareMassaction();
         $this->setMassactionIdField('sku');
         $this->getMassActionBlock()->setFormFieldName('sku');
-        $reportCode = $this->getParentBlock()->getReportTag();
+        $reportCode = $this->_getReportCode();
         $this->getMassactionBlock()->addItem(
             'exclude',
             [ 'label' => $this->__('Exclude From Report'),
                 'url' => $this->getUrl('*/*/exclude', [ 'report_code' => $reportCode ])]
         );
+    }
+
+    protected function _getReportCode() {
+        return $this->getParentBlock()->getReportTag();
     }
 }

@@ -45,10 +45,9 @@ class Soularpanic_TRSReports_Model_Resource_Report_InStockValue_Collection
         );
     }
 
-    protected function _initSelect()
-    {
+    protected function _initSelect() {
         $_stockTable = $this->getResource()->getMainTable();
-        $_productTable = 'catalog_product_entity';
+        $_productTable = $this->getProductTable(); //'catalog_product_entity';
         $_attributeSetTable = 'eav_attribute_set';
         $_supplierTable = 'purchase_supplier';
         $_productNameTable = 'catalog_product_entity_varchar';
