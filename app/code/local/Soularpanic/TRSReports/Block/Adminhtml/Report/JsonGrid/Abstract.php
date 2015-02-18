@@ -2,8 +2,7 @@
 abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_JsonGrid_Abstract
 extends Mage_Adminhtml_Block_Widget_Grid
 {
-    public function __construct($attributes=array())
-    {
+    public function __construct($attributes=[]) {
         parent::__construct($attributes);
         $this->setTemplate('trsreports/JsonGrid.phtml');
         $this->setRowClickCallback('openGridRow');
@@ -19,7 +18,7 @@ extends Mage_Adminhtml_Block_Widget_Grid
     }
 
     protected function _prepareCollection() {
-        return this;
+        return $this;
     }
 
     public function getCountTotals() {
