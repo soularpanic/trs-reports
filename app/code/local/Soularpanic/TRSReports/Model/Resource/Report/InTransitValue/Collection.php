@@ -6,7 +6,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_InTransitValue_Collection
     protected $_aggregationTable = 'Purchase/OrderProduct';
 
     public function __construct() {
-        parent::_construct();
+        parent::__construct();
         $this->setModel('adminhtml/report_item');
         $this->_resource = Mage::getResourceModel('sales/report')->init($this->_aggregationTable);
         $this->setConnection($this->getResource()->getReadConnection());

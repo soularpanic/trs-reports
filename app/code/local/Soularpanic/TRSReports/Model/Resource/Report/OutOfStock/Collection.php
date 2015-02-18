@@ -6,13 +6,13 @@ class Soularpanic_TRSReports_Model_Resource_Report_OutOfStock_Collection
 
     protected $_selectedColumns    = array();
 
-    public function __construct()
-    {
-        parent::_construct();
-        $this->setModel('adminhtml/report_item');
-        $this->_resource = Mage::getResourceModel('sales/report')->init($this->_aggregationTable);
-        $this->setConnection($this->getResource()->getReadConnection());
-    }
+//    public function __construct()
+//    {
+//        parent::__construct();
+//        $this->setModel('adminhtml/report_item');
+//        $this->_resource = Mage::getResourceModel('sales/report')->init($this->_aggregationTable);
+//        $this->setConnection($this->getResource()->getReadConnection());
+//    }
 
     protected function _initSelect()
     {

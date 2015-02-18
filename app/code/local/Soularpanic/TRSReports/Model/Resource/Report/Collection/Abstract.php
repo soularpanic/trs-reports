@@ -16,6 +16,7 @@ abstract class Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract
         $this->setConnection($this->getResource()->getReadConnection());
 
         $this->setProductTable($this->getTable('catalog/product'));
+//        parent::__construct();
     }
 
     public function setCustomFilterData($data) {
