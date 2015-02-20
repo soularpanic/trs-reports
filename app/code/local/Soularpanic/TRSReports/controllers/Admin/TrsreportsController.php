@@ -29,18 +29,23 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
 
     public function excludeAction() {
         $reportCode = $this->getRequest()->getParam('report_code');
-        $skus = $this->getRequest()->getParam('sku');
+        $_ids = $this->getRequest()->getParam('product_id');
+        $_skus = $this->getRequest()->getParam('sku');
         $product = Mage::getModel('catalog/product');
-        foreach ($skus as $sku) {
-            $id = $product->getIdBySku($sku);
-            if (!$id) {
+
+        foreach ($_skus as $sku) {
+            $_resolvedId = $product->getIdBySku($sku);
+            if (!$_resolvedId) {
                 $this->log("Could not resolve sku '{$sku}'!");
                 Mage::getSingleton('adminhtml/session')->addError("Could not resolve sku '{$sku}'!");
                 continue;
             }
+            $_ids[] = $_resolvedId;
+        }
 
+        foreach ($_ids as $_id) {
             $exclusion = Mage::getModel('trsreports/excludedproduct');
-            $exclusion->setProductId($id);
+            $exclusion->setProductId($_id);
             $exclusion->setReportId($reportCode);
             $exclusion->save();
         }

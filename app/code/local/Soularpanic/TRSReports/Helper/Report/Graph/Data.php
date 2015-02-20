@@ -17,19 +17,19 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
     }
 
     public function getSalesReportData($productIds = null, $attrSetIds = null, $storeIds = null, $from, $to, $granularity /*, $dataType */ ) {
-        $idsArr = array();
-        $salesData = array(
-            'meta' => array('ids' => array()),
+        $idsArr = [];
+        $salesData = [
+            'meta' => ['ids' => []],
 //            'actual_sold' => array(),
 //            'avg_sold' => array()
-        );
+        ];
         if ($productIds) {
             foreach(explode(',', $productIds) as $productId) {
-                $idsArr[] = array(
+                $idsArr[] = [
                     'dbId' => $productId,
                     'type' => self::SIMPLE_PRODUCT_DATA_TYPE,
                     'jsonId' => self::SIMPLE_PRODUCT_DATA_TYPE . '_' . $productId
-                );
+                ];
             }
         }
         if ($attrSetIds) {

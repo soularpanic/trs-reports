@@ -1,12 +1,16 @@
 <?php
 abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_JsonGrid_Abstract
-extends Mage_Adminhtml_Block_Widget_Grid
-{
+    extends Mage_Adminhtml_Block_Widget_Grid {
     public function __construct($attributes=[]) {
         parent::__construct($attributes);
         $this->setTemplate('trsreports/JsonGrid.phtml');
         $this->setRowClickCallback('openGridRow');
         $this->_emptyText = Mage::helper('adminhtml')->__('No records found.');
+    }
+
+
+    protected function _getReportCode() {
+        return $this->getParentBlock()->getReportTag();
     }
 
     public function getCollection() {

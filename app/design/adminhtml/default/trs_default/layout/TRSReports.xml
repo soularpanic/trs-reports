@@ -86,7 +86,10 @@
                     <action method="setLabel"><label>Toggle Product Select</label></action>
                     <action method="setId"><id>productToggle</id></action>
                 </block>
-                <block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid"/>
+                <block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid">
+                    <action method="setEnableMassaction"><enable>true</enable></action>
+                    <action method="setReportCode"><code>ProductSales</code></action>
+                </block>
             </block>
             <block type="trsreports/adminhtml_report_graph" name="lineGraph" template="trsreports/GraphCanvas.phtml">
                 <action method="setGraphId"><id>itemsLineGraph</id></action>
@@ -99,7 +102,10 @@
 
     <adminhtml_admin_trsreports_productsgrid>
         <block type="core/text_list" name="root" output="toHtml">
-            <block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid"/>
+            <block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid">
+                <action method="setEnableMassaction"><enable>true</enable></action>
+                <action method="setReportCode"><code>ProductSales</code></action>
+            </block>
         </block>
     </adminhtml_admin_trsreports_productsgrid>
 
@@ -131,7 +137,10 @@
                 <action method="setGraphWidth"><width>1100</width></action>
                 <action method="setGraphHeight"><height>250</height></action>
             </block>
-            <block type="trsreports/adminhtml_report_ProfitAndSales" name="sales.grid.container"/>
+            <block type="trsreports/adminhtml_report_ProfitAndSales" name="sales.grid.container">
+                <action method="setEnableMassaction"><enable>true</enable></action>
+                <action method="setReportCode"><code>ProfitAndSales</code></action>
+            </block>
         </reference>
     </adminhtml_admin_trsreports_profitandsales>
 
@@ -163,7 +172,10 @@
                     <action method="setId"><id>productToggle</id></action>
                 </block>
 
-                <block type="trsreports/adminhtml_catalog_product_AttributeSetSelector_grid" name="attrset.grid"/>
+                <block type="trsreports/adminhtml_catalog_product_AttributeSetSelector_grid" name="attrset.grid">
+                    <action method="setEnableMassaction"><enable>true</enable></action>
+                    <action method="setReportCode"><code>CategoryProductSales</code></action>
+                </block>
             </block>
             <block type="trsreports/adminhtml_report_graph" name="lineGraph" template="trsreports/GraphCanvas.phtml">
                 <action method="setGraphId"><id>itemsLineGraph</id></action>
