@@ -16,6 +16,10 @@ abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Container_Abst
         ));
     }
 
+    public function getReportTag() {
+        return $this->_reportTag;
+    }
+
     public function getFilterUrl()
     {
         $this->getRequest()->setParam('filter', null);

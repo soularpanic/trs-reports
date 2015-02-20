@@ -6,7 +6,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_PurchaseOrderOverview_Collect
 
     public function __construct()
     {
-        parent::_construct();
+        parent::__construct();
         $this->setModel('adminhtml/report_item');
         $this->_resource = Mage::getResourceModel('sales/report')->init($this->_aggregationTable);
         $this->setConnection($this->getResource()->getReadConnection());
@@ -53,9 +53,8 @@ class Soularpanic_TRSReports_Model_Resource_Report_PurchaseOrderOverview_Collect
         );
     }
 
-    protected function _initSelect()
-    {
-        $_productTable = 'catalog_product_entity';
+    protected function _initSelect() {
+        $_productTable = $this->getProductTable(); //'catalog_product_entity';
         $_attributeSetTable = 'eav_attribute_set';
         $_purchaseOrderTable = 'purchase_order';
         $_purchaseOrderProductTable = 'purchase_order_product';

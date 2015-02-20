@@ -2,8 +2,7 @@
 class Soularpanic_TRSReports_Block_Adminhtml_Report_ProductSales_JsonGrid
     extends Soularpanic_TRSReports_Block_Adminhtml_Report_JsonGrid_Abstract {
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->setId("salesGrid");
         $this->setFilterVisibility(false);

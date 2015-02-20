@@ -6,11 +6,11 @@ class Soularpanic_TRSReports_Model_Resource_Report_InStockValue_Collection
 
     public function __construct()
     {
-        parent::_construct();
+        parent::__construct();
         $this->setModel('adminhtml/report_item');
         $this->_resource = Mage::getResourceModel('sales/report')->init($this->_aggregationTable);
         $this->setConnection($this->getResource()->getReadConnection());
-
+//        parent::__construct();
         $_stockTable = $this->getResource()->getMainTable();
         $_productSupplierTable = "purchase_product_supplier";
 
@@ -28,7 +28,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_InStockValue_Collection
                 'total' => '("---")'
             ),
             'attribute_set_name' => array(
-                  'total' => '("---")'
+                'total' => '("---")'
             ),
             'unit_cost' => array(
                 'default' => 'pps_last_price',
@@ -45,10 +45,9 @@ class Soularpanic_TRSReports_Model_Resource_Report_InStockValue_Collection
         );
     }
 
-    protected function _initSelect()
-    {
+    protected function _initSelect() {
         $_stockTable = $this->getResource()->getMainTable();
-        $_productTable = 'catalog_product_entity';
+        $_productTable = $this->getProductTable(); //'catalog_product_entity';
         $_attributeSetTable = 'eav_attribute_set';
         $_supplierTable = 'purchase_supplier';
         $_productNameTable = 'catalog_product_entity_varchar';
@@ -75,6 +74,8 @@ class Soularpanic_TRSReports_Model_Resource_Report_InStockValue_Collection
                 "{$_supplierTable}.sup_id = {$_productSupplierTable}.pps_supplier_num",
                 $this->_getSelectCols(array('supplier_name'))
             );
+
+        $this->log("InStockValue SQL:\n".$this->getSelect()->__toString());
     }
 
     protected function _applyStoresFilterToSelect(Zend_Db_Select $select) {

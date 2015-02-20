@@ -2,9 +2,69 @@
 class Soularpanic_TRSReports_Admin_TrsreportsController
     extends Mage_Adminhtml_Controller_Report_Abstract {
 
+    public function log($message) {
+        Mage::helper('trsreports')->log($message);
+    }
+
     public function indexAction() {
         $this->loadLayout();
         $this->renderLayout();
+    }
+
+    public function manageAction() {
+        $this->loadLayout();
+        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_manage_exclusions.grid');
+        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
+
+        $today = date('m/d/Y');
+        $fiveWeeksAgo = date('m/d/Y', time() - (5 * 7 * 24 * 60 * 60));
+        $this->_initReportAction(array(
+                $gridBlock,
+                $filterFormBlock
+            ),
+            array('from' => $fiveWeeksAgo,
+                'to' => $today));
+        $this->renderLayout();
+    }
+
+    public function excludeAction() {
+        $reportCode = $this->getRequest()->getParam('report_code');
+        $_ids = $this->getRequest()->getParam('product_id');
+        $_skus = $this->getRequest()->getParam('sku');
+        $product = Mage::getModel('catalog/product');
+
+        foreach ($_skus as $sku) {
+            $_resolvedId = $product->getIdBySku($sku);
+            if (!$_resolvedId) {
+                $this->log("Could not resolve sku '{$sku}'!");
+                Mage::getSingleton('adminhtml/session')->addError("Could not resolve sku '{$sku}'!");
+                continue;
+            }
+            $_ids[] = $_resolvedId;
+        }
+
+        foreach ($_ids as $_id) {
+            $exclusion = Mage::getModel('trsreports/excludedproduct');
+            $exclusion->setProductId($_id);
+            $exclusion->setReportId($reportCode);
+            $exclusion->save();
+        }
+
+        $this->_redirectReferer();
+    }
+
+    public function unexcludeAction() {
+        $exclusionIds = $this->getRequest()->getParam('entity_id');
+        foreach ($exclusionIds as $exclusionId) {
+            $exclusion = Mage::getModel('trsreports/excludedproduct')->load($exclusionId);
+            if (!$exclusion) {
+                $this->log("Could not find an exclusion with ID of $exclusionId!");
+                continue;
+            }
+            $exclusion->delete();
+        }
+
+        $this->_redirectReferer();
     }
 
     public function fetchItemsSoldAction() {

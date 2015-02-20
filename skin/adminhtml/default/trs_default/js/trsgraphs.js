@@ -436,7 +436,7 @@ var TrsLineGraph = Class.create(TrsGraph, {
             width = this.canvas.width,
             height = this.canvas.height,
             meta = this.data.meta,
-            ids = meta.ids,
+            ids = meta.ids || [ null ],
             lineKeys = this.lineKeys,
             data = this.data,
             colors = this.lineColors,
@@ -456,7 +456,7 @@ var TrsLineGraph = Class.create(TrsGraph, {
         // console.log("domainMax: " + domainMax + " domainMin: " + domainMin + " domain: " + domain + " pxPerDomain: " + pxPerDomain);
         ids.each(function(id) {
             lineKeys.each(function(lineKey) {
-                var dataSet = data[id][lineKey],
+                var dataSet = id === null ? data[lineKey] : data[id][lineKey],
                     color = colors[colorIndex],
                     xPrev = null,
                     yPrev = null;

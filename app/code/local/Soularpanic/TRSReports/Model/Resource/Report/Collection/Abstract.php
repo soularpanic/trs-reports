@@ -5,15 +5,18 @@ abstract class Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract
     protected $_sort = null;
     protected $_sortDir = null;
     protected $_defaultSort = null;
+    protected $_productTable = null;
     protected $_selects = null;
     protected $_customFilterData = null;
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::_construct();
         $this->setModel('adminhtml/report_item');
         $this->_resource = Mage::getResourceModel('sales/report')->init($this->_aggregationTable);
         $this->setConnection($this->getResource()->getReadConnection());
+
+        $this->setProductTable($this->getTable('catalog/product'));
+//        parent::__construct();
     }
 
     public function setCustomFilterData($data) {
@@ -75,6 +78,14 @@ abstract class Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract
         $this->_sortDir = $sortDir;
     }
 
+    public function getProductTable() {
+        return $this->_productTable;
+    }
+
+    public function setProductTable($productTable) {
+        $this->_productTable = $productTable;
+    }
+
     public function log($message) {
         Mage::helper('trsreports')->log($message);
     }
@@ -86,6 +97,22 @@ abstract class Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract
             $this->getSelect()->order(array("{$_field} {$_dir}"));
         }
 
+        $_customFilterData = $this->getCustomFilterData();
+        if ($_customFilterData && $_customFilterData['report_code']) {
+            $this->_applyTrsExclusions($_customFilterData['report_code'],
+                $_customFilterData['product_table']);
+        }
+
         return parent::_applyCustomFilter();
+    }
+
+    protected function _applyTrsExclusions($reportCode, $productTable = null) {
+        $_productTable = $productTable ?: $this->getProductTable();
+        $exclusionTable = $this->getTable('trsreports/excludedproduct');
+        $this->getSelect()
+            ->where("$_productTable.entity_id not in (
+                SELECT product_id
+                FROM $exclusionTable
+                WHERE report_id = '$reportCode')");
     }
 }

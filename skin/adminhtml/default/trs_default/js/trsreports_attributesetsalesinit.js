@@ -66,12 +66,12 @@ document.observe('dom:loaded', function() {
     });
 
     $('productToggle').observe('click', function() {
-        var elt = $('productGrid');
+        var elt = $('attributeSetGrid');
         elt.visible() ? Effect.SlideUp(elt) : Effect.SlideDown(elt);
     });
 
     $(document).observe('trs:newdata', function() {
-        var elt = $('productGrid');
+        var elt = $('attributeSetGrid');
         if (elt.visible()) {
             Effect.SlideUp(elt);
         }

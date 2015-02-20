@@ -16,7 +16,7 @@ if (!isset($indexList[$createdAtIndex])) {
 
 $productIdColumn = 'product_id';
 $productIdIndex = $installer->getIdxName($orderItemTable, $productIdColumn);
-if (!isset($indexList[$productIdIdx])) {
+if (!isset($indexList[$productIdIndex])) {
     $installer->run("
         CREATE INDEX $productIdIndex
         ON `{$orderItemTable}` ($productIdColumn);

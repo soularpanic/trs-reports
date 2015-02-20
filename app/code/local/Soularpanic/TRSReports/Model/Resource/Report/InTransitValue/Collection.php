@@ -5,9 +5,8 @@ class Soularpanic_TRSReports_Model_Resource_Report_InTransitValue_Collection
     //protected $_aggregationTable = 'cataloginventory/stock_item';
     protected $_aggregationTable = 'Purchase/OrderProduct';
 
-    public function __construct()
-    {
-        parent::_construct();
+    public function __construct() {
+        parent::__construct();
         $this->setModel('adminhtml/report_item');
         $this->_resource = Mage::getResourceModel('sales/report')->init($this->_aggregationTable);
         $this->setConnection($this->getResource()->getReadConnection());
@@ -43,9 +42,8 @@ class Soularpanic_TRSReports_Model_Resource_Report_InTransitValue_Collection
         );
     }
 
-    protected function _initSelect()
-    {
-        $_productTable = 'catalog_product_entity';
+    protected function _initSelect() {
+        $_productTable = $this->getProductTable(); //'catalog_product_entity';
         $_attributeSetTable = 'eav_attribute_set';
         $_purchaseOrderTable = 'purchase_order';
         $_purchaseOrderProductTable = 'purchase_order_product';
@@ -69,7 +67,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_InTransitValue_Collection
                 $this->_getSelectCols(array('attribute_set_name')));
 
 //        $_stockTable = $this->getResource()->getMainTable();
-//        $_productTable = 'catalog_product_entity';
+//        $_prouctTable = $this->getProductTable(); //'catalog_product_entity';
 //        $_attributeSetTable = 'eav_attribute_set';
 //        $_supplierTable = 'purchase_supplier';
 //        $_productNameTable = 'catalog_product_entity_varchar';

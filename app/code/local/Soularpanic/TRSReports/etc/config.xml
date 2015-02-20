@@ -2,19 +2,27 @@
 <config>
     <modules>
         <Soularpanic_TRSReports>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
         </Soularpanic_TRSReports>
     </modules>
 
     <global>
         <models>
+
             <trsreports>
                 <class>Soularpanic_TRSReports_Model</class>
                 <resourceModel>trsreports_resource</resourceModel>
             </trsreports>
+
             <trsreports_resource>
                 <class>Soularpanic_TRSReports_Model_Resource</class>
+                <entities>
+                    <excludedproduct>
+                        <table>trsreports_excluded_products</table>
+                    </excludedproduct>
+                </entities>
             </trsreports_resource>
+
         </models>
 
         <resources>

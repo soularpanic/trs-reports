@@ -5,7 +5,7 @@ abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_JsonGrid_Container_
 
     protected $_addButtonLabel;
     protected $_backButtonLabel;
-    protected $_blockGroup = 'trs';
+    protected $_blockGroup = 'trsreports';
 
     public function __construct()
     {
