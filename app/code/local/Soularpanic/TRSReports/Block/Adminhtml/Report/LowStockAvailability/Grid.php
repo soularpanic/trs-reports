@@ -62,7 +62,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         }
         $this->addColumn('supplier_name', array(
             'header'        => 'Supplier',
-            'index'         => 'supplier_name',
+            'index'         => 'supplier_names',
             'filter_index'  => 'suppliers.names',
             'sortable'      => true,
             'type' => 'options',
@@ -78,7 +78,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
 
         $this->addColumn('total_qty_ordered', array(
             'header'    => 'QTY Incoming',
-            'index'     => 'total_qty_ordered',
+            'index'     => 'incoming_qty',
             'sortable'  => true,
             'type'      => 'number'
         ));

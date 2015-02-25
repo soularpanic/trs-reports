@@ -16,16 +16,13 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
         $_productVarcharTable = 'catalog_product_entity_varchar';
         $_attributeSetTable = 'eav_attribute_set';
 
-        $_supplierSql = "(select pps_product_id as product_id, group_concat(sup_name separator ', ') as names from purchase_product_supplier
-                            left join purchase_supplier
-                            on purchase_product_supplier.pps_supplier_num = purchase_supplier.sup_id
-                            group by pps_product_id)";
+        $_supplierSql = Mage::helper('trsreports/purchaseOrders')->getPurchaseOrdersByProductSql();
 
-        $_qtyOrdered = "sum(qty_invoiced)";
+        $_qtySold = "sum(qty_invoiced)";
         $_startDate = "if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at)";
         $_endDate = "'{$this->_to}'";
         $_elapsedDays = "TIMESTAMPDIFF(DAY, {$_startDate}, {$_endDate})";
-        $_weeklyRate = "(7 * {$_qtyOrdered} / {$_elapsedDays})";
+        $_weeklyRate = "(7 * {$_qtySold} / {$_elapsedDays})";
         $_availableQty = "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)";
 
 
@@ -42,7 +39,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
             ->joinLeft($_orderTable,
                 "{$_orderTable}.product_id = {$_productTable}.entity_id and {$_orderTable}.created_at between '{$this->_from}' and '{$this->_to}'",
                 [ 'period' => 'created_at',
-                    'total_qty_ordered' => $_qtyOrdered,
+                    'total_qty_ordered' => $_qtySold,
                     'time' => $_elapsedDays,
                     'rate' => $_weeklyRate ])
             ->joinLeft($_stockTable,
@@ -51,7 +48,8 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                     'remaining_stock_weeks' => "{$_availableQty} / {$_weeklyRate}" ])
             ->joinLeft (['suppliers' => new Zend_Db_Expr($_supplierSql)],
                 "suppliers.product_id = {$_productTable}.entity_id",
-                [ 'supplier_name' => 'names' ])
+                [ 'supplier_names' => 'suppliers',
+                'incoming_qty'])
             ->where('attribute_set_name is not null and attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")')
             ->group("{$_productTable}.entity_id");
         $this->log("LowStockAvailability SQL:\n".$_select->__toString());
