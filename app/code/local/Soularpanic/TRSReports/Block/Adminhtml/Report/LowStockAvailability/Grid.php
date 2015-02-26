@@ -5,8 +5,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
     protected $_columnGroupBy = 'sku';
     protected $_resourceCollectionName = 'trsreports/report_LowStockAvailability_collection';
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->setCountTotals(false);
         $this->setCountSubTotals(false);
@@ -15,8 +14,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         $this->_defaultDir = 'asc';
     }
 
-    protected function _prepareColumns()
-    {
+    protected function _prepareColumns() {
         $this->addColumn('rate', array(
             'header'            => 'Average',
             'index'             => 'rate',
@@ -27,14 +25,14 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         ));
 
         $this->addColumn('name', array(
-            'header'         => 'Item Name',
+            'header'        => 'Item Name',
             'index'         => 'name',
             'filter_index'  => 'name',
             'sortable'      => true
         ));
 
         $this->addColumn('sku', array(
-            'header'         => 'SKU',
+            'header'        => 'SKU',
             'index'         => 'sku',
             'filter_index'  => 'catalog_product_entity.sku',
             'sortable'      => true
@@ -60,13 +58,13 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         foreach ($suppliers as $supplier) {
             $supplierOptions[$supplier->getSupName()] = $supplier->getSupName();
         }
-        $this->addColumn('supplier_name', array(
+        $this->addColumn('supplier_names', array(
             'header'        => 'Supplier',
             'index'         => 'supplier_names',
-            'filter_index'  => 'suppliers.names',
+            'filter_index'  => 'suppliers.suppliers',
             'sortable'      => true,
-            'type' => 'options',
-            'options' => $supplierOptions
+            'type'          => 'options',
+            'options'       => $supplierOptions
         ));
 
         $this->addColumn('available_qty', array(

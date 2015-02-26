@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Soularpanic_TRSReports>
-            <version>0.0.2</version>
+            <version>0.0.3</version>
         </Soularpanic_TRSReports>
     </modules>
 
@@ -20,6 +20,12 @@
                     <excludedproduct>
                         <table>trsreports_excluded_products</table>
                     </excludedproduct>
+                    <product_line>
+                        <table>trsreports_product_lines</table>
+                    </product_line>
+                    <product_line_link>
+                        <table>trsreports_product_line_links</table>
+                    </product_line_link>
                 </entities>
             </trsreports_resource>
 

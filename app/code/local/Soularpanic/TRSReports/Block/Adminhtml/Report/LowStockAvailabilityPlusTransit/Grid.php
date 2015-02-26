@@ -59,10 +59,10 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailabilityPlusTran
         foreach ($suppliers as $supplier) {
             $supplierOptions[$supplier->getSupId()] = $supplier->getSupName();
         }
-        $this->addColumn('supplier_name', array(
+        $this->addColumn('suppliers', array(
             'header'    => 'Supplier',
             'index'     => 'suppliers',
-            'filter_index' => 'suppliers',
+            'filter_index' => 'suppliers.suppliers',
             'sortable'  => true,
             'type' => 'options',
             'options' => $supplierOptions
