@@ -16,7 +16,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
 
     protected function _prepareColumns() {
         $this->addColumn('rate', array(
-            'header'            => 'Average',
+            'header'            => 'Weekly Average',
             'index'             => 'rate',
             'filter_index'      => 'rate',
             'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
@@ -60,8 +60,8 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         }
         $this->addColumn('supplier_names', array(
             'header'        => 'Supplier',
-            'index'         => 'supplier_names',
-            'filter_index'  => 'suppliers.suppliers',
+            'index'         => 'suppliers',
+            'filter_index'  => 'suppliers',
             'sortable'      => true,
             'type'          => 'options',
             'options'       => $supplierOptions
