@@ -6,4 +6,11 @@ class Soularpanic_TRSReports_Model_Reports_Grouped_Collection
         $this->_resourceCollection->addFieldToFilter($field, $cond);
     }
 
+    public function getSelect() {
+        if (!$this->_resourceCollection) {
+            return null;
+        }
+        return $this->_resourceCollection->getSelect();
+    }
+
 }
