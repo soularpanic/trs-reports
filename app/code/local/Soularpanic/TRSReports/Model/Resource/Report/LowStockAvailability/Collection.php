@@ -16,8 +16,6 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
         $_productNameTable = $productName->getBackendTable();
         $_attributeSetTable = 'eav_attribute_set';
 
-        $_supplierSql = Mage::helper('trsreports/purchaseOrders')->getPurchaseOrdersByProductSql();
-
         $_qtySold = "ifnull(sum(qty_invoiced), 0)";
         $_startDate = "if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at)";
         $_endDate = "'{$this->_to}'";
@@ -39,24 +37,24 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                 [ ])
             ->joinLeft([ 'lines' => $this->getTable('trsreports/product_line') ],
                 'lines.entity_id = line_links.line_id',
-                [ 'line_sku'        => 'line_sku',
-                    'line_name'          => 'name', #"(ifnull(lines.name, {$_productNameTable}.value))",
-                    'derived_sku'   => /* 'line_sku', */ "(ifnull(lines.line_sku, {$_productTable}.sku))",
-                    'derived_id'    => "(if(lines.entity_id is not null, concat('L-', lines.entity_id), concat('P-', {$_productTable}.entity_id)))",
-                    'is_product_line' => "(if(lines.line_sku is not null, TRUE, FALSE))"
+                [ 'line_sku'            => 'line_sku',
+                    'line_name'         => 'name',
+                    'derived_sku'       => "(ifnull(lines.line_sku, {$_productTable}.sku))",
+                    'derived_id'        => "(if(lines.entity_id is not null, concat('L-', lines.entity_id), concat('P-', {$_productTable}.entity_id)))",
+                    'is_product_line'   => "(if(lines.line_sku is not null, TRUE, FALSE))"
                 ])
+            ->joinLeft($_productNameTable,
+                "{$_productNameTable}.attribute_id = '{$productName->getId()}' and {$_productNameTable}.entity_id = {$_productTable}.entity_id",
+                [ 'product_name' => "{$_productNameTable}.value",
+                    'name' => "ifnull(lines.name, {$_productNameTable}.value)" ])
             ->joinLeft($_orderTable,
                 "{$_orderTable}.product_id = {$_productTable}.entity_id and {$_orderTable}.created_at between '{$this->_from}' and '{$this->_to}'",
                 [ 'period'              => 'created_at',
                     'total_qty_ordered' => $_qtySold,
-                    'time_in_days'      => $_elapsedDays,
-                    #    'rate'              => $_weeklyRate
-                ])
+                    'time_in_days'      => $_elapsedDays ])
             ->joinLeft($_stockTable,
                 "{$_orderTable}.product_id = {$_stockTable}.product_id",
-                [ 'available_qty'           => "ifnull({$_availableQty}, 0)",
-                    #'remaining_stock_weeks' => "{$_availableQty} / {$_weeklyRate}"
-                ])
+                [ 'available_qty' => "ifnull({$_availableQty}, 0)" ])
             ->group("derived_id");
 
 
@@ -104,9 +102,6 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                 'sku',
                 'rate' => $_weeklyRate,
                 'remaining_stock_weeks' => $_remainingWeeks ])
-            ->joinLeft($_productNameTable,
-                "{$_productNameTable}.attribute_id = '{$productName->getId()}' and {$_productNameTable}.entity_id = {$_productTable}.entity_id",
-                [ 'name' => "ifnull({$_customerOrderSelectAlias}.line_name, {$_productNameTable}.value)" ])
             ->joinLeft($_attributeSetTable,
                 "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
                 [ 'attribute_set_name' => 'attribute_set_name' ])
@@ -118,6 +113,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                 '*')
             ->where('attribute_set_name is not null and attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")')
             ->where('type_id = "simple"')
+            ->where("{$_customerOrderSelectAlias}.derived_id is not null")
             ->where("{$_productTable}.sku is not null");
 
         $this->log("LowStockAvailability SQL:\n".$_select->__toString());

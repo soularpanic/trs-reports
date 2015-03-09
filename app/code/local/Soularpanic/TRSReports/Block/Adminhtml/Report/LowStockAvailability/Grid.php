@@ -18,7 +18,8 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         $this->addColumn('rate', array(
             'header'            => 'Weekly Average',
             'index'             => 'rate',
-            'filter_index'      => 'rate',
+            'filter_index'      => "(7 * total_qty_ordered / time_in_days)",
+            'type'              => 'number',
             'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
             'decimal_places'    => 3,
             'sortable'          => true
@@ -34,8 +35,8 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         $this->addColumn('sku', array(
             'header'        => 'SKU',
             'sortable'      => true,
+            'filter_index'  => 'customer_orders.derived_sku',
             'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_ProductLine_sku',
-            'filter_condition_callback' => [$this, '_filterDerivedSku']
         ));
 
         $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
@@ -92,19 +93,6 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
 
         return parent::_prepareColumns();
     }
-
-
-    protected function _filterDerivedSku($collection, $column) {
-        $value = $column->getFilter()->getValue();
-
-        if (!$value) {
-            return $this;
-        }
-
-        $_select = $collection->getSelect();
-        $_select->where("catalog_product_entity.sku like ? OR lines.line_sku like ?", "%$value%");
-    }
-
 
     public function getRowClass($row) {
         $remainingWeeks = $row->getData('remaining_stock_weeks');
