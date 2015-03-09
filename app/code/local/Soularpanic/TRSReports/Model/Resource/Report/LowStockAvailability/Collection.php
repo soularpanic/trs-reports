@@ -23,12 +23,13 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
         $_weeklyRate = "(7 * total_qty_ordered / time_in_days)";
         $_availableQty = "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)";
         $_remainingWeeks = "if($_weeklyRate = 0, 99999, if(available_qty < 1, 0, ((available_qty) / ($_weeklyRate))))";
+
+
         $_select = $this->getSelect();
 
 
+        $_customerOrderSelectAlias = 'customer_orders';
         $_customerOrderSelect = Mage::getSingleton('core/resource')->getConnection('core_read')->select();
-
-
         $_customerOrderSelect->from($_productTable,
             [ 'product_id' => 'entity_id',
                 'sku' => 'sku' ])
@@ -73,6 +74,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                 "po.po_num = pop.pop_order_num AND po.po_status in ('new', 'waiting_for_delivery')",
                 [ 'po_string' => "if(po.po_num is null, null, concat_ws('::', po.po_num, ps.sup_name, po.po_order_id, po.po_supply_date))" ]);
 
+
         $_purchaseOrdersByProduct = Mage::getSingleton('core/resource')->getConnection('core_read')->select();
         $_purchaseOrdersByProduct
             ->from([ 'po_data' => $_purchaseOrderData ],
@@ -82,6 +84,8 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                     'suppliers'     => "concat_ws(', ', po_data.sup_name)" ])
             ->group("po_data.pps_product_id");
 
+
+        $_purchaseOrderSelectAlias = 'purchase_orders';
         $_purchaseOrderSelect = Mage::getSingleton('core/resource')->getConnection('core_read')->select();
         $_purchaseOrderSelect
             ->from([ 'pobp' => $_purchaseOrdersByProduct ],
@@ -95,8 +99,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
             ->group('derived_id');
 
 
-        $_customerOrderSelectAlias = 'customer_orders';
-        $_purchaseOrderSelectAlias = 'purchase_orders';
+
         $_select->from($_productTable,
             [ 'entity_id',
                 'sku',
@@ -119,8 +122,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
         $this->log("LowStockAvailability SQL:\n".$_select->__toString());
     }
 
-    protected function _applyDateRangeFilter()
-    {
+    protected function _applyDateRangeFilter() {
         return $this;
     }
 

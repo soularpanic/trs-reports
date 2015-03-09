@@ -8,87 +8,136 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailabilityPlusTrans
     protected $_defaultSort = 'remaining_stock_weeks';
 
     protected function _initSelect() {
+        $productName = Mage::getSingleton('eav/config')->getAttribute('catalog_product', 'name');
+
         $_orderTable = $this->getResource()->getMainTable();
         $_stockTable = 'cataloginventory_stock_item';
-        $_productSupplierTable = 'purchase_product_supplier';
-        $_supplierTable = 'purchase_supplier';
-
-        $_productTable = $this->getProductTable(); //'catalog_product_entity';
+        $_productTable = $this->getProductTable();
+        $_productNameTable = $productName->getBackendTable();
         $_attributeSetTable = 'eav_attribute_set';
-        $_purchaseOrdersTable = 'purchase_orders';
 
-//        $_purchaseOrderSql = "(select
-//                                po_data.pps_product_id as product_id
-//                                , sum(po_data.pop_qty) - sum(po_data.pop_supplied_qty) as incoming_qty
-//                                , concat_ws(',', po_data.po_string) as encoded_pos
-//                                , concat_ws(', ', po_data.sup_name) as suppliers
-//                                from(select
-//                                    pps.pps_product_id
-//                                    , pop.pop_supplied_qty
-//                                    , pop.pop_qty
-//                                    , ps.sup_name
-//                                    , concat_ws('::', po.po_num, ps.sup_name, po.po_order_id, po.po_supply_date) as po_string
-//                                    from purchase_product_supplier as pps
-//                                        left join purchase_supplier as ps
-//                                            on pps.pps_supplier_num = ps.sup_id
-//                                        left join purchase_order_product as pop
-//                                            on pop.pop_product_id = pps.pps_product_id
-//                                                and pop.pop_supplied_qty < pop.pop_qty
-//                                        left join purchase_order as po
-//                                            on po.po_num = pop.pop_order_num
-//                                                and po.po_status in('new','waiting_for_delivery')
-//                                    where po.po_num is not null) as po_data
-//                                group by po_data.pps_product_id)";
-        $_purchaseOrderSql = Mage::helper('trsreports/purchaseOrders')->getPurchaseOrdersByProductSql();
+        $_customerOrderSelectAlias = 'customer_orders';
+        $_purchaseOrderSelectAlias = 'purchase_orders';
 
-        $_qtyOrdered = "sum(qty_invoiced)";
+        $_qtySold = "ifnull(sum(qty_invoiced), 0)";
         $_startDate = "if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at)";
         $_endDate = "'{$this->_to}'";
         $_elapsedDays = "TIMESTAMPDIFF(DAY, {$_startDate}, {$_endDate})";
-        $_weeklyRate = "(7 * {$_qtyOrdered} / {$_elapsedDays})";
+        $_weeklyRate = "(7 * total_qty_ordered / time_in_days)";
         $_availableQty = "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)";
-        $_inTransitQty = "ifnull({$_purchaseOrdersTable}.incoming_qty, 0)";
-        $_totalQty = "{$_inTransitQty} + {$_availableQty}";
+        $_availablePlusInTransitQty = "({$_customerOrderSelectAlias}.available_qty + ifnull({$_purchaseOrderSelectAlias}.incoming_qty, 0))";
+        $_remainingWeeks = "if($_weeklyRate = 0, 99999, if($_availablePlusInTransitQty < 1, 0, (($_availablePlusInTransitQty) / ($_weeklyRate))))";
 
-        $this->getSelect()->from($_productTable, ['sku'])
-            ->where("type_id = 'simple'")
+
+        $_select = $this->getSelect();
+
+
+        $_customerOrderSelect = Mage::getSingleton('core/resource')->getConnection('core_read')->select();
+        $_customerOrderSelect->from($_productTable,
+            [ 'product_id' => 'entity_id',
+                'sku' => 'sku' ])
+            ->joinleft([ 'line_links' => $this->getTable('trsreports/product_line_link') ],
+                "line_links.product_id = {$_productTable}.entity_id",
+                [ ])
+            ->joinLeft([ 'lines' => $this->getTable('trsreports/product_line') ],
+                'lines.entity_id = line_links.line_id',
+                [ 'line_sku'            => 'line_sku',
+                    'line_name'         => 'name',
+                    'derived_sku'       => "(ifnull(lines.line_sku, {$_productTable}.sku))",
+                    'derived_id'        => "(if(lines.entity_id is not null, concat('L-', lines.entity_id), concat('P-', {$_productTable}.entity_id)))",
+                    'is_product_line'   => "(if(lines.line_sku is not null, TRUE, FALSE))"
+                ])
+            ->joinLeft($_productNameTable,
+                "{$_productNameTable}.attribute_id = '{$productName->getId()}' and {$_productNameTable}.entity_id = {$_productTable}.entity_id",
+                [ 'product_name' => "{$_productNameTable}.value",
+                    'name' => "ifnull(lines.name, {$_productNameTable}.value)" ])
             ->joinLeft($_orderTable,
                 "{$_orderTable}.product_id = {$_productTable}.entity_id and {$_orderTable}.created_at between '{$this->_from}' and '{$this->_to}'",
-                [ 'name',
-                    'period' => 'created_at',
-                    'total_qty_ordered' => $_qtyOrdered,
-                    'time' => $_elapsedDays,
-                    'rate' => $_weeklyRate ])
-            ->joinLeft($_attributeSetTable,
-                "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
-                [ 'attribute_set_name' ])
+                [ 'period'              => 'created_at',
+                    'total_qty_ordered' => $_qtySold,
+                    'time_in_days'      => $_elapsedDays ])
             ->joinLeft($_stockTable,
                 "{$_orderTable}.product_id = {$_stockTable}.product_id",
-                [ 'available_qty' => $_availableQty ])
-            ->joinLeft([$_purchaseOrdersTable => new Zend_Db_Expr($_purchaseOrderSql)],
-                "{$_purchaseOrdersTable}.product_id = {$_orderTable}.product_id",
-                [ 'encoded_pos',
-                    'incoming_qty' => $_inTransitQty,
-                    'remaining_stock_weeks' => "({$_totalQty}) / {$_weeklyRate}",
-                    'suppliers',
-                    'total_qty' => $_totalQty])
+                [ 'available_qty' => "ifnull({$_availableQty}, 0)" ])
+            ->group("derived_id");
+
+
+        $_purchaseOrderData = Mage::getSingleton('core/resource')->getConnection('core_read')->select();
+        $_purchaseOrderData
+            ->from([ 'pps' => $this->getTable('Purchase/ProductSupplier') ],
+                [ 'pps_product_id' ])
+            ->joinLeft([ 'ps' => $this->getTable('Purchase/Supplier') ],
+                "ps.sup_id = pps.pps_supplier_num",
+                [ 'sup_name' ])
+            ->joinLeft( ['pop' => $this->getTable('Purchase/OrderProduct') ],
+                "pop.pop_product_id = pps.pps_product_id AND pop.pop_supplied_qty < pop.pop_qty",
+                [ 'pop_supplied_qty'    => "ifnull(pop_supplied_qty, 0)",
+                    'pop_qty'           => "ifnull(pop_qty, 0)" ])
+            ->joinLeft( [ 'po' => $this->getTable('Purchase/Order') ],
+                "po.po_num = pop.pop_order_num AND po.po_status in ('new', 'waiting_for_delivery')",
+                [ 'expected_delivery_date' => 'po.po_supply_date',
+                    'po_string' => "if(po.po_num is null, null, concat_ws('::', po.po_num, ps.sup_name, po.po_order_id, po.po_supply_date))" ]);
+
+
+        $_purchaseOrdersByProduct = Mage::getSingleton('core/resource')->getConnection('core_read')->select();
+        $_purchaseOrdersByProduct
+            ->from([ 'po_data' => $_purchaseOrderData ],
+                [ 'product_id'      => 'pps_product_id',
+                    'incoming_qty'  => "sum(po_data.pop_qty) - sum(po_data.pop_supplied_qty)",
+                    'encoded_pos'   => "concat_ws(',', po_data.po_string)",
+                    'suppliers'     => "concat_ws(', ', po_data.sup_name)",
+                    'expected_delivery_date' ])
+            ->group("po_data.pps_product_id");
+
+
+
+        $_purchaseOrderSelect = Mage::getSingleton('core/resource')->getConnection('core_read')->select();
+        $_purchaseOrderSelect
+            ->from([ 'pobp' => $_purchaseOrdersByProduct ],
+                [ 'product_id',
+                    'incoming_qty' => "ifnull(sum(pobp.incoming_qty), 0)",
+                    'expected_delivery_date',
+                    'encoded_pos',
+                    'suppliers' ])
+            ->joinleft([ 'line_links' => $this->getTable('trsreports/product_line_link') ],
+                "line_links.product_id = pobp.product_id",
+                [ 'derived_id' => "(if(line_links.line_id is not null, concat('L-', line_links.line_id), concat('P-', pobp.product_id)))" ])
+            ->group('derived_id');
+
+
+
+        $_select->from($_productTable,
+            [ 'entity_id',
+                'sku',
+                'total_qty' => $_availablePlusInTransitQty,
+                'rate' => $_weeklyRate,
+                'remaining_stock_weeks' => $_remainingWeeks ])
+            ->joinLeft($_attributeSetTable,
+                "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
+                [ 'attribute_set_name' => 'attribute_set_name' ])
+            ->joinLeft([ $_customerOrderSelectAlias => $_customerOrderSelect ],
+                "{$_customerOrderSelectAlias}.product_id = {$_productTable}.entity_id",
+                '*')
+            ->joinLeft([ $_purchaseOrderSelectAlias => $_purchaseOrderSelect ],
+                "{$_purchaseOrderSelectAlias}.derived_id = {$_customerOrderSelectAlias}.derived_id",
+                [ 'incoming_qty' => "ifnull(incoming_qty, 0)",
+
+                    '*'])
             ->where('attribute_set_name is not null and attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")')
-            ->group("{$_orderTable}.product_id");
+            ->where('type_id = "simple"')
+            ->where("{$_customerOrderSelectAlias}.derived_id is not null")
+            ->where("{$_productTable}.sku is not null");
+
         $this->log("Low Stock Availability + in Transit SQL:\n".$this->getSelect()->__toString());
     }
 
-    protected function _applyDateRangeFilter()
-    {
-        // Remember that field PERIOD is a DATE(YYYY-MM-DD) in all databases including Oracle
-        if ($this->_from !== null) {
-            $this->getSelect()->where("{$this->getResource()->getMainTable()}.created_at >= ?", $this->_from);
-        }
-        if ($this->_to !== null) {
-            $this->getSelect()->where("{$this->getResource()->getMainTable()}.created_at <= ?", $this->_to);
-        }
-
+    protected function _applyDateRangeFilter() {
         return $this;
     }
 
+    protected function _applyStoresFilter()
+    {
+        return $this;
+    }
 
 }

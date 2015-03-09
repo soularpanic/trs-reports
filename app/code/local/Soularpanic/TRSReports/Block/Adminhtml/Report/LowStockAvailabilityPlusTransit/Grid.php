@@ -17,96 +17,95 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailabilityPlusTran
 
     protected function _prepareColumns()
     {
-        $this->addColumn('rate', array(
-            'header'            => 'Average',
+        $this->addColumn('rate', [
+            'header'            => 'Weekly Average',
             'index'             => 'rate',
-            'filter_index'      => 'rate',
+            'filter_index'      => "(7 * total_qty_ordered / time_in_days)",
+            'type'              => 'number',
             'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
             'decimal_places'    => 3,
             'sortable'          => true
-        ));
+        ]);
 
-        $this->addColumn('name', array(
+        $this->addColumn('name', [
             'header'     => 'Item Name',
             'index'     => 'name',
             'filter_index' => 'name',
             'sortable'  => true
-        ));
+        ]);
 
-        $this->addColumn('sku', array(
-            'header'     => 'SKU',
-            'index'     => 'sku',
-            'filter_index' => 'catalog_product_entity.sku',
-            'sortable'  => true
-        ));
+        $this->addColumn('customer_orders.derived_sku', [
+            'header'        => 'SKU',
+            'index'         => 'customer_orders.derived_sku',
+            'filter_index'  => 'customer_orders.derived_sku',
+            'sortable'      => true,
+            'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_ProductLine_sku',
+        ]);
 
         $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
-            ->addFieldToFilter('attribute_set_name', array('nin' => array("Closeouts", "Internal Use", "TRS-ZHacks")))
+            ->addFieldToFilter('attribute_set_name', [ 'nin' => [ "Closeouts", "Internal Use", "TRS-ZHacks" ] ])
             ->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
             ->load()
             ->toOptionHash();
-        $this->addColumn('attribute_set_name', array(
+        $this->addColumn('attribute_set_name', [
             'header'    => 'Type',
             'index'     => 'attribute_set_name',
             'filter_index' => 'eav_attribute_set.attribute_set_id',
             'sortable'  => true,
             'type'      => 'options',
             'options'   => $sets
-        ));
+        ]);
 
         $suppliers = Mage::getResourceModel('Purchase/Supplier_collection');
-        $supplierOptions = array();
+        $supplierOptions = [];
         foreach ($suppliers as $supplier) {
-            $supplierOptions[$supplier->getSupId()] = $supplier->getSupName();
+            $supplierOptions[$supplier->getSupName()] = $supplier->getSupName();
         }
-        $this->addColumn('suppliers', array(
-            'header'    => 'Supplier',
-            'index'     => 'suppliers',
-            'filter_index' => 'suppliers.suppliers',
-            'sortable'  => true,
-            'type' => 'options',
-            'options' => $supplierOptions
-        ));
+        $this->addColumn('suppliers', [
+            'header'        => 'Supplier',
+            'index'         => 'suppliers',
+            'filter_index'  => 'suppliers',
+            'sortable'      => true,
+            'type'          => 'options',
+            'options'       => $supplierOptions
+        ]);
 
-        $this->addColumn('available_qty', array(
+        $this->addColumn('available_qty', [
             'header'    => 'QTY Available',
             'index'     => 'available_qty',
             'sortable'  => true,
             'type'      => 'number'
-        ));
+        ]);
 
-        $this->addColumn('incoming_qty', array(
+        $this->addColumn('total_qty_ordered', [
             'header'    => 'QTY Incoming',
             'index'     => 'incoming_qty',
             'sortable'  => true,
             'type'      => 'number'
-        ));
+        ]);
 
-        $this->addColumn('total_qty', array(
+        $this->addColumn('total_qty', [
             'header'    => 'Total QTY',
             'index'     => 'total_qty',
             'sortable'  => true,
             'type'      => 'number'
-        ));
+        ]);
 
-        $this->addColumn('remaining_stock_weeks', array(
+        $this->addColumn('remaining_stock_weeks', [
             'header'    => 'Est. Weeks Left',
             'index'     => 'remaining_stock_weeks',
             'sortable'  => true,
             'renderer'  => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
             'column_css_class'  => 'stockCell',
             'decimal_places'    => 1
-        ));
+        ]);
 
-        $this->addColumn('po_supply_date', array(
+        $this->addColumn('expected_delivery_date', [
             'header'    => 'Expected Delivery Date',
             'index'     => 'encoded_pos',
             'sortable'  => true,
             'renderer'  => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_ArrivalDate'
-//            'renderer'  => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrderArrivalDate',
-        ));
-//        $this->addExportType('*/*/exportSalesCsv', Mage::helper('adminhtml')->__('CSV'));
-//        $this->addExportType('*/*/exportSalesExcel', Mage::helper('adminhtml')->__('Excel XML'));
+        ]);
 
         return parent::_prepareColumns();
     }
