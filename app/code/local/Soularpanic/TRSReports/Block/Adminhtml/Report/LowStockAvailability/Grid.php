@@ -2,11 +2,10 @@
 class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
     extends Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract {
 
-    protected $_columnGroupBy = 'sku';
+    protected $_columnGroupBy = 'derived_id';
     protected $_resourceCollectionName = 'trsreports/report_LowStockAvailability_collection';
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->setCountTotals(false);
         $this->setCountSubTotals(false);
@@ -15,82 +14,83 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         $this->_defaultDir = 'asc';
     }
 
-    protected function _prepareColumns()
-    {
-        $this->addColumn('rate', array(
-            'header'            => 'Average',
+    protected function _prepareColumns() {
+        $this->addColumn('rate', [
+            'header'            => 'Weekly Average',
             'index'             => 'rate',
-            'filter_index'      => 'rate',
+            'filter_index'      => "(7 * total_qty_ordered / time_in_days)",
+            'type'              => 'number',
             'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
             'decimal_places'    => 3,
             'sortable'          => true
-        ));
+        ]);
 
-        $this->addColumn('name', array(
-            'header'         => 'Item Name',
+        $this->addColumn('name', [
+            'header'        => 'Item Name',
             'index'         => 'name',
             'filter_index'  => 'name',
             'sortable'      => true
-        ));
+        ]);
 
-        $this->addColumn('sku', array(
-            'header'         => 'SKU',
-            'index'         => 'sku',
-            'filter_index'  => 'catalog_product_entity.sku',
-            'sortable'      => true
-        ));
+        $this->addColumn('customer_orders.derived_sku', [
+            'header'        => 'SKU',
+            'index'         => 'customer_orders.derived_sku',
+            'filter_index'  => 'customer_orders.derived_sku',
+            'sortable'      => true,
+            'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_ProductLine_sku',
+        ]);
 
         $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
-            ->addFieldToFilter('attribute_set_name', array('nin' => array("Closeouts", "Internal Use", "TRS-ZHacks")))
+            ->addFieldToFilter('attribute_set_name', [ 'nin' => [ "Closeouts", "Internal Use", "TRS-ZHacks" ] ])
             ->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
             ->load()
             ->toOptionHash();
 
-        $this->addColumn('attribute_set_name', array(
+        $this->addColumn('attribute_set_name', [
             'header'    => 'Type',
             'index'     => 'attribute_set_name',
             'filter_index' => 'eav_attribute_set.attribute_set_id',
             'sortable'  => true,
             'type'      => 'options',
             'options'   => $sets
-        ));
+        ]);
 
         $suppliers = Mage::getResourceModel('Purchase/Supplier_collection');
-        $supplierOptions = array();
+        $supplierOptions = [ ];
         foreach ($suppliers as $supplier) {
             $supplierOptions[$supplier->getSupName()] = $supplier->getSupName();
         }
-        $this->addColumn('supplier_name', array(
+        $this->addColumn('suppliers', [
             'header'        => 'Supplier',
-            'index'         => 'supplier_name',
-            'filter_index'  => 'suppliers.names',
+            'index'         => 'suppliers',
+            'filter_index'  => 'suppliers',
             'sortable'      => true,
-            'type' => 'options',
-            'options' => $supplierOptions
-        ));
+            'type'          => 'options',
+            'options'       => $supplierOptions
+        ]);
 
-        $this->addColumn('available_qty', array(
+        $this->addColumn('available_qty', [
             'header'    => 'QTY Available',
             'index'     => 'available_qty',
             'sortable'  => true,
             'type'      => 'number'
-        ));
+        ]);
 
-        $this->addColumn('total_qty_ordered', array(
+        $this->addColumn('total_qty_ordered', [
             'header'    => 'QTY Incoming',
-            'index'     => 'total_qty_ordered',
+            'index'     => 'incoming_qty',
             'sortable'  => true,
             'type'      => 'number'
-        ));
+        ]);
 
-        $this->addColumn('remaining_stock_weeks', array(
+        $this->addColumn('remaining_stock_weeks', [
             'header'            => 'Est. Weeks Left',
             'index'             => 'remaining_stock_weeks',
             'sortable'          => true,
             'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
             'column_css_class'  => 'stockCell',
             'decimal_places'    => 1
-        ));
+        ]);
 
         return parent::_prepareColumns();
     }

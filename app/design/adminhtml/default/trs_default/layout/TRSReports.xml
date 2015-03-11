@@ -60,6 +60,7 @@
             <block type="page/html_wrapper" name="auxData">
                 <block type="trsreports/adminhtml_report_graph" name="pieGraph" template="trsreports/GraphCanvas.phtml">
                     <action method="setGraphId"><id>itemsPieGraph</id></action>
+                    <action method="setGraphHeight"><height>250</height></action>
                 </block>
                 <block type="core/template" name="topSold"  template="trsreports/ChartTopSold.phtml"/>
                 <block type="core/template" name="aggregates"  template="trsreports/ChartAggregates.phtml"/>
