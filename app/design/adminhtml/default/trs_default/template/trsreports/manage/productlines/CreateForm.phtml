@@ -1,0 +1,45 @@
+<div id="success" style="background: green; color: white; display: none;"></div>
+<div id="failure" style="background: red; color: white; display:none;"></div>
+<form method="post" id="newLineForm" action="<?php echo Mage::helper('adminhtml')->getUrl('*/*/addLineSubmit') ?>">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" class="required-entry" placeholder="Product Line Name"/>
+    <br/>
+    <label for="sku">SKU:</label>
+    <input type="text" id="sku" name="sku" class="required-entry" placeholder="Product Line SKU"/>
+    <br/>
+    <input type="hidden" id="form_key" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>"/>
+    <input type="submit" id="submit" value="Create"/>
+</form>
+<div id="fakeConsole">Console</div>
+<script type="text/javascript">
+    ajaxSubmit = function() {
+        var successElt = $('success'),
+            failureElt = $('failure');
+        $('fakeConsole').insert('fuh');
+        if (newLineForm && newLineForm.validator.validate()) {
+            var url = $('newLineForm').action;
+            new Ajax.Request(url, {
+                parameters: $('newLineForm').serialize(true),
+                method: 'post',
+                onSuccess: function(resp) {
+                    failureElt.hide();
+                    successElt.insert("<h3>Success!</h3>");
+                    successElt.show();
+                },
+                onFailure: function(resp) {
+                    failureElt.insert(resp.responseText);
+                    successElt.hide();
+                    failureElt.show();
+                }
+            });
+        }
+    };
+    document.observe('dom:loaded', function() {
+        newLineForm = new VarienForm('newLineForm', true);
+        $('newLineForm').observe('submit', function(e) {
+            e.stop();
+            ajaxSubmit();
+        })
+    });
+
+</script>

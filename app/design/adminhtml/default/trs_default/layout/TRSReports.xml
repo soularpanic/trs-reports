@@ -415,4 +415,42 @@
             <block type="trsreports/adminhtml_report_manage_exclusions" name="manage.exclusions.container" template="report/grid/container.phtml"/>
         </reference>
     </adminhtml_admin_trsreports_manage>
+
+    <adminhtml_admin_manage_productexclusions_index>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_manage_exclusions" name="manage.exclusions.container" template="report/grid/container.phtml"/>
+        </reference>
+    </adminhtml_admin_manage_productexclusions_index>
+
+    <adminhtml_admin_manage_productlines_index>
+        <reference name="head">
+            <action method="addItem">
+                <type>js</type>
+                <script>varien/form.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports_managelines.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports_managelines_init.js</script>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_manage_lines" name="manage.lines.container" template="report/grid/container.phtml"/>
+            <block type="core/template" template="trsreports/manage/productlines/ControllerInfo.phtml"/>
+        </reference>
+    </adminhtml_admin_manage_productlines_index>
+
+    <adminhtml_admin_manage_productlines_addlineprompt>
+        <reference name="root">
+            <action method="setTemplate"><template>page/popup.phtml</template></action>
+            <reference name="head">
+                <action method="addJs"><script>varien/form.js</script></action>
+            </reference>
+            <block type="adminhtml/template" name="content" as="content" template="trsreports/manage/productlines/CreateForm.phtml"/>
+        </reference>
+        <!--<block type="adminhtml/template" name="root" as="root" output="toHtml" template="trsreports/manage/productlines/CreateForm.phtml"/>-->
+    </adminhtml_admin_manage_productlines_addlineprompt>
 </layout>

@@ -1,23 +1,23 @@
 <?php
-class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Exclusions_Grid
+class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Lines_Grid
     extends Mage_Adminhtml_Block_Widget_Grid {
 
     protected function _prepareColumns() {
-        $this->addColumn('product_name', [
-            'header' => 'Product Name',
-            'index' => 'product_name',
-            'filter_index' => 'product_name.value'
+        $this->addColumn('name', [
+            'header' => 'Product Line Name',
+            'index' => 'name',
+            'filter_index' => 'name'
         ]);
 
-        $this->addColumn('product_sku', [
-            'header' => 'SKU',
-            'index' => 'sku',
-            'filter_index'  => 'product_sku.sku',
+        $this->addColumn('line_sku', [
+            'header' => 'Product Line SKU',
+            'index' => 'line_sku',
+            'filter_index'  => 'line_sku'
         ]);
 
-        $this->addColumn('report_code', [
-            'header' => 'Report Code',
-            'index' => 'report_id'
+        $this->addColumn('product_line_members', [
+            'header' => 'Product Line Members',
+            'index' => 'product_line_members'
         ]);
 
         return parent::_prepareColumns();
@@ -35,7 +35,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Exclusions_Grid
     }
 
     protected function _getCollectionClass() {
-        return 'trsreports/excludedproduct_grid_collection';
+        return 'trsreports/product_line_grid_collection';
     }
 
     protected function _prepareCollection() {
