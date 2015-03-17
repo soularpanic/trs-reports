@@ -51,6 +51,70 @@ class Soularpanic_TRSReports_Admin_Manage_ProductLinesController
 
         $resp->setHttpResponseCode(200)
             ->setBody($newId);
+    }
 
+    public function editAction() {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
+    public function addLineProductsActions() {
+        $req = $this->getRequest();
+        $lineId = $req->getParam('line_id');
+        $productIds = $req->getParam('product_id');
+
+        $failures = [];
+
+        foreach ($productIds as $productId) {
+            $existingLinks = Mage::getModel('trsreports/product_line_link')->getCollection();
+            $existingLinks->addFilter('line_id', $lineId, 'and')
+                ->addFilter('product_id', $productId, 'and');
+
+            if ($existingLinks->count() > 0) {
+                $failures[] = $productId;
+            }
+            else {
+                $link = Mage::getModel('trsreports/product_line_link');
+                $link->setData(['line_id' => $lineId, 'product_id' => $productId]);
+                $link->save();
+            }
+
+        }
+
+        foreach ($failures as $failure) {
+            $product = Mage::getModel('catalog/product')->load($failure);
+            Mage::getSingleton('adminhtml/session')->addWarning("{$product->getName()} was not added as it's already a member");
+        }
+
+        $this->_redirectReferer();
+    }
+
+    protected function removeLineProductsAction() {
+        $req = $this->getRequest();
+        $lineId = $req->getParam('line_id');
+        $productIds = $req->getParam('product_id');
+
+        $failures = [];
+
+        foreach ($productIds as $productId) {
+            $existingLinks = Mage::getModel('trsreports/product_line_link')->getCollection();
+            $existingLinks->addFilter('line_id', $lineId, 'and')
+                ->addFilter('product_id', $productId, 'and');
+
+            if ($existingLinks->count() < 1) {
+                $failures[] = $productId;
+            }
+            else {
+                $link = $existingLinks->getFirstItem();
+                $link->delete();
+            }
+        }
+
+        foreach ($failures as $failure) {
+            $product = Mage::getModel('catalog/product')->load($failure);
+            Mage::getSingleton('adminhtml/session')->addWarning("{$product->getName()} was not removed as it's not a member");
+        }
+
+        $this->_redirectReferer();
     }
 }

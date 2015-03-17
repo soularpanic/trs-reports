@@ -17,7 +17,15 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Lines_Grid
 
         $this->addColumn('product_line_members', [
             'header' => 'Product Line Members',
-            'index' => 'product_line_members'
+            'index' => 'product_line_members',
+            'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_ProductLine_membership_list'
+        ]);
+
+        $this->addColumn('entity_id', [
+            'header' => 'Edit',
+            'index' => 'entity_id',
+            'sortable' => false,
+            'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_ProductLine_EditLink'
         ]);
 
         return parent::_prepareColumns();
@@ -25,13 +33,13 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Lines_Grid
 
     protected function _prepareMassAction() {
         parent::_prepareMassaction();
-        $this->setMassactionIdField('entity_id');
-        $this->getMassActionBlock()->setFormFieldName('entity_id');
-        $this->getMassactionBlock()->addItem(
-            'exclude',
-            [ 'label' => $this->__('Un-exclude From Report'),
-                'url' => $this->getUrl('*/*/unexclude')]
-        );
+//        $this->setMassactionIdField('entity_id');
+//        $this->getMassActionBlock()->setFormFieldName('entity_id');
+//        $this->getMassactionBlock()->addItem(
+//            'exclude',
+//            [ 'label' => $this->__('Un-exclude From Report'),
+//                'url' => $this->getUrl('*/*/unexclude')]
+//        );
     }
 
     protected function _getCollectionClass() {

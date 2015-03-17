@@ -11,8 +11,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Lines
 
         $this->_addButton('add', array(
             'label'     => $this->getAddButtonLabel(),
-            'class'     => 'add',
-            'data-foo' => 'bar'
+            'class'     => 'add'
         ));
     }
 }
