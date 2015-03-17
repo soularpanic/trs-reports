@@ -32,7 +32,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
             'sortable'      => true
         ]);
 
-        $this->addColumn('customer_orders.derived_sku', [
+        $this->addColumn('derived_sku', [
             'header'        => 'SKU',
             'index'         => 'customer_orders.derived_sku',
             'filter_index'  => 'customer_orders.derived_sku',
