@@ -15,7 +15,6 @@ var ProductLineController = Class.create({
     },
 
     openNewProductLineDialog: function() {
-        console.log("opening dialog...");
         var url = this.newProductLineUrl;
         Dialog.info(null, {
             closable:true,
@@ -23,7 +22,7 @@ var ProductLineController = Class.create({
             draggable:true,
             className:'magento',
             windowClassName:'popup-window',
-            title:'Test popup Dialog',
+            title:'Create New Product Line',
             top:50,
             width:300,
             height:150,
@@ -34,7 +33,7 @@ var ProductLineController = Class.create({
             id:'browser_window',
             url:url,
             onClose:function (param, el) {
-                console.log('onClose');
+                window.location = window.location;
             }
         });
     }

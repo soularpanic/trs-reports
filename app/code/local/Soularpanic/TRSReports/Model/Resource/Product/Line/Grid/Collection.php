@@ -23,10 +23,10 @@ class Soularpanic_TRSReports_Model_Resource_Product_Line_Grid_Collection
         $lines = $this->getTableAlias($_select, $this->getMainTable());
 
         $_select
-            ->join([$links => $this->getTable('trsreports/product_line_link')],
+            ->joinLeft([$links => $this->getTable('trsreports/product_line_link')],
                 "{$links}.line_id = {$lines}.entity_id",
                 [])
-            ->join([$products => $this->getTable("catalog/product")],
+            ->joinLeft([$products => $this->getTable("catalog/product")],
                 "{$products}.entity_id = {$links}.product_id",
                 ["product_line_members" => "(GROUP_CONCAT(CONCAT_WS('::', {$products}.entity_id, {$products}.sku) ORDER BY {$products}.updated_at DESC))"])
             ->group("{$lines}.entity_id");

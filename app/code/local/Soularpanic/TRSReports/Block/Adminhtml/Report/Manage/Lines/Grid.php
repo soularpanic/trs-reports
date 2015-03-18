@@ -6,7 +6,8 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Lines_Grid
         $this->addColumn('name', [
             'header' => 'Product Line Name',
             'index' => 'name',
-            'filter_index' => 'name'
+            'filter_index' => 'name',
+            'sortable' => true
         ]);
 
         $this->addColumn('line_sku', [
@@ -24,7 +25,6 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Lines_Grid
         $this->addColumn('entity_id', [
             'header' => 'Edit',
             'index' => 'entity_id',
-            'sortable' => false,
             'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_ProductLine_EditLink'
         ]);
 
@@ -33,13 +33,6 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Lines_Grid
 
     protected function _prepareMassAction() {
         parent::_prepareMassaction();
-//        $this->setMassactionIdField('entity_id');
-//        $this->getMassActionBlock()->setFormFieldName('entity_id');
-//        $this->getMassactionBlock()->addItem(
-//            'exclude',
-//            [ 'label' => $this->__('Un-exclude From Report'),
-//                'url' => $this->getUrl('*/*/unexclude')]
-//        );
     }
 
     protected function _getCollectionClass() {

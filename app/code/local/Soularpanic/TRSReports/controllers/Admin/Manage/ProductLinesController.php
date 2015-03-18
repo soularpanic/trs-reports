@@ -55,10 +55,15 @@ class Soularpanic_TRSReports_Admin_Manage_ProductLinesController
 
     public function editAction() {
         $this->loadLayout();
+
+        $lineId = $this->getRequest()->getParam('id');
+        $line = Mage::getModel('trsreports/product_line')->load($lineId);
+        Mage::register('soularpanic_adminform_manage_lines', $line);
+
         $this->renderLayout();
     }
 
-    public function addLineProductsActions() {
+    public function addLineProductsAction() {
         $req = $this->getRequest();
         $lineId = $req->getParam('line_id');
         $productIds = $req->getParam('product_id');
@@ -89,7 +94,7 @@ class Soularpanic_TRSReports_Admin_Manage_ProductLinesController
         $this->_redirectReferer();
     }
 
-    protected function removeLineProductsAction() {
+    public function removeLineProductsAction() {
         $req = $this->getRequest();
         $lineId = $req->getParam('line_id');
         $productIds = $req->getParam('product_id');
@@ -116,5 +121,51 @@ class Soularpanic_TRSReports_Admin_Manage_ProductLinesController
         }
 
         $this->_redirectReferer();
+    }
+
+
+    public function saveAction() {
+        $req = $this->getRequest();
+
+        $lineId = $req->getParam('entity_id');
+
+        $newName = $req->getParam('name');
+        $newSku = $req->getParam('line_sku');
+
+        $currentLine = Mage::getModel('trsreports/product_line')->load($lineId);
+
+        // if we didn't actually change anything, we're done
+        if ($currentLine->getName() === $newName
+            && $currentLine->getLineSku() === $newSku) {
+            $this->_redirectReferer();
+            return $this;
+        }
+
+        $conflicts = Mage::getModel('trsreports/product_line')->getCollection();
+        $conflicts->addFilter('name', $newName, 'or')
+            ->addFilter('line_sku', $newSku, 'or');
+
+
+        foreach ($conflicts as $conflict) {
+            if ($conflict->getId() !== $lineId) {
+                Mage::getSingleton('adminhtml/session')->addError("{$currentLine->getName()}/{$currentLine->getLineSku()} update to {$newName}/{$newSku} failed, because it conflicts with existing line {$conflict->getName()}/{$conflict->getLineSku()}");
+                $this->_redirectReferer();
+                return $this;
+            }
+        }
+
+        $currentLine->setName($newName);
+        $currentLine->setLineSku($newSku);
+        $currentLine->save();
+
+        $this->_redirect('*/*/index');
+    }
+
+    public function deleteAction() {
+        $id = $this->getRequest()->getParam('id');
+        $line = Mage::getModel('trsreports/product_line')->load($id);
+        $line->delete();
+        $this->_redirect('*/*/index');
+        return $this;
     }
 }

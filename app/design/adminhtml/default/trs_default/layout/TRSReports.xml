@@ -456,6 +456,8 @@
 
     <adminhtml_admin_manage_productlines_edit>
         <reference name="content">
+            <!--<block type="adminhtml/template" name="manage.line.details" template="trsreports/manage/productlines/UpdateForm.phtml"/>-->
+            <block type="trsreports/adminhtml_report_manage_lines_form_edit" name="manage.lines.update.form"/>
             <block type="trsreports/adminhtml_report_manage_lines_products" name="manage.lines.products.container"/>
             <!--<block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid">-->
                 <!--<action method="setEnableMassaction"><enable>true</enable></action>-->
