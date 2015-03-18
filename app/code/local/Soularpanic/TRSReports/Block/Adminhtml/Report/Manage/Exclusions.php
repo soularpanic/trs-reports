@@ -5,8 +5,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Exclusions
     protected $_blockGroup = "trsreports";
     protected $_controller = "adminhtml_report_manage_exclusions";
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->_headerText = Mage::helper('reports')->__('Manage Exclusions');
         parent::__construct();
     }

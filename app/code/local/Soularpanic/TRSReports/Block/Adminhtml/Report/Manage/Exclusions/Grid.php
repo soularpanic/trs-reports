@@ -3,16 +3,6 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Exclusions_Grid
     extends Mage_Adminhtml_Block_Widget_Grid {
 
     protected function _prepareColumns() {
-//        $this->addColumn('product_id', [
-//            'header' => 'Product ID',
-//            'index' => 'product_id'
-//        ]);
-//
-//        $this->addColumn('exclusion_id', [
-//            'header' => 'Exclusion ID',
-//            'index' => 'entity_id'
-//        ]);
-
         $this->addColumn('product_name', [
             'header' => 'Product Name',
             'index' => 'product_name',

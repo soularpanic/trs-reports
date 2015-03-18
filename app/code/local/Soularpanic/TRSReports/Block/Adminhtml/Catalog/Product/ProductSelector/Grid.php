@@ -1,5 +1,4 @@
 <?php
-//class Mage_Adminhtml_Block_Catalog_Product_Grid extends Mage_Adminhtml_Block_Widget_Grid
 class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_ProductSelector_Grid
     extends Mage_Adminhtml_Block_Widget_Grid {
 
@@ -84,21 +83,22 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_ProductSelector_Gri
             $collection->joinAttribute('status', 'catalog_product/status', 'entity_id', null, 'inner');
             $collection->joinAttribute('visibility', 'catalog_product/visibility', 'entity_id', null, 'inner');
         }
-//
-//        $collection->getSelect()
-//                $_productTable = $productTable ?: $this->getProductTable();
-        $exclusionTable = Mage::getSingleton('core/resource')->getTableName('trsreports/excludedproduct');
-        $mainAlias = 'e';
+
         $reportCode = $this->getReportCode();
-        $collection->getSelect()
-            ->where("{$mainAlias}.entity_id not in (
+        if ($reportCode) {
+            $exclusionTable = Mage::getSingleton('core/resource')->getTableName('trsreports/excludedproduct');
+            $mainAlias = 'e';
+            $collection->getSelect()
+                ->where("{$mainAlias}.entity_id not in (
                 SELECT product_id
                 FROM $exclusionTable
                 WHERE report_id = '$reportCode')");
+        }
+        $this->setCollection($collection);
+
 
         Mage::log("Product Selector Grid SQL:\n".$collection->getSelect()->__toString(), null, 'trs_reports.log');
 
-        $this->setCollection($collection);
 
         parent::_prepareCollection();
         $this->getCollection()->addWebsiteNamesToResult();
@@ -121,13 +121,6 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_ProductSelector_Gri
 
 
     protected function _prepareColumns() {
-//        $this->addColumn('select',
-//            array(
-//                'header' => Mage::helper('catalog')->__('Select'),
-//                'type' => 'massaction',
-//                'index' => 'id',
-//                'filter_index' => 'id'
-//            ));
 
         $this->addColumn('entity_id',
             array(
@@ -181,96 +174,47 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_ProductSelector_Gri
                 'width' => '80px',
                 'index' => 'sku',
             ));
-//
-//        $this->addColumn('action',
-//            array(
-//                'header'    => Mage::helper('catalog')->__('Select'),
-//                'width'     => '50px',
-//                'type'      => 'action',
-//                'getter'     => 'getId',
-//                'actions'   => array(
-//                    array(
-//                        'caption' => Mage::helper('catalog')->__('Select'),
-//                        'url'     => array(
-//                            'base'=>'*/*/edit',
-//                            'params'=>array('store'=>$this->getRequest()->getParam('store'))
-//                        ),
-//                        'field'   => 'id'
-//                    )
-//                ),
-//                'filter'    => false,
-//                'sortable'  => false,
-//                'index'     => 'stores',
-//            ));
+
 
         return parent::_prepareColumns();
     }
 
-//    protected function _prepareMassaction()
-//    {
-//        return $this;
-//    }
     protected function _prepareMassaction()
     {
         parent::_prepareMassaction();
         if ($this->getEnableMassaction()) {
-//            $this->setMassactionIdField('entity_id');
-//            $this->getMassactionBlock()->setFormFieldName('product');
-//
-//            $this->getMassactionBlock()->addItem('delete', array(
-//                'label'=> Mage::helper('catalog')->__('Delete'),
-//                'url'  => $this->getUrl('*/*/massDelete'),
-//                'confirm' => Mage::helper('catalog')->__('Are you sure?')
-//            ));
 
             $this->setMassactionIdField('entity_id');
             $this->getMassActionBlock()->setFormFieldName('product_id');
             $reportCode = $this->getReportCode();
-            $this->getMassactionBlock()->addItem(
-                'exclude',
-                [ 'label' => $this->__('Exclude From Report'),
-                    'url' => $this->getUrl('*/*/exclude', [ 'report_code' => $reportCode ])
-                ]);
+            if ($reportCode) {
 
-//            $statuses = Mage::getSingleton('catalog/product_status')->getOptionArray();
-//
-//            array_unshift($statuses, array('label'=>'', 'value'=>''));
-//            $this->getMassactionBlock()->addItem('status', array(
-//                'label'=> Mage::helper('catalog')->__('Change status'),
-//                'url'  => $this->getUrl('*/*/massStatus', array('_current'=>true)),
-//                'additional' => array(
-//                    'visibility' => array(
-//                        'name' => 'status',
-//                        'type' => 'select',
-//                        'class' => 'required-entry',
-//                        'label' => Mage::helper('catalog')->__('Status'),
-//                        'values' => $statuses
-//                    )
-//                )
-//            ));
-//
-//            if (Mage::getSingleton('admin/session')->isAllowed('catalog/update_attributes')){
-//                $this->getMassactionBlock()->addItem('attributes', array(
-//                    'label' => Mage::helper('catalog')->__('Update Attributes'),
-//                    'url'   => $this->getUrl('*/catalog_product_action_attribute/edit', array('_current'=>true))
-//                ));
-//            }
+                $this->getMassactionBlock()->addItem(
+                    'exclude',
+                    [ 'label' => $this->__('Exclude From Report'),
+                        'url' => $this->getUrl('*/*/exclude', [ 'report_code' => $reportCode ])
+                    ]);
+            }
+
+            $actions = $this->getMassActions();
+            if ($actions) {
+                foreach ($actions as $actionName => $actionData) {
+                    $this->getMassactionBlock()->addItem($actionName, $actionData);
+                }
+            }
+
 
             Mage::dispatchEvent('adminhtml_catalog_product_grid_prepare_massaction', array('block' => $this));
-
-
         }
         return $this;
     }
 
-    public function getGridUrl()
-    {
+    public function getGridUrl() {
         $action = $this->getEnableMassaction() ? 'productsgridwithmassaction' : 'productsgrid';
         return $this->getUrl("*/*/{$action}", array('_current'=>true));
     }
 
-    public function getRowUrl($row)
-    {
+    public function getRowUrl($row) {
         return "javascript:dataStore.refresh({productId: '{$row->getId()}'});";
     }
 }

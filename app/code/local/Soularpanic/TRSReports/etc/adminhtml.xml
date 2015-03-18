@@ -48,7 +48,16 @@
                         </trsreport_profitandsales>
                         <trsreport_manage>
                             <title>Manage Reports</title>
-                            <action>adminhtml/admin_trsreports/manage</action>
+                            <children>
+                                <trsreport_manage_exclusions>
+                                    <title>Product Exclusions</title>
+                                    <action>adminhtml/admin_manage_ProductExclusions/index</action>
+                                </trsreport_manage_exclusions>
+                                <trsreport_manage_productlines>
+                                    <title>Product Lines</title>
+                                    <action>adminhtml/admin_manage_ProductLines/index</action>
+                                </trsreport_manage_productlines>
+                            </children>
                         </trsreport_manage>
                     </children>
                 </trsreports>
@@ -96,6 +105,14 @@
                                     </trsreport_profitandsales>
                                     <trsreport_manage>
                                         <title>Manage Reports</title>
+                                        <children>
+                                            <trsreport_manage_exclusions>
+                                                <title>Product Exclusions</title>
+                                            </trsreport_manage_exclusions>
+                                            <trsreport_manage_productlines>
+                                                <title>Product Lines</title>
+                                            </trsreport_manage_productlines>
+                                        </children>
                                     </trsreport_manage>
                                 </children>
                             </trsreports>
