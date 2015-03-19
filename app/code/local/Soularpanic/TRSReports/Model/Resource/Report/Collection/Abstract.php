@@ -16,7 +16,6 @@ abstract class Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract
         $this->setConnection($this->getResource()->getReadConnection());
 
         $this->setProductTable($this->getTable('catalog/product'));
-//        parent::__construct();
     }
 
     public function setCustomFilterData($data) {
@@ -114,5 +113,7 @@ abstract class Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract
                 SELECT product_id
                 FROM $exclusionTable
                 WHERE report_id = '$reportCode')");
+
+        $this->log("post TRS exclusion SQL:\n".$this->getSelect()->__toString());
     }
 }
