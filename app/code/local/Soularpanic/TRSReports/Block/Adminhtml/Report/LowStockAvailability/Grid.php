@@ -66,7 +66,8 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
             'filter_index'  => 'suppliers',
             'sortable'      => true,
             'type'          => 'options',
-            'options'       => $supplierOptions
+            'options'       => $supplierOptions,
+            'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_suppliers',
         ]);
 
         $this->addColumn('available_qty', [

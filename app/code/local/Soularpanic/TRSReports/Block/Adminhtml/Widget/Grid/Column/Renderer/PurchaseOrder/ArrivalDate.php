@@ -1,6 +1,7 @@
 <?php
 class Soularpanic_TRSReports_Block_Adminhtml_Widget_Grid_Column_Renderer_PurchaseOrder_ArrivalDate
     extends Soularpanic_TRSReports_Block_Adminhtml_Widget_Grid_Column_Renderer_PurchaseOrder_Abstract {
+
     protected function _getValue(Varien_Object $row)
     {
         $data = parent::_getValue($row);
