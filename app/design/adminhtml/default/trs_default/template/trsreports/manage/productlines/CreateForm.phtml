@@ -39,6 +39,10 @@
             new Ajax.Request(url, {
                 parameters: $('newLineForm').serialize(true),
                 method: 'post',
+                onCreate: function() {
+                  failureElt.update('');
+                    successElt.update('');
+                },
                 onSuccess: function(resp) {
                     failureElt.hide();
                     successElt.insert("<h3>Success!</h3> (You may close the dialog.)");
