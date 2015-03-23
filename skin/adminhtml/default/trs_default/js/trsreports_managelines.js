@@ -22,7 +22,7 @@ var ProductLineController = Class.create({
             draggable:true,
             className:'magento',
             windowClassName:'popup-window',
-            title:'Create New Product Line',
+            title:'Create New Multi-Piece Product',
             top:50,
             width:300,
             height:150,

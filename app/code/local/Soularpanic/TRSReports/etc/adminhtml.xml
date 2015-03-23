@@ -53,10 +53,10 @@
                                     <title>Product Exclusions</title>
                                     <action>adminhtml/admin_manage_ProductExclusions/index</action>
                                 </trsreport_manage_exclusions>
-                                <trsreport_manage_productlines>
-                                    <title>Product Lines</title>
-                                    <action>adminhtml/admin_manage_ProductLines/index</action>
-                                </trsreport_manage_productlines>
+                                <trsreport_manage_productpieces>
+                                    <title>Product Pieces</title>
+                                    <action>adminhtml/admin_manage_ProductPieces/index</action>
+                                </trsreport_manage_productpieces>
                             </children>
                         </trsreport_manage>
                     </children>
@@ -109,9 +109,9 @@
                                             <trsreport_manage_exclusions>
                                                 <title>Product Exclusions</title>
                                             </trsreport_manage_exclusions>
-                                            <trsreport_manage_productlines>
-                                                <title>Product Lines</title>
-                                            </trsreport_manage_productlines>
+                                            <trsreport_manage_productpieces>
+                                                <title>Product Pieces</title>
+                                            </trsreport_manage_productpieces>
                                         </children>
                                     </trsreport_manage>
                                 </children>
