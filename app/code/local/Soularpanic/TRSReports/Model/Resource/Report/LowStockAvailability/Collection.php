@@ -36,13 +36,13 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
             ->joinleft([ 'line_links' => $this->getTable('trsreports/product_piece_link') ],
                 "line_links.product_id = {$_productTable}.entity_id",
                 [ ])
-            ->joinLeft([ 'lines' => $this->getTable('trsreports/product_piece') ],
-                'lines.entity_id = line_links.line_id',
-                [ 'line_sku'            => 'line_sku',
+            ->joinLeft([ 'lines' => $this->getTable('trsreports/product_piece_product') ],
+                'lines.entity_id = line_links.pieced_product_id',
+                [ 'line_sku'            => 'pieced_product_sku',
                     'line_name'         => 'name',
-                    'derived_sku'       => "(ifnull(lines.line_sku, {$_productTable}.sku))",
+                    'derived_sku'       => "(ifnull(lines.pieced_product_sku, {$_productTable}.sku))",
                     'derived_id'        => "(if(lines.entity_id is not null, concat('L-', lines.entity_id), concat('P-', {$_productTable}.entity_id)))",
-                    'is_product_line'   => "(if(lines.line_sku is not null, TRUE, FALSE))"
+                    'is_product_line'   => "(if(lines.pieced_product_sku is not null, TRUE, FALSE))"
                 ])
             ->joinLeft($_productNameTable,
                 "{$_productNameTable}.attribute_id = '{$productName->getId()}' and {$_productNameTable}.entity_id = {$_productTable}.entity_id",
@@ -114,7 +114,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
             #   'suppliers' ])
             ->joinleft([ 'line_links' => $this->getTable('trsreports/product_piece_link') ],
                 "line_links.product_id = suppliers.product_id",
-                [ 'derived_id' => "(if(line_links.line_id is not null, concat('L-', line_links.line_id), concat('P-', suppliers.product_id)))" ])
+                [ 'derived_id' => "(if(line_links.pieced_product_id is not null, concat('L-', line_links.pieced_product_id), concat('P-', suppliers.product_id)))" ])
             ->group('derived_id');
 
 

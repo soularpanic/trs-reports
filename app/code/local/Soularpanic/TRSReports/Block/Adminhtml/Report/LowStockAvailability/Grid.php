@@ -37,7 +37,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
             'index'         => 'customer_orders.derived_sku',
             'filter_index'  => 'customer_orders.derived_sku',
             'sortable'      => true,
-            'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_ProductLine_sku',
+            'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_pieces_sku',
         ]);
 
         $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
