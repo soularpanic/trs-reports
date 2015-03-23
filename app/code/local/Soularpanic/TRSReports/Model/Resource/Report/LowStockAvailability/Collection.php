@@ -33,10 +33,10 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
         $_customerOrderSelect->from($_productTable,
             [ 'product_id' => 'entity_id',
                 'sku' => 'sku' ])
-            ->joinleft([ 'line_links' => $this->getTable('trsreports/product_line_link') ],
+            ->joinleft([ 'line_links' => $this->getTable('trsreports/product_piece_link') ],
                 "line_links.product_id = {$_productTable}.entity_id",
                 [ ])
-            ->joinLeft([ 'lines' => $this->getTable('trsreports/product_line') ],
+            ->joinLeft([ 'lines' => $this->getTable('trsreports/product_piece') ],
                 'lines.entity_id = line_links.line_id',
                 [ 'line_sku'            => 'line_sku',
                     'line_name'         => 'name',
@@ -112,7 +112,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                     'encoded_pos',
                 ])
             #   'suppliers' ])
-            ->joinleft([ 'line_links' => $this->getTable('trsreports/product_line_link') ],
+            ->joinleft([ 'line_links' => $this->getTable('trsreports/product_piece_link') ],
                 "line_links.product_id = suppliers.product_id",
                 [ 'derived_id' => "(if(line_links.line_id is not null, concat('L-', line_links.line_id), concat('P-', suppliers.product_id)))" ])
             ->group('derived_id');

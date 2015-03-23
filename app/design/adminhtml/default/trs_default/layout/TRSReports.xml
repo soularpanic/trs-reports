@@ -422,7 +422,7 @@
         </reference>
     </adminhtml_admin_manage_productexclusions_index>
 
-    <adminhtml_admin_manage_productlines_index>
+    <adminhtml_admin_manage_productpieces_index>
         <reference name="head">
             <action method="addItem">
                 <type>js</type>
@@ -438,27 +438,27 @@
             </action>
         </reference>
         <reference name="content">
-            <block type="trsreports/adminhtml_report_manage_lines" name="manage.lines.container" template="report/grid/container.phtml"/>
-            <block type="core/template" template="trsreports/manage/productlines/ControllerInfo.phtml"/>
+            <block type="trsreports/adminhtml_report_manage_pieces" name="manage.lines.container" template="report/grid/container.phtml"/>
+            <block type="core/template" template="trsreports/manage/productpieces/ControllerInfo.phtml"/>
         </reference>
-    </adminhtml_admin_manage_productlines_index>
+    </adminhtml_admin_manage_productpieces_index>
 
-    <adminhtml_admin_manage_productlines_addlineprompt>
+    <adminhtml_admin_manage_productpieces_addlineprompt>
         <reference name="root">
             <action method="setTemplate"><template>page/popup.phtml</template></action>
             <reference name="head">
                 <action method="addJs"><script>varien/form.js</script></action>
             </reference>
-            <block type="adminhtml/template" name="content" as="content" template="trsreports/manage/productlines/CreateForm.phtml"/>
+            <block type="adminhtml/template" name="content" as="content" template="trsreports/manage/productpieces/CreateForm.phtml"/>
         </reference>
-        <!--<block type="adminhtml/template" name="root" as="root" output="toHtml" template="trsreports/manage/productlines/CreateForm.phtml"/>-->
-    </adminhtml_admin_manage_productlines_addlineprompt>
+        <!--<block type="adminhtml/template" name="root" as="root" output="toHtml" template="trsreports/manage/productpieces/CreateForm.phtml"/>-->
+    </adminhtml_admin_manage_productpieces_addlineprompt>
 
-    <adminhtml_admin_manage_productlines_edit>
+    <adminhtml_admin_manage_productpieces_edit>
         <reference name="content">
-            <!--<block type="adminhtml/template" name="manage.line.details" template="trsreports/manage/productlines/UpdateForm.phtml"/>-->
-            <block type="trsreports/adminhtml_report_manage_lines_form_edit" name="manage.lines.update.form"/>
-            <block type="trsreports/adminhtml_report_manage_lines_products" name="manage.lines.products.container"/>
+            <!--<block type="adminhtml/template" name="manage.line.details" template="trsreports/manage/productpieces/UpdateForm.phtml"/>-->
+            <block type="trsreports/adminhtml_report_manage_pieces_form_edit" name="manage.lines.update.form"/>
+            <block type="trsreports/adminhtml_report_manage_pieces_products" name="manage.lines.products.container"/>
             <!--<block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid">-->
                 <!--<action method="setEnableMassaction"><enable>true</enable></action>-->
                 <!--<action method="addMassactions">-->
@@ -471,5 +471,5 @@
                 <!--</action>-->
             <!--</block>-->
         </reference>
-    </adminhtml_admin_manage_productlines_edit>
+    </adminhtml_admin_manage_productpieces_edit>
 </layout>
