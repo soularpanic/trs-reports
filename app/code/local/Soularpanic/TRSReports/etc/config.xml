@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Soularpanic_TRSReports>
-            <version>0.0.4</version>
+            <version>0.0.5</version>
         </Soularpanic_TRSReports>
     </modules>
 
@@ -34,6 +34,8 @@
                     <product_piece_link_deprecated>
                         <table>trsreports_product_line_links</table>
                     </product_piece_link_deprecated>
+
+
                 </entities>
             </trsreports_resource>
 
@@ -59,6 +61,27 @@
                 <class>Soularpanic_TRSReports_Helper</class>
             </trsreports>
         </helpers>
+
+        <events>
+            <core_collection_abstract_load_before>
+                <observers>
+                    <trsreports_load_200_by_default>
+                        <type>model</type>
+                        <class>trsreports/observers_grid</class>
+                        <method>defaultTo200Records</method>
+                    </trsreports_load_200_by_default>
+                </observers>
+            </core_collection_abstract_load_before>
+            <catalog_product_collection_load_before>
+                <observers>
+                    <trsreports_hide_archived_by_default>
+                        <type>model</type>
+                        <class>trsreports/observers_grid</class>
+                        <method>defaultToHiddenArchives</method>
+                    </trsreports_hide_archived_by_default>
+                </observers>
+            </catalog_product_collection_load_before>
+        </events>
     </global>
 
     <admin>
