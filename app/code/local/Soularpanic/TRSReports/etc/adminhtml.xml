@@ -63,6 +63,14 @@
                 </trsreports>
             </children>
         </report>
+        <catalog>
+            <children>
+                <trsreport_manage_archived_products>
+                    <title>Manage Products Archive</title>
+                    <action>adminhtml/catalog_product/index/show_archive/true</action>
+                </trsreport_manage_archived_products>
+            </children>
+        </catalog>
     </menu>
     <acl>
         <resources>
@@ -118,6 +126,13 @@
                             </trsreports>
                         </children>
                     </report>
+                    <catalog>
+                        <children>
+                            <trsreport_manage_archived_products>
+                                <title>Manage Products Archive</title>
+                            </trsreport_manage_archived_products>
+                        </children>
+                    </catalog>
                 </children>
             </admin>
         </resources>
