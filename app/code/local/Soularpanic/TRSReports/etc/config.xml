@@ -63,7 +63,7 @@
         </helpers>
 
         <events>
-            <core_collection_abstract_load_before>
+            <core_block_abstract_prepare_layout_after>
                 <observers>
                     <trsreports_load_200_by_default>
                         <type>model</type>
@@ -71,7 +71,7 @@
                         <method>defaultTo200Records</method>
                     </trsreports_load_200_by_default>
                 </observers>
-            </core_collection_abstract_load_before>
+            </core_block_abstract_prepare_layout_after>
             <catalog_product_collection_load_before>
                 <observers>
                     <trsreports_hide_archived_by_default>
