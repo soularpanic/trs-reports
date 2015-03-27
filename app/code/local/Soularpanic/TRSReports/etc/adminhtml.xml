@@ -65,10 +65,22 @@
         </report>
         <catalog>
             <children>
-                <trsreport_manage_archived_products>
-                    <title>Manage Products Archive</title>
-                    <action>adminhtml/catalog_product/index/show_archive/true</action>
-                </trsreport_manage_archived_products>
+                <products>
+                    <children>
+                        <trs_alt_catalog_products>
+                            <title>Manage Products</title>
+                            <action>adminhtml/catalog_product/index</action>
+                        </trs_alt_catalog_products>
+                        <trsreport_manage_archived_products>
+                            <title>Manage Products Archive</title>
+                            <action>adminhtml/catalog_product/index/show_archive/true</action>
+                        </trsreport_manage_archived_products>
+                        <trsreport_manage_product_trees>
+                            <title>Manage Product Trees</title>
+                            <action>adminhtml/admin_manage_ProductTrees/index</action>
+                        </trsreport_manage_product_trees>
+                    </children>
+                </products>
             </children>
         </catalog>
     </menu>
@@ -128,9 +140,19 @@
                     </report>
                     <catalog>
                         <children>
-                            <trsreport_manage_archived_products>
-                                <title>Manage Products Archive</title>
-                            </trsreport_manage_archived_products>
+                            <products>
+                                <children>
+                                    <trs_alt_catalog_products>
+                                        <title>Manage Products (Alt)</title>
+                                    </trs_alt_catalog_products>
+                                    <trsreport_manage_archived_products>
+                                        <title>Manage Products Archive</title>
+                                    </trsreport_manage_archived_products>
+                                    <trsreport_manage_product_trees>
+                                        <title>Manage Product Trees</title>
+                                    </trsreport_manage_product_trees>
+                                </children>
+                            </products>
                         </children>
                     </catalog>
                 </children>

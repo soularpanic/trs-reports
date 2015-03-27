@@ -1,11 +1,8 @@
 <?php
-//class Mage_Adminhtml_Block_Catalog_Product_Attribute_Set_Grid extends Mage_Adminhtml_Block_Widget_Grid
 class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_AttributeSetSelector_Grid
-    extends Mage_Adminhtml_Block_Widget_Grid
-{
+    extends Mage_Adminhtml_Block_Widget_Grid {
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->setId('attributeSetGrid');
         $this->setDefaultSort('set_id');
@@ -13,8 +10,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_AttributeSetSelecto
         $this->setSaveParametersInSession(true);
     }
 
-    protected function _prepareCollection()
-    {
+    protected function _prepareCollection() {
         $collection = Mage::getResourceModel('eav/entity_attribute_set_collection')
             ->addFieldToFilter('attribute_set_name', array('nin' => array("Closeouts", "Internal Use", "TRS-ZHacks")))
             ->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId());
@@ -23,8 +19,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_AttributeSetSelecto
         return parent::_prepareCollection();
     }
 
-    protected function _prepareColumns()
-    {
+    protected function _prepareColumns() {
         $this->addColumn('set_name', array(
             'header'    => Mage::helper('catalog')->__('Set Name'),
             'align'     => 'left',
@@ -33,10 +28,8 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_AttributeSetSelecto
         ));
     }
 
-    public function getRowUrl($row)
-    {
+    public function getRowUrl($row) {
         return "javascript:dataStore.refresh({attributeSetId: '{$row->getId()}'});";
-        //return $this->getUrl('*/*/edit', array('id'=>$row->getAttributeSetId()));
     }
 
 }

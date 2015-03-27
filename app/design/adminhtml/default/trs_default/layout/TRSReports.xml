@@ -451,25 +451,19 @@
             </reference>
             <block type="adminhtml/template" name="content" as="content" template="trsreports/manage/productpieces/CreateForm.phtml"/>
         </reference>
-        <!--<block type="adminhtml/template" name="root" as="root" output="toHtml" template="trsreports/manage/productpieces/CreateForm.phtml"/>-->
     </adminhtml_admin_manage_productpieces_addlineprompt>
 
     <adminhtml_admin_manage_productpieces_edit>
         <reference name="content">
-            <!--<block type="adminhtml/template" name="manage.line.details" template="trsreports/manage/productpieces/UpdateForm.phtml"/>-->
             <block type="trsreports/adminhtml_report_manage_pieces_form_edit" name="manage.lines.update.form"/>
             <block type="trsreports/adminhtml_report_manage_pieces_products" name="manage.lines.products.container"/>
-            <!--<block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid">-->
-                <!--<action method="setEnableMassaction"><enable>true</enable></action>-->
-                <!--<action method="addMassactions">-->
-                    <!--<massactions>-->
-                        <!--<addproducts>-->
-                            <!--<label>Add Products</label>-->
-                            <!--<url>*/*/addProductsToLine</url>-->
-                        <!--</addproducts>-->
-                    <!--</massactions>-->
-                <!--</action>-->
-            <!--</block>-->
         </reference>
     </adminhtml_admin_manage_productpieces_edit>
+
+    <adminhtml_admin_manage_producttrees_index>
+        <reference name="content">
+            <block type="trsreports/adminhtml_catalog_product_tree_manage_grid"/>
+        </reference>
+    </adminhtml_admin_manage_producttrees_index>
+
 </layout>

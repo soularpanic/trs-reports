@@ -35,6 +35,13 @@
                         <table>trsreports_product_line_links</table>
                     </product_piece_link_deprecated>
 
+                    <product_tree>
+                        <table>trs_product_trees</table>
+                    </product_tree>
+
+                    <product_tree_link>
+                        <table>trs_product_tree_links</table>
+                    </product_tree_link>
 
                 </entities>
             </trsreports_resource>
