@@ -2,10 +2,6 @@
 class Soularpanic_TRSReports_Model_Observers_Grid {
 
     public function defaultToHiddenArchives(Varien_Event_Observer $observer) {
-        if (Mage::app()->getRequest()->getRouteName() !== 'adminhtml') {
-            return;
-        }
-
         $collection = $observer->getEvent()->getCollection();
         $browseArchive = Mage::app()->getRequest()->getParam('show_archive', false);
 
