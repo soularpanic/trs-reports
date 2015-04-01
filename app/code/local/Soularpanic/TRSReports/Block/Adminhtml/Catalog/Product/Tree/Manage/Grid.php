@@ -7,12 +7,22 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_Tree_Manage_Grid
             'header' => 'ID',
             'index' => 'entity_id'
         ]);
+
+        $this->addColumn('name', [
+            'header' => 'Name',
+            'index' => 'name'
+        ]);
+
+        $this->addColumn('updated_at', [
+            'header' => 'Last Update',
+            'index' => 'updated_at'
+        ]);
+
         return parent::_prepareColumns();
     }
 
     protected function _prepareCollection() {
-        $this->setCollection(Mage::getModel('catalog/product')->getCollection());
+        $this->setCollection(Mage::getModel('trsreports/product_tree')->getCollection());
     }
-
 
 }

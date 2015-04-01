@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Create a table for products to be excluded from arbitrary reports
+ */
 $installer = $this;
 $installer->startSetup();
 

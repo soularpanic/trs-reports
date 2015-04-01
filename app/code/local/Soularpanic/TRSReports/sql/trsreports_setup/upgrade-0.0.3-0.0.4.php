@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Product Tree v1/DPOT/Product Pieces are migrated to their new home in the Product Piece tables.
+ */
 $installer = $this;
 $installer->startSetup();
 
