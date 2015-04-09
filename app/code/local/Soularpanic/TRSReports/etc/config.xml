@@ -39,9 +39,9 @@
                         <table>trs_product_trees</table>
                     </product_tree>
 
-                    <product_tree_link>
-                        <table>trs_product_tree_links</table>
-                    </product_tree_link>
+                    <product_tree_node>
+                        <table>trs_product_tree_nodes</table>
+                    </product_tree_node>
 
                 </entities>
             </trsreports_resource>

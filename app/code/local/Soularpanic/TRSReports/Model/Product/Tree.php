@@ -6,4 +6,8 @@ class Soularpanic_TRSReports_Model_Product_Tree
         $this->_init('trsreports/product_tree');
     }
 
+
+    public function getRootNodes() {
+        return $this->getResource()->getRootNodes($this->getId());
+    }
 }

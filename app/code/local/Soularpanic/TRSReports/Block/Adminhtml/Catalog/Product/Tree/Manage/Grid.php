@@ -15,7 +15,15 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_Tree_Manage_Grid
 
         $this->addColumn('updated_at', [
             'header' => 'Last Update',
-            'index' => 'updated_at'
+            'index' => 'updated_at',
+            'type' => 'datetime'
+        ]);
+
+        $this->addColumn('edit', [
+            'index' => 'entity_id',
+            'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_generic_edit_link',
+            'sortable' => false,
+            'filterable' => false
         ]);
 
         return parent::_prepareColumns();

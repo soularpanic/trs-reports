@@ -460,10 +460,53 @@
         </reference>
     </adminhtml_admin_manage_productpieces_edit>
 
+    <adminhtml_catalog_product_edit>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><script>js/trsreports/productTreeNodeManager.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>js/trsreports/productTreeNodeManagerInit.js</script></action>
+        </reference>
+        <reference name="product_tabs">
+            <action method="addTab">
+                <name>custom_tab</name>
+                <block>trsreports/adminhtml_catalog_product_tree_manage_tab</block>
+            </action>
+        </reference>
+    </adminhtml_catalog_product_edit>
+
     <adminhtml_admin_manage_producttrees_index>
+        <reference name="head">
+            <action method="addItem">
+                <type>js</type>
+                <script>varien/form.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports/productTreeManager.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports/productTreeManagerInit.js</script>
+            </action>
+        </reference>
         <reference name="content">
-            <block type="trsreports/adminhtml_catalog_product_tree_manage_grid"/>
+            <block type="trsreports/adminhtml_catalog_product_tree_manage" name="manage.trees.container" template="report/grid/container.phtml"/>
         </reference>
     </adminhtml_admin_manage_producttrees_index>
+
+    <adminhtml_admin_manage_producttrees_new>
+        <reference name="root">
+            <action method="setTemplate"><template>page/popup.phtml</template></action>
+            <reference name="head">
+                <action method="addJs"><script>varien/form.js</script></action>
+            </reference>
+            <block type="adminhtml/template" name="content" as="content" template="trsreports/manage/producttrees/CreateForm.phtml"/>
+        </reference>
+    </adminhtml_admin_manage_producttrees_new>
+
+    <adminhtml_admin_manage_producttrees_edit>
+        <reference name="content">
+            <block type="trsreports/adminhtml_catalog_product_tree_manage_form_edit" name="manage.trees.update.form"/>
+        </reference>
+    </adminhtml_admin_manage_producttrees_edit>
 
 </layout>

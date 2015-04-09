@@ -1,5 +1,5 @@
 document.observe('dom:loaded', function() {
-    trsLineController = new ProductLineController({
+    treeManager = new ProductLineController({
         newProductLineUrl: $('productLineControllerInfo').readAttribute('data-addLineUrl')
     });
 });

@@ -1,5 +1,5 @@
 <?php
-class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Pieces_Products
+class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_Tree_Manage
     extends Mage_Adminhtml_Block_Widget_Grid_Container {
 
     protected $_blockGroup = "trsreports";
@@ -7,7 +7,13 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Pieces_Products
 
     public function __construct() {
         $this->_headerText = Mage::helper('reports')->__('Manage Product Trees');
+
         parent::__construct();
-        $this->_removeButton('add');
+
+        $this->_addButton('add', array(
+            'label'     => $this->getAddButtonLabel(),
+            'value'   => $this->getCreateUrl(),
+            'class'     => 'add',
+        ));
     }
 }
