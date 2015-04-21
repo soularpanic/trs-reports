@@ -2,8 +2,9 @@
 class Soularpanic_TRSReports_Admin_Manage_ProductTreesController
     extends Soularpanic_TRSReports_Controller_Abstract {
 
-    const PRODUCT = 'product';
-    const PRODUCT_TREE = 'tree';
+    const PRODUCT           = 'product';
+    const PRODUCT_TREE      = 'tree';
+    const PRODUCT_TREE_NODE = 'node';
 
     public function indexAction() {
         $this->loadLayout();
@@ -78,7 +79,7 @@ class Soularpanic_TRSReports_Admin_Manage_ProductTreesController
             foreach ($trees as $tree) {
                 $data[] = [
                     'text'  => $tree->getName(),
-                    'id'    => 'tree-'.$tree->getId(),
+                    'id'    => self::PRODUCT_TREE.'-'.$tree->getId(),
                     'cls'   => 'folder'
                 ];
             }
@@ -86,14 +87,20 @@ class Soularpanic_TRSReports_Admin_Manage_ProductTreesController
         else {
             list($type, $id) = explode('-', $nodeId);
 
-            if ($type === 'tree') { // get root nodes for this tree
+            if ($type === self::PRODUCT_TREE) { // get root nodes for this tree
                 $roots = Mage::getModel('trsreports/product_tree')->load($id)->getRootNodes();
                 foreach ($roots as $root) {
                     $data[] = [
-                        'text' => Mage::getModel('catalog/product')->load($root->getProductId())->getName(),
-                        'id' => 'product-'.$root->getProductId(),
-                        'cls' => 'file'
+                        'text' => $root->getProductName(),
+                        'id' => self::PRODUCT_TREE_NODE.'-'.$root->getId(),
+                        'cls' => 'folder'
                     ];
+                }
+            }
+            if ($type === self::PRODUCT_TREE_NODE) {
+                $node = Mage::getModel('trsreports/product_tree_node')->load($id);
+                foreach ($node->getChildren() as $child) {
+                    $data[] = $this->_assembleNodeDescendants($child);
                 }
             }
         }
@@ -119,12 +126,65 @@ class Soularpanic_TRSReports_Admin_Manage_ProductTreesController
                 'tree_id' => $targetId,
                 'product_id' => $sourceId
             ]);
-            $supplanter->save();
+            $supplanter = $supplanter->save();
 
             foreach ($roots as $root) {
+                if ($root->getId() === $supplanter->getId()) {
+                    continue;
+                }
                 $root->setParentNodeId($supplanter->getId());
                 $root->save();
             }
         }
+
+        if ($sourceType == self::PRODUCT && $targetType == self::PRODUCT_TREE_NODE) {
+            $node = Mage::getModel('trsreports/product_tree_node')->load($targetId);
+            $child = Mage::getModel('trsreports/product_tree_node');
+            $child->setData([
+                'product_id' => $sourceId,
+                'parent_node_id' => $node->getId(),
+                'tree_id' => $node->getTreeId()
+            ]);
+            $child->save();
+        }
+
+        if ($sourceType == self::PRODUCT_TREE_NODE && $targetType == self::PRODUCT_TREE_NODE) {
+            $sourceNode = Mage::getModel('trsreports/product_tree_node')->load($sourceId);
+            $targetNode = Mage::getModel('trsreports/product_tree_node')->load($targetId);
+
+            $sourceNode->setParentNodeId($targetNode->getId());
+
+            // if we're moving to a new tree, we need to update all child tree ids
+            if ($sourceNode->getTreeId() !== $targetNode->getTreeId()) {
+                $this->_updateAllDescendants($sourceNode, ['tree_id' => $targetNode->getTreeId()]);
+            }
+        }
+    }
+
+    protected function _updateAllDescendants($node, $newDataArr) {
+        foreach ($newDataArr as $key => $val) {
+            $node->setData($key, $val);
+            $node->save();
+        }
+        foreach ($node->getChildren() as $child) {
+            $this->_updateAllDescendants($child, $newDataArr);
+        }
+    }
+
+    protected function _assembleNodeDescendants($parentNode) {
+        $data = [
+            'text' => $parentNode->getProductName(),
+            'id' => self::PRODUCT_TREE_NODE.'-'.$parentNode->getId(),
+            'cls' => 'folder'
+        ];
+        $children = $parentNode->getChildren();
+        if ($children->count()) {
+            $data['children'] = [];
+            foreach ($children as $child) {
+                $data['children'][] = $this->_assembleNodeDescendants($child);
+            }
+        }
+
+        return $data;
     }
 }

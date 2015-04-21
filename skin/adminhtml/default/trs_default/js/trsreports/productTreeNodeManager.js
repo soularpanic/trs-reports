@@ -6,6 +6,11 @@ var ProductTreeNodeManager = Class.create({
         var _args = args || {};
         this.dataUrl = _args.dataUrl;
         this.dropHandlers = _args.dropHandlers || {};
+
+        if (!this.dropHandlers['treePanelContainer']) {
+            this.dropHandlers['treePanelContainer'] = new TreePanelContainerDropHandler({});
+        }
+
         this.tree = new Ext.tree.TreePanel('treePanelContainer', {
             animate: true,
             loader: new Ext.tree.TreeLoader({
@@ -13,17 +18,6 @@ var ProductTreeNodeManager = Class.create({
             }),
             enableDD: true,
             containerScroll: true
-        });
-
-
-
-        this.tree.on({
-            'contextmenu': {
-                fn: function(evt) {
-                    console.log("Stop touching me!")
-                    console.log(evt);
-                }
-            }
         });
 
         this.root = new Ext.tree.AsyncTreeNode({
@@ -62,7 +56,7 @@ var ProductTreeNodeManager = Class.create({
         this.dz.addToGroup("TreeDD");
         this.dz.beforeDragDrop = function(trgt, evt, id) {
             console.log("hey carl");
-        }
+        };
         this.dz.initFrame();
     }
 });
@@ -76,6 +70,38 @@ var TRSDropHandler = Class.create({
         console.log(src);
         console.log(evt);
         console.log(data);
+    }
+});
+
+var TreePanelContainerDropHandler = Class.create(TRSDropHandler, {
+
+    initialize: function($super, args) {
+        $super(args);
+        console.log("Initializing Tree Panel Container Drop Handler");
+        var _args = args || {};
+        this.addUrl = _args.addUrl;
+    },
+
+    handleDrop: function($super, src, evt, data) {
+        $super(src, evt, data);
+        console.log("Tree Panel Container Drop Handler handling drop!");
+
+        var url = this.addUrl,
+            sourceId = data.node.id,
+            targetElt = Ext.dd.Registry.getTargetFromEvent(evt),
+            targetId = targetElt.node.id;
+
+        console.log("Moving node |"+sourceId+"| to |"+targetId+"|");
+        new Ajax.Request(url, {
+           parameters: {
+               sourceId: sourceId,
+               targetId: targetId
+           },
+            onComplete: function(resp) {
+                console.log('done');
+                console.log(resp);
+            }
+        });
     }
 });
 
