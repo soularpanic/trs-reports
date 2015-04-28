@@ -16,6 +16,7 @@ var ProductTreeNodeManager = Class.create({
             loader: new Ext.tree.TreeLoader({
                 dataUrl: this.dataUrl
             }),
+            rootVisible: false,
             enableDD: true,
             containerScroll: true
         });
@@ -25,6 +26,27 @@ var ProductTreeNodeManager = Class.create({
             draggable:false,
             id: 'source'
         });
+
+
+        this.tree.on('contextmenu', function(node, evt) {
+            console.log("right clicked!");
+            console.log("node:");
+            console.log(node);
+            console.log("evt:");
+            console.log(evt);
+            var elt = evt.target;
+            elt.insert('<div id="treeContextMenu" class="trsTreeContextMenu" data-x="'+node.id+'">Remove</div>');
+        });
+
+        this.tree.on('dblclick', function(node, evt) {
+            console.log("dbl clicked!");
+            console.log("node:");
+            console.log(node);
+            console.log("evt:");
+            console.log(evt);
+
+        });
+
         this.tree.setRootNode(this.root);
 
         this.tree.render();

@@ -74,7 +74,15 @@ class Soularpanic_TRSReports_Admin_Manage_ProductTreesController
         $nodeId = $nodeReq['node'];
         $data = [];
         if ($nodeId === 'source' || !$nodeId) {
+            $treeId = $this->getRequest()->getParam('treeId');
+
             $trees = Mage::getModel('trsreports/product_tree')->getCollection();
+            if ($treeId) {
+                $trees->addFieldToFilter('entity_id', $treeId);
+            }
+
+
+
 
             foreach ($trees as $tree) {
                 $data[] = [
@@ -152,13 +160,47 @@ class Soularpanic_TRSReports_Admin_Manage_ProductTreesController
             $sourceNode = Mage::getModel('trsreports/product_tree_node')->load($sourceId);
             $targetNode = Mage::getModel('trsreports/product_tree_node')->load($targetId);
 
-            $sourceNode->setParentNodeId($targetNode->getId());
+            $sourceProductId = $sourceNode->getProductId();
 
+            if ($this->_productIdInAncestors($sourceProductId, $targetNode)
+                || $this->_productIdInChildren($sourceProductId, $targetNode)) {
+                Mage::log("No good.  $sourceProductId exists in the tree already.", null, 'trs_trees.log');
+            }
+
+            $sourceNode->setParentNodeId($targetNode->getId());
             // if we're moving to a new tree, we need to update all child tree ids
             if ($sourceNode->getTreeId() !== $targetNode->getTreeId()) {
                 $this->_updateAllDescendants($sourceNode, ['tree_id' => $targetNode->getTreeId()]);
             }
         }
+    }
+
+    protected function _productIdInAncestors($productId, $node) {
+        if ($node === null) {
+            return false;
+        }
+
+        if ($node->getProductId() == $productId) {
+            return true;
+        }
+
+        return $this->_productIdInAncestors($productId, $node->getParentNode());
+    }
+
+    protected function _productIdInChildren($productId, $node) {
+        if ($node->getProductId() == $productId) {
+            return true;
+        }
+
+
+        foreach ($node->getChildren() as $child) {
+            $inChild = $this->_productIdInChildren($productId, $child);
+            if ($inChild) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function _updateAllDescendants($node, $newDataArr) {

@@ -24,4 +24,9 @@ class Soularpanic_TRSReports_Model_Product_Tree_Node
             ->addFieldToFilter('parent_node_id', $this->getId());
     }
 
+    public function getParent() {
+        $parentId = $this->getParentNodeId();
+        return $parentId ? Mage::getModel('trsreports/product_tree_node')->load($parentId) : null;
+    }
+
 }

@@ -460,19 +460,6 @@
         </reference>
     </adminhtml_admin_manage_productpieces_edit>
 
-    <adminhtml_catalog_product_edit>
-        <reference name="head">
-            <action method="addItem"><type>skin_js</type><script>js/trsreports/productTreeNodeManager.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>js/trsreports/productTreeNodeManagerInit.js</script></action>
-        </reference>
-        <reference name="product_tabs">
-            <action method="addTab">
-                <name>custom_tab</name>
-                <block>trsreports/adminhtml_catalog_product_tree_manage_tab</block>
-            </action>
-        </reference>
-    </adminhtml_catalog_product_edit>
-
     <adminhtml_admin_manage_producttrees_index>
         <reference name="head">
             <action method="addItem">
@@ -504,8 +491,15 @@
     </adminhtml_admin_manage_producttrees_new>
 
     <adminhtml_admin_manage_producttrees_edit>
+        <reference name="head">
+            <action method="addItem"><type>js_css</type><style>extjs/resources/css/ext-all.css</style></action>
+            <action method="addJs"><script>extjs/ext-tree.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>js/trsreports/productTreeNodeManager.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>js/trsreports/productTreeNodeManagerInit.js</script></action>
+        </reference>
         <reference name="content">
             <block type="trsreports/adminhtml_catalog_product_tree_manage_form_edit" name="manage.trees.update.form"/>
+            <block type="trsreports/adminhtml_catalog_product_tree_manage_edit" template="trsreports/manage/producttrees/Edit.phtml"/>
         </reference>
     </adminhtml_admin_manage_producttrees_edit>
 

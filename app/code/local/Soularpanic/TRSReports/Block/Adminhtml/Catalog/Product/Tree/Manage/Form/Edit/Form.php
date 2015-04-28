@@ -26,6 +26,11 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_Tree_Manage_Form_Ed
             'label' => 'Name'
         ]);
 
+        $fieldset->addField('sku', 'text', [
+            'sku' => 'sku',
+            'label' => 'SKU'
+        ]);
+
 
         if (Mage::registry('soularpanic_adminform_manage_product_trees')) {
             $form->setValues(Mage::registry('soularpanic_adminform_manage_product_trees')->getData());
