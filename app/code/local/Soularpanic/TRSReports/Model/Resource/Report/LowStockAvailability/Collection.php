@@ -26,28 +26,53 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
 
 
         $_select = $this->getSelect();
+        $_helper = Mage::helper('trsreports/collection');
+
+        $_productLinesSelect = $_helper->getProductLinesSelect();
+        $_customerOrders = $_helper->getProductOrders($this->_from, $this->_to, $_productLinesSelect);
+        $_purchaseOrders = $_helper->getProductInventory($this->_from, $this->_to);
+
+        $_select2 = $_helper->_getNewSelect();
+        $_x = "x";
+        $_y = "y";
+        $_select2->from([ $_x => $_productLinesSelect ],
+            [ 'product_id' => 'product_id',
+                'derived_name' => "line_name",
+                'derived_sku' => 'line_sku',
+                'derived_id' => "(if($_x.tree_name is not null, concat('T-', $_x.tree_id), if($_x.piece_name is not null, concat('L-', $_x.piece_id), concat('P-', $_x.product_id))))",
+            ])
+            ->joinLeft([ $_y => $_customerOrders ],
+                "$_y.product_id = $_x.product_id",
+                [ "total_qty_ordered",
+                    "time_in_days" ]);
+        $this->log("2:\n".$_select2->__toString());
+//    )
+
+//        $_purchaseOrders = $_helper->getProductInventory();
 
 
+        $_lines = "lines";
         $_customerOrderSelectAlias = 'customer_orders';
         $_customerOrderSelect = Mage::getSingleton('core/resource')->getConnection('core_read')->select();
         $_customerOrderSelect->from($_productTable,
             [ 'product_id' => 'entity_id',
                 'sku' => 'sku' ])
-            ->joinleft([ 'line_links' => $this->getTable('trsreports/product_piece_link') ],
-                "line_links.product_id = {$_productTable}.entity_id",
-                [ ])
-            ->joinLeft([ 'lines' => $this->getTable('trsreports/product_piece_product') ],
-                'lines.entity_id = line_links.pieced_product_id',
-                [ 'line_sku'            => 'pieced_product_sku',
-                    'line_name'         => 'name',
-                    'derived_sku'       => "(ifnull(lines.pieced_product_sku, {$_productTable}.sku))",
-                    'derived_id'        => "(if(lines.entity_id is not null, concat('L-', lines.entity_id), concat('P-', {$_productTable}.entity_id)))",
-                    'is_product_line'   => "(if(lines.pieced_product_sku is not null, TRUE, FALSE))"
+            ->join([$_lines => $_productLinesSelect],
+                "$_lines.product_id = {$_productTable}.entity_id",
+                [ 'derived_sku' => "line_sku",
+                    'derived_id' => "(
+                        if($_lines.tree_name is not null,
+                            concat('T-', $_lines.tree_id),
+                            if($_lines.piece_name is not null,
+                                concat('L-', $_lines.piece_id),
+                                concat('P-', {$_productTable}.entity_id)
+                    )))",
+                    "line_type" => "(if($_lines.tree_name is not null, 'TREE', if($_lines.piece_name is not null, 'PIECE', 'PRODUCT')))"
                 ])
             ->joinLeft($_productNameTable,
                 "{$_productNameTable}.attribute_id = '{$productName->getId()}' and {$_productNameTable}.entity_id = {$_productTable}.entity_id",
                 [ 'product_name' => "{$_productNameTable}.value",
-                    'name' => "ifnull(lines.name, {$_productNameTable}.value)" ])
+                    'name' => "ifnull(lines.line_name, {$_productNameTable}.value)" ])
             ->joinLeft($_orderTable,
                 "{$_orderTable}.product_id = {$_productTable}.entity_id and {$_orderTable}.created_at between '{$this->_from}' and '{$this->_to}'",
                 [ 'period'              => 'created_at',
@@ -78,7 +103,6 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
             ->joinLeft([ 'ps' => $this->getTable('Purchase/Supplier') ],
                 "ps.sup_id = pps.pps_supplier_num",
                 [])
-            #[ 'sup_name' ])
             ->joinLeft( ['pop' => $this->getTable('Purchase/OrderProduct') ],
                 "pop.pop_product_id = pps.pps_product_id AND pop.pop_supplied_qty < pop.pop_qty",
                 [ 'pop_supplied_qty'    => "ifnull(pop_supplied_qty, 0)",
@@ -95,7 +119,6 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                     'incoming_qty'  => "sum(po_data.pop_qty) - sum(po_data.pop_supplied_qty)",
                     'encoded_pos'   => "concat_ws(',', po_data.po_string)",
                 ])
-            #'suppliers'     => "concat_ws(', ', po_data.sup_name)" ])
             ->group("po_data.pps_product_id");
 
 
@@ -106,12 +129,9 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                 ['product_id', 'suppliers'])
             ->joinLeft([ 'pobp' => $_purchaseOrdersByProduct ],
                 "suppliers.product_id = pobp.product_id",
-                #[ 'product_id',
-                [
-                    'incoming_qty' => "sum(pobp.incoming_qty)",
+                [ 'incoming_qty' => "sum(pobp.incoming_qty)",
                     'encoded_pos',
                 ])
-            #   'suppliers' ])
             ->joinleft([ 'line_links' => $this->getTable('trsreports/product_piece_link') ],
                 "line_links.product_id = suppliers.product_id",
                 [ 'derived_id' => "(if(line_links.pieced_product_id is not null, concat('L-', line_links.pieced_product_id), concat('P-', suppliers.product_id)))" ])

@@ -57,6 +57,9 @@ class Soularpanic_TRSReports_Admin_Manage_ProductTreesController
 
         $tree = Mage::getModel('trsreports/product_tree')->load($id);
         $tree->setData($req->getParams());
+        $this->log("Request params:\n".print_r($req->getParams(), true));
+        $this->log("Request name:\n".print_r($req->getParam('name'), true));
+        $this->log("Request sku:\n".print_r($req->getParam('sku'), true));
         $tree->save();
         $this->_redirectReferer();
     }

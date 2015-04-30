@@ -13,6 +13,11 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_Tree_Manage_Grid
             'index' => 'name'
         ]);
 
+        $this->addColumn('sku', [
+            'header' => 'SKU',
+            'index' => 'sku'
+        ]);
+
         $this->addColumn('updated_at', [
             'header' => 'Last Update',
             'index' => 'updated_at',

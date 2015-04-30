@@ -27,7 +27,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_Tree_Manage_Form_Ed
         ]);
 
         $fieldset->addField('sku', 'text', [
-            'sku' => 'sku',
+            'name' => 'sku',
             'label' => 'SKU'
         ]);
 
