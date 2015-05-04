@@ -34,9 +34,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
 
         $this->addColumn('derived_sku', [
             'header'        => 'SKU',
-            'index' => 'derived_sku',
-//            'index'         => 'customer_orders.derived_sku',
-//            'filter_index'  => 'customer_orders.derived_sku',
+            'index'         => 'derived_sku',
             'sortable'      => true,
             'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_pieces_sku',
         ]);
@@ -48,12 +46,12 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
             ->toOptionHash();
 
         $this->addColumn('attribute_set_name', [
-            'header'    => 'Type',
-            'index'     => 'attribute_set_name',
-            'filter_index' => 'attrset.attribute_set_id',
-            'sortable'  => true,
-            'type'      => 'options',
-            'options'   => $sets
+            'header'        => 'Type',
+            'index'         => 'attribute_set_name',
+            'filter_index'  => 'attrset.attribute_set_id',
+            'sortable'      => true,
+            'type'          => 'options',
+            'options'       => $sets
         ]);
 
         $suppliers = Mage::getResourceModel('Purchase/Supplier_collection');
@@ -79,12 +77,11 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         ]);
 
         $this->addColumn('purchase_orders', [
-            'header'    => 'QTY Incoming',
-            'index'     => 'purchase_orders',
-            'sortable'  => true,
-//            'type'      => 'number',
+            'header'            => 'QTY Incoming',
+            'index'             => 'purchase_orders',
+            'sortable'          => true,
             'column_css_class'  => 'a-right',
-            'renderer'  => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_IncomingQty',
+            'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_IncomingQty',
         ]);
 
         $this->addColumn('estimated_remaining_weeks', [

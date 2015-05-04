@@ -35,8 +35,7 @@ abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract
         $this->getMassactionBlock()->addItem(
             'exclude',
             [ 'label' => $this->__('Exclude From Report'),
-                'url' => $this->getUrl('*/admin_manage_ProductExclusions/exclude', [ 'report_code' => $reportCode ])]
-        );
+                'url' => $this->getUrl('*/admin_manage_ProductExclusions/exclude', [ 'report_code' => $reportCode ]) ]);
     }
 
     protected function _getReportCode() {
