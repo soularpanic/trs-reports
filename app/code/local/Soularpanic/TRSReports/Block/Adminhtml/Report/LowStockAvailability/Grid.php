@@ -10,32 +10,33 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         $this->setCountTotals(false);
         $this->setCountSubTotals(false);
         $this->setFilterVisibility(true);
-        $this->_defaultSort = 'remaining_stock_weeks';
+        $this->_defaultSort = 'estimated_remaining_weeks';
         $this->_defaultDir = 'asc';
     }
 
     protected function _prepareColumns() {
-        $this->addColumn('rate', [
+        $this->addColumn('weekly_rate', [
             'header'            => 'Weekly Average',
-            'index'             => 'rate',
-            'filter_index'      => "(7 * total_qty_ordered / time_in_days)",
+            'index'             => 'weekly_rate',
+            'filter_index'      => "(7 * total_qty_sold / time_in_days)",
             'type'              => 'number',
             'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
             'decimal_places'    => 3,
             'sortable'          => true
         ]);
 
-        $this->addColumn('name', [
+        $this->addColumn('derived_name', [
             'header'        => 'Item Name',
-            'index'         => 'name',
-            'filter_index'  => 'name',
+            'index'         => 'derived_name',
+            'filter_index'  => 'derived_name',
             'sortable'      => true
         ]);
 
         $this->addColumn('derived_sku', [
             'header'        => 'SKU',
-            'index'         => 'customer_orders.derived_sku',
-            'filter_index'  => 'customer_orders.derived_sku',
+            'index' => 'derived_sku',
+//            'index'         => 'customer_orders.derived_sku',
+//            'filter_index'  => 'customer_orders.derived_sku',
             'sortable'      => true,
             'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_pieces_sku',
         ]);
@@ -49,7 +50,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
         $this->addColumn('attribute_set_name', [
             'header'    => 'Type',
             'index'     => 'attribute_set_name',
-            'filter_index' => 'eav_attribute_set.attribute_set_id',
+            'filter_index' => 'attrset.attribute_set_id',
             'sortable'  => true,
             'type'      => 'options',
             'options'   => $sets
@@ -70,23 +71,25 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
             'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_suppliers',
         ]);
 
-        $this->addColumn('available_qty', [
+        $this->addColumn('total_qty_stock', [
             'header'    => 'QTY Available',
-            'index'     => 'available_qty',
+            'index'     => 'total_qty_stock',
             'sortable'  => true,
             'type'      => 'number'
         ]);
 
-        $this->addColumn('total_qty_ordered', [
+        $this->addColumn('purchase_orders', [
             'header'    => 'QTY Incoming',
-            'index'     => 'incoming_qty',
+            'index'     => 'purchase_orders',
             'sortable'  => true,
-            'type'      => 'number'
+//            'type'      => 'number',
+            'column_css_class'  => 'a-right',
+            'renderer'  => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_IncomingQty',
         ]);
 
-        $this->addColumn('remaining_stock_weeks', [
+        $this->addColumn('estimated_remaining_weeks', [
             'header'            => 'Est. Weeks Left',
-            'index'             => 'remaining_stock_weeks',
+            'index'             => 'estimated_remaining_weeks',
             'sortable'          => true,
             'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
             'column_css_class'  => 'stockCell',
@@ -97,7 +100,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
     }
 
     public function getRowClass($row) {
-        $remainingWeeks = $row->getData('remaining_stock_weeks');
+        $remainingWeeks = $row->getData('estimated_remaining_weeks');
         if ($remainingWeeks) {
             if ($remainingWeeks <= 4) {
                 return 'critical';

@@ -12,8 +12,12 @@ class Soularpanic_TRSReports_Helper_PurchaseOrders
         $poStrArr = explode(',', $purchaseOrdersString);
         foreach ($poStrArr as $idx => $poStr) {
             $poArr = [];
-            list($poArr['po_id'], $poArr['supplier_name'], $poArr['po_code'], $poArr['po_expected_arrival'])
-                = explode('::', $poStr);
+            list($poArr['po_id'],
+                $poArr['supplier_name'],
+                $poArr['po_code'],
+                $poArr['po_count_arrived'],
+                $poArr['po_count_total'],
+                $poArr['po_expected_arrival']) = explode('::', $poStr);
             $purchaseOrders->addItem(new Varien_Object($poArr));
         }
         return $purchaseOrders;

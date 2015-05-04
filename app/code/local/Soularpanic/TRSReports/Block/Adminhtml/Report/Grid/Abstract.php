@@ -29,7 +29,7 @@ abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract
 
     protected function _prepareMassAction() {
         parent::_prepareMassaction();
-        $this->setMassactionIdField('sku');
+        $this->setMassactionIdField('derived_sku');
         $this->getMassActionBlock()->setFormFieldName('sku');
         $reportCode = $this->_getReportCode();
         $this->getMassactionBlock()->addItem(
