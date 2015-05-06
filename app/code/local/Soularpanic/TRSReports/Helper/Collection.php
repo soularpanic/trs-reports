@@ -89,28 +89,14 @@ class Soularpanic_TRSReports_Helper_Collection
 
         $this->log("supplier select:".$suppliersSelect->__toString());
 
-//        ->from([ 'pps' => $this->getTable('Purchase/ProductSupplier') ],
-//            [ 'product_id' => 'pps_product_id' ])
-//            ->joinLeft([ 'ps' => $this->getTable('Purchase/Supplier') ],
-//                "ps.sup_id = pps.pps_supplier_num",
-//                [ 'sup_name' ])
-//            ->joinLeft( ['pop' => $this->getTable('Purchase/OrderProduct') ],
-//                "pop.pop_product_id = pps.pps_product_id AND pop.pop_supplied_qty < pop.pop_qty",
-//                [ 'pop_order_num' => 'pop_order_num',
-//                    'pop_supplied_qty'    => "ifnull(pop_supplied_qty, 0)",
-//                    'pop_qty'           => "ifnull(pop_qty, 0)" ])
-//            ->joinLeft( [ 'po' => $this->getTable('Purchase/Order') ],
-//                "po.po_num = pop.pop_order_num AND po.po_status in ('waiting_for_delivery')",
-//                [ 'po_order_id', 'po_supply_date' ])
-//            ->where('po.po_num is not null');
-
         $wrappedPOs = $this->_getNewSelect();
         $wrappedPOs->from($this->getPurchaseOrdersSelect(),
             [ 'product_id',
-                'purchase_orders' => "group_concat(concat_ws('::', pop_order_num, sup_name, po_order_id, pop_supplied_qty, pop_qty, po_supply_date))" ])
+                'purchase_orders' => "group_concat(concat_ws('::', pop_order_num, sup_name, po_order_id, pop_supplied_qty, pop_qty, po_supply_date))",
+                'received_qty' => "(sum(pop_supplied_qty))",
+                'incoming_qty' => "(sum(pop_qty) - sum(pop_supplied_qty))",
+                'total_qty' => "(sum(pop_qty))" ])
             ->group('product_id');
-//        $purchaseOrdersSelect = $this->getPurchaseOrdersSelect();
-//                [ 'po_string' => "if(po.po_num is null, null, concat_ws('::', po.po_num, ps.sup_name, po.po_order_id, po.po_supply_date))" ]);
 
         $this->log("\nwrapped POs select:\n".$wrappedPOs->__toString());
 
@@ -124,14 +110,10 @@ class Soularpanic_TRSReports_Helper_Collection
                 [ "suppliers" ])
             ->joinLeft([ 'pos' => $wrappedPOs ],
                 'pos.product_id = inventory.product_id',
-                [ 'purchase_orders' ]);
-//            ->joinLeft([ 'purchase_orders' => $purchaseOrdersSelect ],
-//                "purchase_orders.product_id = inventory.product_id",
-//                [ "pop_order_num",
-//                    'pop_supplied_qty',
-//                    'pop_qty',
-//                    'po_supply_date',
-//                    'sup_name' ]);
+                [ 'purchase_orders',
+                    'received_qty',
+                    'incoming_qty',
+                    'total_qty' ]);
 
         $this->log("Product Inventory Select:\n".$productInventorySelect->__toString());
 
