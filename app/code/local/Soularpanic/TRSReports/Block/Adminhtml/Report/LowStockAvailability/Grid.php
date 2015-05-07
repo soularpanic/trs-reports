@@ -2,7 +2,7 @@
 class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
     extends Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract {
 
-    protected $_columnGroupBy = 'derived_id';
+//    protected $_columnGroupBy = 'derived_id';
     protected $_resourceCollectionName = 'trsreports/report_LowStockAvailability_collection';
 
     public function __construct() {

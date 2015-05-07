@@ -2,6 +2,8 @@
 abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract
     extends Mage_Adminhtml_Block_Report_Grid_Abstract {
 
+    protected $_columnGroupBy = 'derived_id';
+
     public function getCollection()
     {
         if (is_null($this->_collection)) {
