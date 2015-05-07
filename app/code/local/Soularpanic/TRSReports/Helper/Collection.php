@@ -72,22 +72,28 @@ class Soularpanic_TRSReports_Helper_Collection
                 [ 'product_id',
                     'qty' => '(ifnull(qty, 0))' ]);
 
-        $this->log("inventory select:".$inventorySelect->__toString());
+        $this->log("\n\n==INVENTORY SELECT:==\n".$inventorySelect->__toString());
 
         $suppliersSelect = $this->_getNewSelect();
-
+//        $suppliersSelect
+//            ->from(['pop' => $this->getTable('Purchase/OrderProduct')],
+//                ['product_id' => 'pop_product_id'])
+//            ->joinLeft(['po' => $this->getTable('Purchase/Order')],
+//                "pop.pop_order_num = po.po_num",
+//                [])
+//            ->joinLeft(['ps' => $this->getTable('Purchase/Supplier')],
+//                "po.po_sup_num = ps.sup_id",
+//                [ 'suppliers' => "(GROUP_CONCAT(DISTINCT ps.sup_name ORDER BY ps.sup_name ASC))"])
+//            ->group('pop.pop_product_id');
         $suppliersSelect
-            ->from(['pop' => $this->getTable('Purchase/OrderProduct')],
-                ['product_id' => 'pop_product_id'])
-            ->joinLeft(['po' => $this->getTable('Purchase/Order')],
-                "pop.pop_order_num = po.po_num",
-                [])
-            ->joinLeft(['ps' => $this->getTable('Purchase/Supplier')],
-                "po.po_sup_num = ps.sup_id",
-                [ 'suppliers' => "(GROUP_CONCAT(DISTINCT ps.sup_name ORDER BY ps.sup_name ASC))"])
-            ->group('pop.pop_product_id');
+            ->from([ 'pps' => $this->getTable('Purchase/ProductSupplier') ],
+                [ 'product_id' => 'pps_product_id' ])
+            ->joinLeft([ 'ps' => $this->getTable('Purchase/Supplier') ],
+                "ps.sup_id = pps.pps_supplier_num",
+                [ 'suppliers' => "(GROUP_CONCAT(DISTINCT ps.sup_name ORDER BY ps.sup_name ASC))" ])
+            ->group('pps_product_id');
 
-        $this->log("supplier select:".$suppliersSelect->__toString());
+        $this->log("\n\n==SUPPLIER SELECT:==\n".$suppliersSelect->__toString());
 
         $wrappedPOs = $this->_getNewSelect();
         $wrappedPOs->from($this->getPurchaseOrdersSelect(),
@@ -98,7 +104,7 @@ class Soularpanic_TRSReports_Helper_Collection
                 'total_qty' => "(sum(pop_qty))" ])
             ->group('product_id');
 
-        $this->log("\nwrapped POs select:\n".$wrappedPOs->__toString());
+        $this->log("\n\nwrapped POs select:\n".$wrappedPOs->__toString());
 
         $productInventorySelect = $this->_getNewSelect();
         $productInventorySelect
@@ -122,23 +128,39 @@ class Soularpanic_TRSReports_Helper_Collection
 
     public function getPurchaseOrdersSelect() {
         $select = $this->_getNewSelect();
+//        $select
+//            ->from([ 'pps' => $this->getTable('Purchase/ProductSupplier') ],
+//                [ 'product_id' => 'pps_product_id' ])
+//            ->joinLeft([ 'ps' => $this->getTable('Purchase/Supplier') ],
+//                "ps.sup_id = pps.pps_supplier_num",
+//                [ 'sup_name' ])
+//            ->joinLeft( ['pop' => $this->getTable('Purchase/OrderProduct') ],
+//                "pop.pop_product_id = pps.pps_product_id AND pop.pop_supplied_qty < pop.pop_qty",
+//                [ 'pop_order_num' => 'pop_order_num',
+//                    'pop_supplied_qty'    => "ifnull(pop_supplied_qty, 0)",
+//                    'pop_qty'           => "ifnull(pop_qty, 0)" ])
+//            ->joinLeft( [ 'po' => $this->getTable('Purchase/Order') ],
+//                "po.po_num = pop.pop_order_num AND po.po_status in ('waiting_for_delivery')",
+//                [ 'po_order_id',
+//                    'po_supply_date' ])
+//            ->where('po.po_num is not null');
         $select
-            ->from([ 'pps' => $this->getTable('Purchase/ProductSupplier') ],
-                [ 'product_id' => 'pps_product_id' ])
-            ->joinLeft([ 'ps' => $this->getTable('Purchase/Supplier') ],
-                "ps.sup_id = pps.pps_supplier_num",
-                [ 'sup_name' ])
-            ->joinLeft( ['pop' => $this->getTable('Purchase/OrderProduct') ],
-                "pop.pop_product_id = pps.pps_product_id AND pop.pop_supplied_qty < pop.pop_qty",
-                [ 'pop_order_num' => 'pop_order_num',
-                    'pop_supplied_qty'    => "ifnull(pop_supplied_qty, 0)",
-                    'pop_qty'           => "ifnull(pop_qty, 0)" ])
-            ->joinLeft( [ 'po' => $this->getTable('Purchase/Order') ],
+            ->from([ 'pop' => $this->getTable('Purchase/OrderProduct') ],
+                [ 'product_id' => 'pop_product_id',
+                    'pop_order_num' => 'pop_order_num',
+                    'pop_supplied_qty' => "ifnull(pop_supplied_qty, 0)",
+                    "pop_qty" => "ifnull(pop_qty, 0)" ])
+            ->joinLeft([ 'po' => $this->getTable('Purchase/Order') ],
                 "po.po_num = pop.pop_order_num AND po.po_status in ('waiting_for_delivery')",
                 [ 'po_order_id',
                     'po_supply_date' ])
+            ->joinLeft([ 'ps' => $this->getTable('Purchase/Supplier') ],
+                'ps.sup_id = po.po_sup_num',
+                [ 'sup_name' ])
+            ->where("po.po_status = 'waiting_for_delivery'")
+            ->where("pop.pop_supplied_qty < pop.pop_qty")
             ->where('po.po_num is not null');
-        $this->log("\nPurchase Orders select:\n" . $select->__toString());
+        $this->log("\n\n==PURCHASE ORDERS SELECT:==\n" . $select->__toString());
         return $select;
     }
 

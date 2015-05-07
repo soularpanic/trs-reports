@@ -7,6 +7,11 @@ class Soularpanic_TRSReports_Model_Resource_Report_OutOfStock_Collection
     protected $_selectedColumns = [ ];
 
     protected function _initSelect() {
+        $this->log("OutOfStock _initSelect -- start");
+        $_helper = Mage::helper('trsreports/collection');
+        $_x = $_helper->_getNewSelect();
+
+
         $_stockTable = $this->getResource()->getMainTable();
         $_productTable = $this->getProductTable(); //'catalog_product_entity';
         $_attributeSetTable = 'eav_attribute_set';
