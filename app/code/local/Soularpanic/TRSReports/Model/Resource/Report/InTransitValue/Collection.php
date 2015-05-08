@@ -43,62 +43,27 @@ class Soularpanic_TRSReports_Model_Resource_Report_InTransitValue_Collection
     }
 
     protected function _initSelect() {
-        $_productTable = $this->getProductTable(); //'catalog_product_entity';
-        $_attributeSetTable = 'eav_attribute_set';
-        $_purchaseOrderTable = 'purchase_order';
-        $_purchaseOrderProductTable = 'purchase_order_product';
-        $_supplierTable = 'purchase_supplier';
-
-        $this->getSelect()->from($_purchaseOrderTable,
-            $this->_getSelectCols(array('po_order_id')))
-            ->where('po_status not in ("complete")')
-            ->joinLeft($_purchaseOrderProductTable,
-                "{$_purchaseOrderProductTable}.pop_order_num = {$_purchaseOrderTable}.po_num",
-                $this->_getSelectCols(array('name', 'qty', 'unit_cost', 'inventory_value')))
-            ->joinLeft($_supplierTable,
-                "{$_supplierTable}.sup_id = {$_purchaseOrderTable}.po_sup_num",
-                $this->_getSelectCols(array('supplier_name')))
-            ->joinLeft($_productTable,
-                "{$_purchaseOrderProductTable}.pop_product_id = {$_productTable}.entity_id",
-                $this->_getSelectCols(array("sku")))
-            //->where("{$_productTable}.type_id = 'simple'")
-            ->joinLeft($_attributeSetTable,
-                "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
-                $this->_getSelectCols(array('attribute_set_name')));
-
-//        $_stockTable = $this->getResource()->getMainTable();
-//        $_prouctTable = $this->getProductTable(); //'catalog_product_entity';
+//        $_productTable = $this->getProductTable(); //'catalog_product_entity';
 //        $_attributeSetTable = 'eav_attribute_set';
-//        $_supplierTable = 'purchase_supplier';
-//        $_productNameTable = 'catalog_product_entity_varchar';
-//        $_productSupplierTable = "purchase_product_supplier";
-//        $_purchaseOrderProductTable = 'purchase_order_product';
 //        $_purchaseOrderTable = 'purchase_order';
+//        $_purchaseOrderProductTable = 'purchase_order_product';
+//        $_supplierTable = 'purchase_supplier';
 //
-//        $this->getSelect()->from($_stockTable,
-//            $this->_getSelectCols(array('product_id')))
+//        $this->getSelect()->from($_purchaseOrderTable,
+//            $this->_getSelectCols(array('po_order_id')))
+//            ->where('po_status not in ("complete")')
 //            ->joinLeft($_purchaseOrderProductTable,
-//            "{$_purchaseOrderProduct}.pop_product_id = {$_stockTable}.product_id",
-//            array())
-//            ->joinLeft($_purchaseOrderTable,
-//            "{$_puchaseOrderTable}.po_num = {$_purchaseOrderProduct}.pop_order_num")
-//            ->joinLeft($_productTable,
-//                "{$_stockTable}.product_id = {$_productTable}.entity_id",
-//                $this->_getSelectCols(array("sku")))
-//            ->where("{$_productTable}.type_id = 'simple'")
-//            ->joinLeft($_attributeSetTable,
-//                "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
-//                $this->_getSelectCols(array('attribute_set_name')))
-//            ->joinLeft($_productNameTable,
-//                "{$_productNameTable}.attribute_id = '71' and {$_productNameTable}.entity_id = $_productTable.entity_id",
-//                $this->_getSelectCols(array('name')))
-//            ->joinLeft($_productSupplierTable,
-//                "{$_productSupplierTable}.pps_product_id = {$_productTable}.entity_id",
-//                $this->_getSelectCols(array('unit_cost', 'inventory_value')))
+//                "{$_purchaseOrderProductTable}.pop_order_num = {$_purchaseOrderTable}.po_num",
+//                $this->_getSelectCols(array('name', 'qty', 'unit_cost', 'inventory_value')))
 //            ->joinLeft($_supplierTable,
-//                "{$_supplierTable}.sup_id = {$_productSupplierTable}.pps_supplier_num",
-//                $this->_getSelectCols(array('supplier_name'))
-//            );
+//                "{$_supplierTable}.sup_id = {$_purchaseOrderTable}.po_sup_num",
+//                $this->_getSelectCols(array('supplier_name')))
+//            ->joinLeft($_productTable,
+//                "{$_purchaseOrderProductTable}.pop_product_id = {$_productTable}.entity_id",
+//                $this->_getSelectCols(array("sku")))
+//             ->joinLeft($_attributeSetTable,
+//                "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
+//                $this->_getSelectCols(array('attribute_set_name')));
 
     }
 
