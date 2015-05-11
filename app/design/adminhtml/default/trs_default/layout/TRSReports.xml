@@ -451,25 +451,56 @@
             </reference>
             <block type="adminhtml/template" name="content" as="content" template="trsreports/manage/productpieces/CreateForm.phtml"/>
         </reference>
-        <!--<block type="adminhtml/template" name="root" as="root" output="toHtml" template="trsreports/manage/productpieces/CreateForm.phtml"/>-->
     </adminhtml_admin_manage_productpieces_addlineprompt>
 
     <adminhtml_admin_manage_productpieces_edit>
         <reference name="content">
-            <!--<block type="adminhtml/template" name="manage.line.details" template="trsreports/manage/productpieces/UpdateForm.phtml"/>-->
             <block type="trsreports/adminhtml_report_manage_pieces_form_edit" name="manage.lines.update.form"/>
             <block type="trsreports/adminhtml_report_manage_pieces_products" name="manage.lines.products.container"/>
-            <!--<block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid">-->
-                <!--<action method="setEnableMassaction"><enable>true</enable></action>-->
-                <!--<action method="addMassactions">-->
-                    <!--<massactions>-->
-                        <!--<addproducts>-->
-                            <!--<label>Add Products</label>-->
-                            <!--<url>*/*/addProductsToLine</url>-->
-                        <!--</addproducts>-->
-                    <!--</massactions>-->
-                <!--</action>-->
-            <!--</block>-->
         </reference>
     </adminhtml_admin_manage_productpieces_edit>
+
+    <adminhtml_admin_manage_producttrees_index>
+        <reference name="head">
+            <action method="addItem">
+                <type>js</type>
+                <script>varien/form.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports/productTreeManager.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports/productTreeManagerInit.js</script>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_catalog_product_tree_manage" name="manage.trees.container" template="report/grid/container.phtml"/>
+        </reference>
+    </adminhtml_admin_manage_producttrees_index>
+
+    <adminhtml_admin_manage_producttrees_new>
+        <reference name="root">
+            <action method="setTemplate"><template>page/popup.phtml</template></action>
+            <reference name="head">
+                <action method="addJs"><script>varien/form.js</script></action>
+            </reference>
+            <block type="adminhtml/template" name="content" as="content" template="trsreports/manage/producttrees/CreateForm.phtml"/>
+        </reference>
+    </adminhtml_admin_manage_producttrees_new>
+
+    <adminhtml_admin_manage_producttrees_edit>
+        <reference name="head">
+            <action method="addItem"><type>js_css</type><style>extjs/resources/css/ext-all.css</style></action>
+            <action method="addJs"><script>extjs/ext-tree.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>js/trsreports/productTreeNodeManager.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>js/trsreports/productTreeNodeManagerInit.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_catalog_product_tree_manage_form_edit" name="manage.trees.update.form"/>
+            <block type="trsreports/adminhtml_catalog_product_tree_manage_edit" template="trsreports/manage/producttrees/Edit.phtml"/>
+        </reference>
+    </adminhtml_admin_manage_producttrees_edit>
+
 </layout>

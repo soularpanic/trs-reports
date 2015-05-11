@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * This was the first attempt at Product Trees, but it proved a bit too cumbersome for HQ,
+ * so we have relegated it to DPOTs -- the Designation of Products for Ordering & Tracking
+ * -- or some such nonsense.  I've renamed them product pieces, since they are for ordering
+ * parts from suppliers that are assembled in-house to make products we actually sell.
+ */
 $installer = $this;
 $installer->startSetup();
 

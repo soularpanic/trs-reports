@@ -1,0 +1,61 @@
+<div id="success" style="background: green; color: white; display: none;"></div>
+<div id="failure" style="background: red; color: white; display:none;"></div>
+<form method="post" id="newLineForm" action="<?php echo Mage::helper('adminhtml')->getUrl('*/*/newSubmit') ?>">
+    <table>
+        <tr>
+            <td>
+                <label for="name">Name:</label>
+            </td>
+            <td>
+                <input type="text" id="name" name="name" class="required-entry" placeholder="Product Line Name"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="hidden" id="form_key" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>"/>
+            </td>
+            <td>
+                <input type="submit" id="submit" value="Create"/>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<script type="text/javascript">
+    ajaxSubmit = function() {
+        var successElt = $('success'),
+            failureElt = $('failure');
+
+        if (newLineForm && newLineForm.validator.validate()) {
+            var url = $('newLineForm').action;
+            new Ajax.Request(url, {
+                parameters: $('newLineForm').serialize(true),
+                method: 'post',
+                onCreate: function() {
+                    failureElt.update('');
+                    successElt.update('');
+                },
+                onSuccess: function(resp) {
+                    var response = resp.responseText.evalJSON();
+                    failureElt.hide();
+                    successElt.insert(response.message);
+                    successElt.show();
+                },
+                onFailure: function(resp) {
+                    var response = resp.responseText.evalJSON();
+                    failureElt.insert(response.message);
+                    successElt.hide();
+                    failureElt.show();
+                }
+            });
+        }
+    };
+    document.observe('dom:loaded', function() {
+        newLineForm = new VarienForm('newLineForm', true);
+        $('newLineForm').observe('submit', function(e) {
+            e.stop();
+            ajaxSubmit();
+        });
+    });
+
+</script>

@@ -192,7 +192,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_ProductSelector_Gri
                 $this->getMassactionBlock()->addItem(
                     'exclude',
                     [ 'label' => $this->__('Exclude From Report'),
-                        'url' => $this->getUrl('*/*/exclude', [ 'report_code' => $reportCode ])
+                        'url' => $this->getUrl('*/trsreports/exclude', [ 'report_code' => $reportCode ])
                     ]);
             }
 
@@ -211,7 +211,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Catalog_Product_ProductSelector_Gri
 
     public function getGridUrl() {
         $action = $this->getEnableMassaction() ? 'productsgridwithmassaction' : 'productsgrid';
-        return $this->getUrl("*/*/{$action}", array('_current'=>true));
+        return $this->getUrl("*/admin_trsreports/{$action}", array('_current'=>true));
     }
 
     public function getRowUrl($row) {

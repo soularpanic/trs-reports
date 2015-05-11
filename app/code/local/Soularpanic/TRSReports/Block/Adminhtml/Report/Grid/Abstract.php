@@ -2,6 +2,8 @@
 abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract
     extends Mage_Adminhtml_Block_Report_Grid_Abstract {
 
+    protected $_columnGroupBy = 'derived_id';
+
     public function getCollection()
     {
         if (is_null($this->_collection)) {
@@ -29,14 +31,13 @@ abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract
 
     protected function _prepareMassAction() {
         parent::_prepareMassaction();
-        $this->setMassactionIdField('sku');
+        $this->setMassactionIdField('derived_sku');
         $this->getMassActionBlock()->setFormFieldName('sku');
         $reportCode = $this->_getReportCode();
         $this->getMassactionBlock()->addItem(
             'exclude',
             [ 'label' => $this->__('Exclude From Report'),
-                'url' => $this->getUrl('*/admin_manage_ProductExclusions/exclude', [ 'report_code' => $reportCode ])]
-        );
+                'url' => $this->getUrl('*/admin_manage_ProductExclusions/exclude', [ 'report_code' => $reportCode ]) ]);
     }
 
     protected function _getReportCode() {

@@ -1,0 +1,10 @@
+<?php $helper = Mage::helper('adminhtml'); ?>
+
+<div id="treePanelContainer"></div>
+
+<?php echo $this->getChildHtml('grid'); ?>
+
+<div id="productTreeNodeManagerMetadata" style="display: none;"
+     data-readUrl="<?php echo $helper->getUrl('adminhtml/admin_manage_ProductTrees/fetchProductTrees', ['treeId' => $this->getRequest()->getParam('id')]); ?>"
+     data-addUrl="<?php echo $helper->getUrl('adminhtml/admin_manage_ProductTrees/addToProductTree') ?>"
+    > </div>

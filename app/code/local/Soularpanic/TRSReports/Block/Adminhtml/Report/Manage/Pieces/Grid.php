@@ -25,7 +25,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_Manage_Pieces_Grid
         $this->addColumn('entity_id', [
             'header' => 'Edit',
             'index' => 'entity_id',
-            'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_pieces_EditLink'
+            'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_generic_edit_link'
         ]);
 
         return parent::_prepareColumns();

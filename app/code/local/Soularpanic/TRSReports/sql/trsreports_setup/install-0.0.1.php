@@ -1,4 +1,7 @@
 <?php
+/**
+ * Create some MySQL indexes on Magento product index tables to assist report query speeds
+ */
 $installer = $this;
 $installer->startSetup();
 

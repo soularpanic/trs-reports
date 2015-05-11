@@ -2,46 +2,79 @@
 class Soularpanic_TRSReports_Model_Resource_Report_OutOfStock_Collection
     extends Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract {
 
+    const TOP_LEVEL_TABLE_ALIAS = 'outOfStock';
+
     protected $_aggregationTable = 'cataloginventory/stock_item';
 
     protected $_selectedColumns = [ ];
 
     protected function _initSelect() {
-        $_stockTable = $this->getResource()->getMainTable();
-        $_productTable = $this->getProductTable(); //'catalog_product_entity';
-        $_attributeSetTable = 'eav_attribute_set';
-        $_supplierTable = 'purchase_supplier';
-        $_productNameTable = 'catalog_product_entity_varchar';
-        $_purchaseOrderItemsTable = 'purchase_order_product';
-        $_purchaseOrderTable = 'purchase_order';
-        $this->getSelect()->from($_stockTable,
-            [ 'product_id',
-                'qty' ])
-            ->where("qty <= 0")
-            ->joinLeft($_productTable,
-                "{$_stockTable}.product_id = {$_productTable}.entity_id",
-                [ "sku" ])
-            ->where("{$_productTable}.type_id = 'simple'")
-            ->joinLeft($_attributeSetTable,
-                "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
-                [ 'attribute_set_name' ])
-            ->joinLeft($_productNameTable,
-                "{$_productNameTable}.attribute_id = '71' and {$_productNameTable}.entity_id = $_productTable.entity_id",
-                [ 'name' => 'value' ])
-            ->joinLeft($_purchaseOrderItemsTable,
-                "{$_purchaseOrderItemsTable}.pop_product_id = {$_stockTable}.product_id",
-                [ ])
-            ->joinLeft($_purchaseOrderTable,
-                "{$_purchaseOrderItemsTable}.pop_order_num = {$_purchaseOrderTable}.po_num and {$_purchaseOrderTable}.po_status in('new', 'waiting_for_delivery')",
-                [ "po_id" => "po_num",
-                    "po_number" => "po_order_id",
-                    "po_supply_date" ])
-            ->joinLeft($_supplierTable,
-                "{$_supplierTable}.sup_id = {$_purchaseOrderTable}.po_sup_num",
-                [ 'supplier_name' => 'sup_name' ])
-            ->where('attribute_set_name is not null and attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")');
+        $_helper = Mage::helper('trsreports/collection');
+
+        $_productLinesSelect = $_helper->getProductLinesSelect();
+        $_inventory = $_helper->getProductInventory($this->_from, $this->_to);
+
+        $_grpByProductSelect = $_helper->_getNewSelect();
+        $_productLinesAlias = "productLines";
+        $_inventoryAlias = "inventory";
+        $_grpByProductSelect->from([ $_productLinesAlias => $_productLinesSelect ],
+            [ 'product_id' => 'product_id',
+                'derived_name' => "line_name",
+                'derived_sku' => 'line_sku',
+                'derived_id' => "(if($_productLinesAlias.tree_name is not null, concat('T-', $_productLinesAlias.tree_id), if($_productLinesAlias.piece_name is not null, concat('L-', $_productLinesAlias.piece_id), concat('P-', $_productLinesAlias.product_id))))",
+            ])
+            ->joinLeft([ $_inventoryAlias => $_inventory ],
+                "$_inventoryAlias.product_id = $_productLinesAlias.product_id",
+                [ 'qty',
+                    'suppliers',
+                    'purchase_orders' ]);
+        $this->log("\n\n2:\n".$_grpByProductSelect->__toString());
+
+        $_outOfStockRawSelect = $_helper->_getNewSelect();
+        $_outOfStockRaw = "outOfStockRaw";
+        $_outOfStockRawSelect
+            ->from([ $_outOfStockRaw => $_grpByProductSelect ],
+                [ 'derived_id',
+                    'entity_id' => 'product_id',
+                    'derived_name',
+                    'derived_sku',
+                    'total_qty_stock' => 'sum(ifnull(qty, 0))',
+                    'suppliers',
+                    'purchase_orders' => 'group_concat(purchase_orders)'
+                ])
+            ->group('derived_id');
+        $this->log("\n\n3:\n" . $_outOfStockRawSelect->__toString());
+
+        $outOfStockCalculated = self::TOP_LEVEL_TABLE_ALIAS;
+        $_select = $this->getSelect();
+        $_select
+            ->from([ $outOfStockCalculated => $_outOfStockRawSelect ],
+                [ 'derived_id',
+                    'entity_id',
+                    'derived_name',
+                    'derived_sku',
+                    'total_qty_stock',
+                    'purchase_orders',
+                    'suppliers',
+                ])
+            ->joinLeft([ 'catalog' => $this->getTable('catalog/product') ],
+                "catalog.entity_id = $outOfStockCalculated.entity_id",
+                [])
+            ->joinLeft([ 'attrset' => $this->getTable("eav/attribute_set") ],
+                "catalog.attribute_set_id = attrset.attribute_set_id",
+                "attribute_set_name")
+            ->where("total_qty_stock <= 0")
+            ->where("catalog.type_id = 'simple'")
+            ->where('attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")');
 
         $this->log("Out of Stock SQL:\n".$this->getSelect()->__toString());
+    }
+
+    protected function _applyCustomFilter() {
+        $customFilterData = $this->getCustomFilterData();
+        $customFilterData->setProductTable(self::TOP_LEVEL_TABLE_ALIAS);
+
+        return parent::_applyCustomFilter();
     }
 
     protected function _applyStoresFilterToSelect(Zend_Db_Select $select) {
