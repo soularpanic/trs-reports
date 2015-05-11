@@ -2,7 +2,6 @@
 class Soularpanic_TRSReports_Block_Adminhtml_Report_FutureForecast_Grid
     extends Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract {
 
-//    protected $_columnGroupBy = 'sku';
     protected $_resourceCollectionName = 'trsreports/report_FutureForecast_collection';
 
     public function __construct()
@@ -92,8 +91,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_FutureForecast_Grid
             'index'             => 'qty_to_order',
             'sortable'          => true,
             'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
-//            'type' => 'number',
-        'filter' => false,
+            'filter'            => false,
             'decimal_places'    => 0
         ));
 

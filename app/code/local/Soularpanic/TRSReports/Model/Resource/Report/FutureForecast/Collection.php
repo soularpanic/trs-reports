@@ -2,7 +2,7 @@
 class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
     extends Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract {
 
-    const TOP_LEVEL_TABLE_ALIAS = 'boom';
+    const TOP_LEVEL_TABLE_ALIAS = 'futureForecast';
 
     protected $_aggregationTable = 'sales/order_item';
 
@@ -15,17 +15,8 @@ class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
 
         $growth = $filterData->getGrowthPercent();
         $futureRate = $growth ? 1.0 + (floatval($growth) / 100.0) : 1.0;
-//        if (!$growth) {
-//            $growth = "0";
-//        }
         $futureDate = $filterData->getFuture();
         $futureDate = $futureDate ? "'$futureDate'" : "NOW()";
-//        if (!$futureDate) {
-//            $futureDate = "NOW()";
-//        }
-//        else {
-//            $futureDate = "'$futureDate'";
-//        }
 
         $_select = $this->getSelect();
         $_helper = Mage::helper('trsreports/collection');
@@ -60,10 +51,10 @@ class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
                     'total_qty' => "ifnull(total_qty, 0)"]);
         $this->log("\n\n2:\n".$_grpByProductSelect->__toString());
 
-        $_lowStockRawSelect = $_helper->_getNewSelect();
-        $_lowStockRaw = "lowStockRaw";
-        $_lowStockRawSelect
-            ->from([ $_lowStockRaw => $_grpByProductSelect ],
+        $_futureForecastRawSelect = $_helper->_getNewSelect();
+        $_futureForecastRaw = "futureForecastRaw";
+        $_futureForecastRawSelect
+            ->from([ $_futureForecastRaw => $_grpByProductSelect ],
                 [ 'derived_id',
                     'entity_id' => 'product_id',
                     'derived_name',
@@ -76,12 +67,12 @@ class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
                     'purchase_orders' => 'group_concat(purchase_orders)'
                 ])
             ->group('derived_id');
-        $this->log("\n\n3:\n" . $_lowStockRawSelect->__toString());
+        $this->log("\n\n3:\n" . $_futureForecastRawSelect->__toString());
 
-        $lowStockCalculated = self::TOP_LEVEL_TABLE_ALIAS;
+        $_futureForecastAlias = self::TOP_LEVEL_TABLE_ALIAS;
         $_qtyToOrderFormula = "(($futureRate * DATEDIFF($futureDate, NOW()) * total_qty_sold / time_in_days) - total_qty_stock_and_transit)";
         $_select
-            ->from([ $lowStockCalculated => $_lowStockRawSelect ],
+            ->from([ $_futureForecastAlias => $_futureForecastRawSelect ],
                 [ 'derived_id',
                     'entity_id',
                     'derived_name',
@@ -97,7 +88,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
                     "qty_to_order" => "if($_qtyToOrderFormula > 0, $_qtyToOrderFormula, 0)"
                 ])
             ->joinLeft([ 'catalog' => $this->getTable('catalog/product') ],
-                "catalog.entity_id = $lowStockCalculated.entity_id",
+                "catalog.entity_id = $_futureForecastAlias.entity_id",
                 [])
             ->joinLeft([ 'attrset' => $this->getTable("eav/attribute_set") ],
                 "catalog.attribute_set_id = attrset.attribute_set_id",
@@ -105,68 +96,6 @@ class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
             ->where("time_in_days is not null")
             ->where("catalog.type_id = 'simple'")
             ->where('attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")');
-
-//        $this->log("LowStockAvailability SQL:\n".$_select->__toString());
-//
-//        $_orderTable = $this->getResource()->getMainTable();
-//        $_stockTable = 'cataloginventory_stock_item';
-//        $_productSupplierTable = 'purchase_product_supplier';
-//        $_supplierTable = 'purchase_supplier';
-//        $_purchaseOrderItemsTable = 'purchase_order_product';
-//        $_purchaseOrderTable = 'purchase_order';
-//        $_productTable = $this->getProductTable(); //'catalog_product_entity';
-//        $_attributeSetTable = 'eav_attribute_set';
-//
-//        $filterData = $this->getCustomFilterData();
-//
-//        $growth = $filterData->getGrowthPercent();
-//        if (!$growth) {
-//            $growth = "0";
-//        }
-//        $futureDate = $filterData->getFuture();
-//        if (!$futureDate) {
-//            $futureDate = "NOW()";
-//        }
-//        else {
-//            $futureDate = "'$futureDate'";
-//        }
-//
-//        $this->getSelect()->from($_orderTable,
-//            [ 'sku',
-//                'name',
-//                'period' => 'created_at',
-//                'total_qty_ordered' => "sum(qty_ordered)",
-//                'time' => "TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}')",
-//                'rate' => "sum(qty_ordered) / TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}')",
-//                'time_to_future' => "TIMESTAMPDIFF(DAY, NOW(), {$futureDate})",
-//                'future_qty' => "TIMESTAMPDIFF(DAY, NOW(), {$futureDate}) * (1.0 + {$growth}/100) * (sum(qty_ordered) / TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}'))"])
-//            ->where("product_type = 'simple'")
-//            ->joinLeft($_stockTable,
-//                "{$_orderTable}.product_id = {$_stockTable}.product_id",
-//                [ 'available_qty' => "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty)",
-//                    'remaining_stock_weeks' => "({$_stockTable}.qty - {$_stockTable}.stock_reserved_qty) / (7 * sum({$_orderTable}.qty_ordered) / TIMESTAMPDIFF(DAY, if('{$this->_from}' > {$_productTable}.created_at, '{$this->_from}', {$_productTable}.created_at), '{$this->_to}'))"])
-//            ->joinLeft($_productSupplierTable,
-//                "{$_orderTable}.product_id = {$_productSupplierTable}.pps_product_id",
-//                [])
-//            ->joinLeft($_supplierTable,
-//                "{$_supplierTable}.sup_id = {$_productSupplierTable}.pps_supplier_num",
-//                ['supplier_name' => 'sup_name'])
-//            ->joinLeft($_purchaseOrderItemsTable,
-//                "{$_purchaseOrderItemsTable}.pop_product_id = {$_stockTable}.product_id and {$_purchaseOrderItemsTable}.pop_supplied_qty < {$_purchaseOrderItemsTable}.pop_qty",
-//                [ 'qty_incoming' => "ifnull({$_purchaseOrderItemsTable}.pop_qty, 0)" ])
-//            ->joinLeft($_purchaseOrderTable,
-//                "{$_purchaseOrderItemsTable}.pop_order_num = {$_purchaseOrderTable}.po_num and {$_purchaseOrderTable}.po_status in('new', 'waiting_for_delivery')",
-//                [ "po_id" => "po_num",
-//                    "po_number" => "po_order_id",
-//                    "po_supply_date" ])
-//            ->joinLeft($_productTable,
-//                "{$_orderTable}.product_id = {$_productTable}.entity_id",
-//                [ ])
-//            ->joinLeft($_attributeSetTable,
-//                "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
-//                [ 'attribute_set_name' ])
-//            ->where('attribute_set_name is not null and attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")')
-//            ->group("{$_orderTable}.product_id");
 
         $this->log('Future Forecast SQL:\n'.$this->getSelect()->__toString());
     }
@@ -183,14 +112,6 @@ class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
     }
 
     protected function _applyDateRangeFilter() {
-        // Remember that field PERIOD is a DATE(YYYY-MM-DD) in all databases including Oracle
-//        if ($this->_from !== null) {
-//            $this->getSelect()->where("{$this->getResource()->getMainTable()}.created_at >= ?", $this->_from);
-//        }
-//        if ($this->_to !== null) {
-//            $this->getSelect()->where("{$this->getResource()->getMainTable()}.created_at <= ?", $this->_to);
-//        }
-
         return $this;
     }
 

@@ -17,10 +17,26 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_PurchaseOrderOverview_Grid
 
     protected function _prepareColumns()
     {
+        $suppliers = Mage::getResourceModel('Purchase/Supplier_collection');
+        $supplierOptions = [ ];
+        foreach ($suppliers as $supplier) {
+            $supplierOptions[$supplier->getSupName()] = $supplier->getSupName();
+        }
+//        $this->addColumn('suppliers', [
+//            'header'        => 'Supplier',
+//            'index'         => 'suppliers',
+//            'filter_index'  => 'suppliers',
+//            'sortable'      => true,
+//            'type'          => 'options',
+//            'options'       => $supplierOptions,
+//            'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_suppliers',
+//        ]);
         $this->addColumn('supplier_name', array(
             'header'    => 'Supplier',
             'index'     => 'supplier_name',
             'sortable'  => true,
+            'type'      => 'options',
+            'options'   => $supplierOptions,
             'filter_index' => 'purchase_supplier.sup_name'
         ));
 
