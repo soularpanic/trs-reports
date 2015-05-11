@@ -223,9 +223,8 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
                 ->joinLeft(array('cpe' => 'catalog_product_entity'),
                     'main_table.product_id = cpe.entity_id', // or main_table.parent_item_id = cpe.entity_id',
                     array())
-                ->joinLeft(array('eas' => 'eav_attribute_set'),
-                    "cpe.attribute_set_id = $id")
-            ->where("product_type = 'simple'");
+                ->where("cpe.attribute_set_id = $id")
+                ->where("product_type = 'simple'");
         }
         if ($dataType === self::ALL_DATA_TYPE && $id !== null) {
             $collection->getSelect()
