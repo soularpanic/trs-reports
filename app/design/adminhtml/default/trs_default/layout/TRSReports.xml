@@ -88,7 +88,7 @@
                     <action method="setId"><id>productToggle</id></action>
                 </block>
                 <block type="trsreports/adminhtml_catalog_product_productSelector_grid" name="product.grid">
-                    <action method="setEnableMassaction"><enable>true</enable></action>
+                    <action method="setEnableMassaction"><enable>false</enable></action>
                     <action method="setReportCode"><code>ProductSales</code></action>
                 </block>
             </block>

@@ -6,6 +6,11 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
     const SIMPLE_PRODUCT_DATA_TYPE = 'simple';
     const ATTR_SET_DATA_TYPE = 'attrSet';
 
+    const MONTHLY_GRANULARITY = 'month';
+    const WEEKLY_GRANULARITY = 'week';
+    const DAILY_GRANULARITY =  'day';
+    const HOURLY_GRANULARITY = 'hour';
+
     public function getItemsSoldData($from, $to, $granularity) {
         $itemCollectionByTime = $this->_getOrderItemCollectionByTime($from, $to, $granularity, null, self::ALL_DATA_TYPE);
         $orderCollection = $this->_getOrderCollection($from, $to);
@@ -58,8 +63,35 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
             $_orderItems = $this->_getOrderItemCollectionByTime($from, $to, $granularity, $dbId, $dataType);
 
             $_soldCount = 0;
+            $_totalFrames = $_orderItems->getFirstItem()->getTotalTime();
+            $_startDateStr = $_orderItems->getFirstItem()->getDate();
+            $_dateFormat = $this->_convertGranularityToDateFormat($granularity);
+            $_startDate = date_create_from_format($_dateFormat, $_startDateStr);
+            $_elapsedFrames = 0;
+//            $_periodDesignator = $this->_convertGranularityToPeriodDesignator($granularity);
+
 
             foreach ($_orderItems as $_orderItem) {
+                if ($_totalFrames === false) {
+                    $_totalFrames = $_orderItem->getTotalTime();
+                }
+                // adjust for frames that did not have any data
+                while ($_elapsedFrames < $_orderItem->getElapsed()) {
+                    $_adjustedDateStr = $this->_getAdjustedDate($_startDate, $_elapsedFrames, $granularity);
+                    $salesData[$id]['actual_sold'][] = array(
+                        'date' => $_adjustedDateStr,
+                        'sold' => 0,
+                        'revenue' => 0.0,
+                        'cost' => 0.0,
+                        'profit' => 0.0
+                    );
+                    $salesData[$id]['avg_sold'][] = array(
+                        'date' => $_adjustedDateStr,
+                        'sold' => $_soldCount / ($_elapsedFrames + 1)
+                    );
+                    Mage::log("Fast-forwarding through missing frame $_elapsedFrames", null, 'trs_reports.log');
+                    $_elapsedFrames++;
+                }
                 $date = $_orderItem['date'];
                 $sold = $_orderItem['total_qty_ordered'];
                 $_soldCount += $sold;
@@ -78,6 +110,7 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
                     'date' => $date,
                     'sold' => $_soldCount / ($_orderItem->getElapsed() + 1)
                 );
+                $_elapsedFrames++;
             }
 
             $salesData['meta']['ids'][] = $id;
@@ -186,7 +219,7 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
     }
 
     protected function _getOrderItemCollectionByTime($from, $to, $granularity, $id = null, $dataType = self::ALL_DATA_TYPE) {
-        $granularityDateForm = $this->_parseGranularity($granularity);
+        $granularityDateForm = $this->_convertGranularityToSQLFormat($granularity);
         $idFilter = $id === null ? array('notnull' => true) : array('eq' => $id);
 
         $addlCols = array('total_qty_ordered' => "sum(qty_ordered)",
@@ -194,7 +227,7 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
         if ($id !== null) {
             $addlCols = array_merge($addlCols, array(
                 'total_time' => "TIMESTAMPDIFF($granularity, '$from', '$to')",
-                'elapsed' => "TIMESTAMPDIFF($granularity, '$from', DATE_FORMAT(main_table.created_at, '%Y-%m-%d'))"
+                'elapsed' => "TIMESTAMPDIFF($granularity, '$from', DATE_FORMAT(main_table.created_at, '%Y-%m-%d %H'))"
             ));
         }
 
@@ -259,17 +292,61 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
         return $collection;
     }
 
+    protected function _getAdjustedDate($startDate, $interval, $granularity) {
+        $_adjustedDate = clone $startDate;
+        $_preDesignator = false;
+        $_postDesignator = false;
+        $_interval = intval($interval);
+        $_format = $this->_convertGranularityToDateFormat($granularity);
+        switch ($granularity) {
+            case self::MONTHLY_GRANULARITY:
+                $_preDesignator = '';
+                $_postDesignator = 'M';
+                break;
+            case self::WEEKLY_GRANULARITY:
+                $_preDesignator = '';
+                $_postDesignator = 'W';
+                break;
+            case self::DAILY_GRANULARITY:
+                $_preDesignator = '';
+                $_postDesignator = 'D';
+                break;
+            case self::HOURLY_GRANULARITY:
+                $_preDesignator = 'T';
+                $_postDesignator = 'H';
+                break;
+            default:
+                Mage::throwException("Could not parse granularity value of \"$granularity\"");
+        }
+        $_adjustedDate->add(new DateInterval("P{$_preDesignator}{$_interval}{$_postDesignator}"));
+        $_adjustedDateStr = $_adjustedDate->format($_format);
+        return $_adjustedDateStr;
+    }
 
-
-    protected function _parseGranularity($granularity) {
+    protected function _convertGranularityToDateFormat($granularity) {
         switch($granularity) {
-            case 'month':
+            case self::MONTHLY_GRANULARITY:
+                return 'Y-m';
+            case self::WEEKLY_GRANULARITY:
+                return '%Y-%u'; // TODO: this is not correct
+            case self::DAILY_GRANULARITY:
+                return 'Y-m-d';
+            case self::HOURLY_GRANULARITY:
+                return 'Y-m-d H';
+            default:
+                Mage::throwException("Could not parse granularity value of \"$granularity\"");
+        }
+    }
+
+    protected function _convertGranularityToSQLFormat($granularity) {
+        switch($granularity) {
+            case self::MONTHLY_GRANULARITY:
                 return '%Y-%m';
-            case 'week':
+            case self::WEEKLY_GRANULARITY:
                 return '%Y-%u';
-            case 'day':
+            case self::DAILY_GRANULARITY:
                 return '%Y-%m-%d';
-            case 'hour':
+            case self::HOURLY_GRANULARITY:
                 return '%Y-%m-%d %H';
             default:
                 Mage::throwException("Could not parse granularity value of \"$granularity\"");
