@@ -24,9 +24,7 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
     public function getSalesReportData($productIds = null, $attrSetIds = null, $storeIds = null, $from, $to, $granularity /*, $dataType */ ) {
         $idsArr = [];
         $salesData = [
-            'meta' => ['ids' => []],
-//            'actual_sold' => array(),
-//            'avg_sold' => array()
+            'meta' => ['ids' => []]
         ];
         if ($productIds) {
             foreach(explode(',', $productIds) as $productId) {
@@ -64,9 +62,9 @@ class Soularpanic_TRSReports_Helper_Report_Graph_Data
 
             $_soldCount = 0;
             $_totalFrames = $_orderItems->getFirstItem()->getTotalTime();
-            $_startDateStr = $_orderItems->getFirstItem()->getDate();
+//            $_startDateStr = $_orderItems->getFirstItem()->getDate();
             $_dateFormat = $this->_convertGranularityToDateFormat($granularity);
-            $_startDate = date_create_from_format($_dateFormat, $_startDateStr);
+            $_startDate = date_create_from_format('Y-m-d|', $from);
             $_elapsedFrames = 0;
 //            $_periodDesignator = $this->_convertGranularityToPeriodDesignator($granularity);
 
