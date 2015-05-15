@@ -3,6 +3,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_PurchaseOrderOverview_Grid
     extends Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract {
 
     protected $_columnGroupBy = 'sku';
+    protected $_massactionIdField = 'sku';
     protected $_resourceCollectionName = 'trsreports/report_PurchaseOrderOverview_collection';
     protected $_lastRow = null;
 

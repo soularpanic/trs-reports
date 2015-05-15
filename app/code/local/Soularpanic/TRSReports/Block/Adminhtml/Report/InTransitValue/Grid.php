@@ -15,10 +15,10 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
 
     protected function _prepareColumns()
     {
-        $this->addColumn('name', array(
+        $this->addColumn('product_name', array(
             'header'     => 'Item Name',
-            'index'     => 'name',
-            'filter_index' => 'catalog_product_entity_varchar.value',
+            'index'     => 'product_name',
+//            'filter_index' => 'catalog_product_entity_varchar.value',
             'sortable'  => true,
         ));
 
@@ -28,22 +28,46 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
             'sortable'  => true
         ));
 
-        $this->addColumn('attribute_set_name', array(
-            'header'    => 'Type',
-            'index'     => 'attribute_set_name',
-            'sortable'  => true
-        ));
+        $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
+            ->addFieldToFilter('attribute_set_name', [ 'nin' => [ "Closeouts", "Internal Use", "TRS-ZHacks" ] ])
+            ->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
+            ->load()
+            ->toOptionHash();
 
+        $this->addColumn('attribute_set_name', [
+            'header'        => 'Type',
+            'index'         => 'attribute_set_name',
+            'filter_index'  => 'attrset.attribute_set_id',
+            'sortable'      => true,
+            'type'          => 'options',
+            'options'       => $sets
+        ]);
+
+        $suppliers = Mage::getResourceModel('Purchase/Supplier_collection');
+        $supplierOptions = [ ];
+        foreach ($suppliers as $supplier) {
+            $supplierOptions[$supplier->getSupName()] = $supplier->getSupName();
+        }
         $this->addColumn('supplier_name', array(
             'header'    => 'Supplier',
             'index'     => 'supplier_name',
             'sortable'  => true,
+            'type'          => 'options',
+            'options'       => $supplierOptions,
             'total' => false
         ));
 
-        $this->addColumn('qty', array(
+        $this->addColumn('purchase_order_id', [
+            'header' => 'PO Code',
+            'index' => 'purchase_order_id',
+            'sortable' => true,
+            'total' => false,
+            'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_PurchaseOrderId',
+        ]);
+
+        $this->addColumn('qty_incoming', array(
             'header'    => 'QTY In-Transit',
-            'index'     => 'qty',
+            'index'     => 'qty_incoming',
             'sortable'  => true,
             'type'      => 'number'
         ));
@@ -53,12 +77,13 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
             'index'     => 'unit_cost',
             'sortable'  => true,
             'renderer' => 'adminhtml/report_grid_column_renderer_currency',
-            'currency_code' => 'USD'
+            'currency_code' => 'USD',
+            'total' => false
         ));
 
-        $this->addColumn('inventory_value', array(
-            'header'    => 'Inventory Value',
-            'index'     => 'inventory_value',
+        $this->addColumn('in_transit_value', array(
+            'header'    => 'In-Transit Value',
+            'index'     => 'in_transit_value',
             'sortable'  => true,
             'renderer' => 'adminhtml/report_grid_column_renderer_currency',
             'currency_code' => 'USD'
