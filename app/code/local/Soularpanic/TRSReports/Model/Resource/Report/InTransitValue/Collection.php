@@ -2,7 +2,6 @@
 class Soularpanic_TRSReports_Model_Resource_Report_InTransitValue_Collection
     extends Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract {
 
-    //protected $_aggregationTable = 'cataloginventory/stock_item';
     protected $_massactionIdField = 'sku';
     protected $_aggregationTable = 'Purchase/OrderProduct';
 
@@ -51,20 +50,13 @@ class Soularpanic_TRSReports_Model_Resource_Report_InTransitValue_Collection
     }
 
     protected function _initSelect() {
-        $_productTable = $this->getProductTable(); //'catalog_product_entity';
-        $_attributeSetTable = 'eav_attribute_set';
-        $_purchaseOrderTable = 'purchase_order';
-        $_purchaseOrderProductTable = 'purchase_order_product';
-        $_supplierTable = 'purchase_supplier';
-
         $_helper = Mage::helper('trsreports/collection');
-        $_select = $this->getSelect(); // $_helper->_getNewSelect();
+        $_select = $this->getSelect();
         $_purchaseOrdersAlias = 'purchaseOrders';
         $_productAlias = self::PRODUCT_TABLE_ALIAS;
         $_productNameAlias = self::PRODUCT_NAME_ALIAS;
         $_attributeNameAlias = 'attributeSets';
         $productNameAttr = Mage::getSingleton('eav/config')->getAttribute('catalog_product', 'name');
-//        $_productNameTable = $productNameAttr->getBackendTable();
         $_purchaseOrdersSelect = $_helper->getPurchaseOrdersSelect();
         $_select
             ->from([ $_purchaseOrdersAlias => $_purchaseOrdersSelect ],
@@ -84,29 +76,12 @@ class Soularpanic_TRSReports_Model_Resource_Report_InTransitValue_Collection
                 $this->_getSelectCols([ 'sku' ]))
             ->joinLeft([ $_productNameAlias => $productNameAttr->getBackendTable() ],
                 "{$_productNameAlias}.attribute_id = '{$productNameAttr->getId()}' and {$_productNameAlias}.entity_id = {$_purchaseOrdersAlias}.product_id",
-                $this->_getSelectCols([ 'product_name' /* => "{$_productNameAlias}.value" */ ]))
+                $this->_getSelectCols([ 'product_name' ]))
             ->joinLeft([ $_attributeNameAlias => $this->getTable('eav/attribute_set') ],
                 "$_attributeNameAlias.attribute_set_id = $_productAlias.attribute_set_id",
                 $this->_getSelectCols([ 'attribute_set_name' ]));
 
         $this->log("\n\n$_purchaseOrdersAlias select: \n".$_select->__toString());
-
-//        $this->getSelect()->from($_purchaseOrderTable,
-//            $this->_getSelectCols(array('po_order_id')))
-//            ->where('po_status not in ("complete")')
-//            ->joinLeft($_purchaseOrderProductTable,
-//                "{$_purchaseOrderProductTable}.pop_order_num = {$_purchaseOrderTable}.po_num",
-//                $this->_getSelectCols(array('name', 'qty', 'unit_cost', 'inventory_value')))
-//            ->joinLeft($_supplierTable,
-//                "{$_supplierTable}.sup_id = {$_purchaseOrderTable}.po_sup_num",
-//                $this->_getSelectCols(array('supplier_name')))
-//            ->joinLeft($_productTable,
-//                "{$_purchaseOrderProductTable}.pop_product_id = {$_productTable}.entity_id",
-//                $this->_getSelectCols(array("sku")))
-//            ->joinLeft($_attributeSetTable,
-//                "{$_attributeSetTable}.attribute_set_id = {$_productTable}.attribute_set_id",
-//                $this->_getSelectCols(array('attribute_set_name')));
-
     }
 
     protected function _applyCustomFilter() {
@@ -120,8 +95,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_InTransitValue_Collection
         return $this;
     }
 
-    protected function _applyDateRangeFilter()
-    {
+    protected function _applyDateRangeFilter() {
         return $this;
     }
 }

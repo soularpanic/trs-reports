@@ -16,14 +16,14 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
     protected function _prepareColumns()
     {
         $this->addColumn('product_name', array(
-            'header'     => 'Item Name',
-            'index'     => 'product_name',
-            'filter_index' => 'productNames.value',
-            'sortable'  => true,
+            'header'        => 'Item Name',
+            'index'         => 'product_name',
+            'filter_index'  => 'productNames.value',
+            'sortable'      => true,
         ));
 
         $this->addColumn('sku', array(
-            'header'     => 'SKU',
+            'header'    => 'SKU',
             'index'     => 'sku',
             'sortable'  => true
         ));
@@ -49,40 +49,40 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
             $supplierOptions[$supplier->getSupName()] = $supplier->getSupName();
         }
         $this->addColumn('supplier_name', array(
-            'header'    => 'Supplier',
-            'index'     => 'supplier_name',
-            'filter_index' => 'sup_name',
-            'sortable'  => true,
+            'header'        => 'Supplier',
+            'index'         => 'supplier_name',
+            'filter_index'  => 'sup_name',
+            'sortable'      => true,
             'type'          => 'options',
             'options'       => $supplierOptions,
-            'total' => false
+            'total'         => false
         ));
 
         $this->addColumn('purchase_order_id', [
-            'header' => 'PO Code',
-            'index' => 'purchase_order_id',
-            'filter_index' => 'purchaseOrders.po_order_id',
-            'sortable' => true,
-            'total' => false,
-            'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_PurchaseOrderId',
+            'header'        => 'PO Code',
+            'index'         => 'purchase_order_id',
+            'filter_index'  => 'purchaseOrders.po_order_id',
+            'sortable'      => true,
+            'total'         => false,
+            'renderer'      => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_PurchaseOrderId',
         ]);
 
         $this->addColumn('qty_incoming', array(
-            'header'    => 'QTY In-Transit',
-            'index'     => 'qty_incoming',
-            'filter_index' => "(purchaseOrders.pop_qty - purchaseOrders.pop_supplied_qty)",
-            'sortable'  => true,
-            'type'      => 'number'
+            'header'        => 'QTY In-Transit',
+            'index'         => 'qty_incoming',
+            'filter_index'  => "(purchaseOrders.pop_qty - purchaseOrders.pop_supplied_qty)",
+            'sortable'      => true,
+            'type'          => 'number'
         ));
 
         $this->addColumn('unit_cost', array(
-            'header'    => 'Unit Cost',
-            'index'     => 'unit_cost',
-            'sortable'  => true,
-            'filter'    => false,
-            'renderer' => 'adminhtml/report_grid_column_renderer_currency',
+            'header'        => 'Unit Cost',
+            'index'         => 'unit_cost',
+            'sortable'      => true,
+            'filter'        => false,
+            'renderer'      => 'adminhtml/report_grid_column_renderer_currency',
             'currency_code' => 'USD',
-            'total' => false
+            'total'         => false
         ));
 
         $this->addColumn('in_transit_value', array(
