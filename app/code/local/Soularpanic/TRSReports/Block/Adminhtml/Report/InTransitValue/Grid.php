@@ -18,7 +18,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
         $this->addColumn('product_name', array(
             'header'     => 'Item Name',
             'index'     => 'product_name',
-//            'filter_index' => 'catalog_product_entity_varchar.value',
+            'filter_index' => 'productNames.value',
             'sortable'  => true,
         ));
 
@@ -37,7 +37,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
         $this->addColumn('attribute_set_name', [
             'header'        => 'Type',
             'index'         => 'attribute_set_name',
-            'filter_index'  => 'attrset.attribute_set_id',
+            'filter_index'  => 'products.attribute_set_id',
             'sortable'      => true,
             'type'          => 'options',
             'options'       => $sets
@@ -51,6 +51,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
         $this->addColumn('supplier_name', array(
             'header'    => 'Supplier',
             'index'     => 'supplier_name',
+            'filter_index' => 'sup_name',
             'sortable'  => true,
             'type'          => 'options',
             'options'       => $supplierOptions,
@@ -60,6 +61,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
         $this->addColumn('purchase_order_id', [
             'header' => 'PO Code',
             'index' => 'purchase_order_id',
+            'filter_index' => 'purchaseOrders.po_order_id',
             'sortable' => true,
             'total' => false,
             'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_PurchaseOrder_PurchaseOrderId',
@@ -68,6 +70,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
         $this->addColumn('qty_incoming', array(
             'header'    => 'QTY In-Transit',
             'index'     => 'qty_incoming',
+            'filter_index' => "(purchaseOrders.pop_qty - purchaseOrders.pop_supplied_qty)",
             'sortable'  => true,
             'type'      => 'number'
         ));
@@ -76,16 +79,18 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InTransitValue_Grid
             'header'    => 'Unit Cost',
             'index'     => 'unit_cost',
             'sortable'  => true,
+            'filter'    => false,
             'renderer' => 'adminhtml/report_grid_column_renderer_currency',
             'currency_code' => 'USD',
             'total' => false
         ));
 
         $this->addColumn('in_transit_value', array(
-            'header'    => 'In-Transit Value',
-            'index'     => 'in_transit_value',
-            'sortable'  => true,
-            'renderer' => 'adminhtml/report_grid_column_renderer_currency',
+            'header'        => 'In-Transit Value',
+            'index'         => 'in_transit_value',
+            'sortable'      => true,
+            'filter'        => false,
+            'renderer'      => 'adminhtml/report_grid_column_renderer_currency',
             'currency_code' => 'USD'
         ));
 
