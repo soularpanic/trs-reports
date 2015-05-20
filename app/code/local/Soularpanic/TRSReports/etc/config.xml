@@ -89,6 +89,16 @@
                 </observers>
             </catalog_product_collection_load_before>
         </events>
+
+        <template>
+            <email>
+                <test_email_template module="TRSReports">
+                    <label>Test Label</label>
+                    <file>trsreports_proto.html</file>
+                    <type>html</type>
+                </test_email_template>
+            </email>
+        </template>
     </global>
 
     <admin>
@@ -112,4 +122,25 @@
             </updates>
         </layout>
     </adminhtml>
+
+    <crontab>
+        <jobs>
+            <trsreports_sales_tax_report>
+                <schedule>
+                    <cron_expr>1 0 1 * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>trsreports/reports_schedule::emailSalesTaxReport</model>
+                </run>
+            </trsreports_sales_tax_report>
+        </jobs>
+    </crontab>
+
+    <default>
+        <trs_automated_reports>
+            <sales_tax_report>
+                <recipients>josh@theretrofitsource.com</recipients>
+            </sales_tax_report>
+        </trs_automated_reports>
+    </default>
 </config>

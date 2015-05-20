@@ -2,7 +2,6 @@
 class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
     extends Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract {
 
-//    protected $_columnGroupBy = 'derived_id';
     protected $_resourceCollectionName = 'trsreports/report_LowStockAvailability_collection';
 
     public function __construct() {
@@ -99,10 +98,10 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
     public function getRowClass($row) {
         $remainingWeeks = $row->getData('estimated_remaining_weeks');
         if ($remainingWeeks) {
-            if ($remainingWeeks <= 4) {
+            if ($remainingWeeks < 3) {
                 return 'critical';
             }
-            elseif ($remainingWeeks <= 12) {
+            elseif ($remainingWeeks < 6) {
                 return 'warning';
             }
             else {

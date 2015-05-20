@@ -1,4 +1,24 @@
 <config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <trs_automated_reports translate="title">
+                                        <title>Automated Reports</title>
+                                        <sort_order>50</sort_order>
+                                    </trs_automated_reports>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
     <menu>
         <report>
             <children>
@@ -6,6 +26,26 @@
                     <title>TRS Reports Dashboard</title>
                     <action>adminhtml/admin_trsreports/index</action>
                     <children>
+                        <trsreport_attributesetsales>
+                            <title>Category Sales Report</title>
+                            <action>adminhtml/admin_trsreports/attributesetsales</action>
+                        </trsreport_attributesetsales>
+                        <trsreport_futureforecast>
+                            <title>Future Forecast</title>
+                            <action>adminhtml/admin_trsreports/futureforecast</action>
+                        </trsreport_futureforecast>
+                        <trsreport_intransitvalue>
+                            <title>In-Transit Value</title>
+                            <action>adminhtml/admin_trsreports/intransitvalue</action>
+                        </trsreport_intransitvalue>
+                        <trsreport_productsales>
+                            <title>Individual Sales Report</title>
+                            <action>adminhtml/admin_trsreports/productsales</action>
+                        </trsreport_productsales>
+                        <trsreport_instockvalue>
+                            <title>Inventory Value</title>
+                            <action>adminhtml/admin_trsreports/instockvalue</action>
+                        </trsreport_instockvalue>
                         <trsreport_lowavailablestock>
                             <title>Low Stock - Warehouse</title>
                             <action>adminhtml/admin_trsreports/lowstockavailability</action>
@@ -18,26 +58,6 @@
                             <title>Out of Stock</title>
                             <action>adminhtml/admin_trsreports/outofstock</action>
                         </trsreport_outofstock>
-                        <trsreport_futureforecast>
-                            <title>Future Forecast</title>
-                            <action>adminhtml/admin_trsreports/futureforecast</action>
-                        </trsreport_futureforecast>
-                        <trsreport_productsales>
-                            <title>Individual Sales Report</title>
-                            <action>adminhtml/admin_trsreports/productsales</action>
-                        </trsreport_productsales>
-                        <trsreport_attributesetsales>
-                            <title>Category Sales Report</title>
-                            <action>adminhtml/admin_trsreports/attributesetsales</action>
-                        </trsreport_attributesetsales>
-                        <trsreport_instockvalue>
-                            <title>Inventory Value</title>
-                            <action>adminhtml/admin_trsreports/instockvalue</action>
-                        </trsreport_instockvalue>
-                        <trsreport_intransitvalue>
-                            <title>In-Transit Value</title>
-                            <action>adminhtml/admin_trsreports/intransitvalue</action>
-                        </trsreport_intransitvalue>
                         <trsreport_purchaseorderoverview>
                             <title>P/O Overview</title>
                             <action>adminhtml/admin_trsreports/purchaseorderoverview</action>
@@ -46,6 +66,10 @@
                             <title>Profit and Sales</title>
                             <action>adminhtml/admin_trsreports/profitandsales</action>
                         </trsreport_profitandsales>
+                        <trsreport_salestax>
+                            <title>Sales Tax</title>
+                            <action>adminhtml/admin_trsreports/salestax</action>
+                        </trsreport_salestax>
                         <trsreport_manage>
                             <title>Manage Reports</title>
                             <children>
@@ -57,6 +81,10 @@
                                     <title>Product Pieces</title>
                                     <action>adminhtml/admin_manage_ProductPieces/index</action>
                                 </trsreport_manage_productpieces>
+                                <trsreport_manage_product_trees>
+                                    <title>Product Trees</title>
+                                    <action>adminhtml/admin_manage_ProductTrees/index</action>
+                                </trsreport_manage_product_trees>
                             </children>
                         </trsreport_manage>
                     </children>
@@ -65,22 +93,10 @@
         </report>
         <catalog>
             <children>
-                <products>
-                    <children>
-                        <trs_alt_catalog_products>
-                            <title>Manage Products</title>
-                            <action>adminhtml/catalog_product/index</action>
-                        </trs_alt_catalog_products>
-                        <trsreport_manage_archived_products>
-                            <title>Manage Products Archive</title>
-                            <action>adminhtml/catalog_product/index/show_archive/true</action>
-                        </trsreport_manage_archived_products>
-                        <trsreport_manage_product_trees>
-                            <title>Manage Product Trees</title>
-                            <action>adminhtml/admin_manage_ProductTrees/index</action>
-                        </trsreport_manage_product_trees>
-                    </children>
-                </products>
+                <trsreport_manage_archived_products>
+                    <title>Manage Products Archive</title>
+                    <action>adminhtml/catalog_product/index/show_archive/true</action>
+                </trsreport_manage_archived_products>
             </children>
         </catalog>
     </menu>
@@ -93,6 +109,21 @@
                             <trsreports module="trs">
                                 <title>TRS Reports</title>
                                 <children>
+                                    <trsreport_attributesetsales module="trs">
+                                        <title>Category Sales Report</title>
+                                    </trsreport_attributesetsales>
+                                    <trsreport_futureforecast>
+                                        <title>Future Forecast</title>
+                                    </trsreport_futureforecast>
+                                    <trsreport_productsales module="trs">
+                                        <title>Individual Sales Report</title>
+                                    </trsreport_productsales>
+                                    <trsreport_intransitvalue module="trs">
+                                        <title>In-Transit Value</title>
+                                    </trsreport_intransitvalue>
+                                    <trsreport_instockvalue module="trs">
+                                        <title>Inventory Value</title>
+                                    </trsreport_instockvalue>
                                     <trsreport_lowavailablestock module="trs">
                                         <title>Low Stock - Warehouse</title>
                                     </trsreport_lowavailablestock>
@@ -102,27 +133,15 @@
                                     <trsreport_outofstock module="trs">
                                         <title>Out of Stock</title>
                                     </trsreport_outofstock>
-                                    <trsreport_futureforecast>
-                                        <title>Future Forecast</title>
-                                    </trsreport_futureforecast>
-                                    <trsreport_productsales module="trs">
-                                        <title>Individual Sales Report</title>
-                                    </trsreport_productsales>
-                                    <trsreport_attributesetsales module="trs">
-                                        <title>Category Sales Report</title>
-                                    </trsreport_attributesetsales>
-                                    <trsreport_instockvalue module="trs">
-                                        <title>Inventory Value</title>
-                                    </trsreport_instockvalue>
-                                    <trsreport_intransitvalue module="trs">
-                                        <title>In-Transit Value</title>
-                                    </trsreport_intransitvalue>
                                     <trsreport_purchaseorderoverview module="trs">
                                         <title>P/O Overview</title>
                                     </trsreport_purchaseorderoverview>
                                     <trsreport_profitandsales module="trs">
                                         <title>Profit and Sales</title>
                                     </trsreport_profitandsales>
+                                    <trsreport_salestax>
+                                        <title>Sales Tax</title>
+                                    </trsreport_salestax>
                                     <trsreport_manage>
                                         <title>Manage Reports</title>
                                         <children>
@@ -132,6 +151,9 @@
                                             <trsreport_manage_productpieces>
                                                 <title>Product Pieces</title>
                                             </trsreport_manage_productpieces>
+                                            <trsreport_manage_product_trees>
+                                                <title>Manage Product Trees</title>
+                                            </trsreport_manage_product_trees>
                                         </children>
                                     </trsreport_manage>
                                 </children>
@@ -140,19 +162,9 @@
                     </report>
                     <catalog>
                         <children>
-                            <products>
-                                <children>
-                                    <trs_alt_catalog_products>
-                                        <title>Manage Products (Alt)</title>
-                                    </trs_alt_catalog_products>
-                                    <trsreport_manage_archived_products>
-                                        <title>Manage Products Archive</title>
-                                    </trsreport_manage_archived_products>
-                                    <trsreport_manage_product_trees>
-                                        <title>Manage Product Trees</title>
-                                    </trsreport_manage_product_trees>
-                                </children>
-                            </products>
+                            <trsreport_manage_archived_products>
+                                <title>Manage Products Archive</title>
+                            </trsreport_manage_archived_products>
                         </children>
                     </catalog>
                 </children>

@@ -39,6 +39,8 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $this->renderLayout();
     }
 
+
+
     public function fetchSalesReportDataAction() {
         $salesData = Mage::helper('trsreports/report_graph_data')
             ->getSalesReportData(
@@ -48,7 +50,6 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
                 $this->_getFrom(),
                 $this->_getTo(),
                 $this->_getGranularity());
-        //'simple');
 
         $this->getResponse()->setHeader('Content-type', 'text/javascript');
         $this->getResponse()->setBody($salesData);
@@ -63,7 +64,6 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
                 $this->_getFrom(),
                 $this->_getTo(),
                 $this->_getGranularity());
-        //'attrSet');
 
         $this->getResponse()->setHeader('Content-type', 'text/javascript');
         $this->getResponse()->setBody($salesData);
@@ -194,6 +194,40 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
                 'to' => date('m/d/Y')));
 
         $this->renderLayout();
+    }
+
+    public function salestaxAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_SalesTax.grid');
+        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
+
+        $this->_initReportAction(array(
+                $gridBlock,
+                $filterFormBlock
+            ),
+            array('from' => date('m/d/Y'),
+                'to' => date('m/d/Y')));
+
+        $this->renderLayout();
+    }
+
+    public function exportSalesTaxCsvAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()
+            ->createBlock('trsreports/adminhtml_report_SalesTax_grid');
+
+
+
+        $this->_initReportAction([ $gridBlock ],
+            [ 'from' => date('m/d/Y'),
+                'to' => date('m/d/Y'),
+                'report_code' => 'SalesTax' ]);
+
+        $content = $gridBlock->getCsvFile();
+        $this->_prepareDownloadResponse('foo.csv', $content);
+
+//        $this->renderLayout();
+
     }
 
     public function _initReportAction($blocks, $defaults = null, $additionalFilterDates = null)
