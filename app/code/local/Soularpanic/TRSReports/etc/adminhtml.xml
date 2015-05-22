@@ -38,6 +38,10 @@
                             <title>In-Transit Value</title>
                             <action>adminhtml/admin_trsreports/intransitvalue</action>
                         </trsreport_intransitvalue>
+                        <trsreport_internationalsalesoverview>
+                            <title>International Sales Overview</title>
+                            <action>adminhtml/admin_trsreports/internationalsalesoverview</action>
+                        </trsreport_internationalsalesoverview>
                         <trsreport_productsales>
                             <title>Individual Sales Report</title>
                             <action>adminhtml/admin_trsreports/productsales</action>
@@ -118,6 +122,9 @@
                                     <trsreport_productsales module="trs">
                                         <title>Individual Sales Report</title>
                                     </trsreport_productsales>
+                                    <trsreport_internationalsalesoverview>
+                                        <title>International Sales Overview</title>
+                                    </trsreport_internationalsalesoverview>
                                     <trsreport_intransitvalue module="trs">
                                         <title>In-Transit Value</title>
                                     </trsreport_intransitvalue>

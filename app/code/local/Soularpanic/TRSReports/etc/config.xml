@@ -128,11 +128,21 @@
             <trsreports_sales_tax_report>
                 <schedule>
                     <cron_expr>1 0 1 * *</cron_expr>
+                    <!--<cron_expr>* * * * *</cron_expr>-->
                 </schedule>
                 <run>
-                    <model>trsreports/reports_schedule::emailSalesTaxReport</model>
+                    <model>trsreports/observers_reports_schedule::emailSalesTaxReport</model>
                 </run>
             </trsreports_sales_tax_report>
+            <trsreports_international_sales_overview_report>
+                <schedule>
+                    <cron_expr>1 0 1 * *</cron_expr>
+                    <!--<cron_expr>* * * * *</cron_expr>-->
+                </schedule>
+                <run>
+                    <model>trsreports/observers_reports_schedule::emailInternationalSalesOverviewReport</model>
+                </run>
+            </trsreports_international_sales_overview_report>
         </jobs>
     </crontab>
 
@@ -141,6 +151,9 @@
             <sales_tax_report>
                 <recipients>josh@theretrofitsource.com</recipients>
             </sales_tax_report>
+            <international_sales_reports>
+                <recipients>josh@theretrofitsource.com</recipients>
+            </international_sales_reports>
         </trs_automated_reports>
     </default>
 </config>

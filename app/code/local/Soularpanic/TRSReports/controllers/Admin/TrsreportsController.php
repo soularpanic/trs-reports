@@ -216,18 +216,42 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $gridBlock = $this->getLayout()
             ->createBlock('trsreports/adminhtml_report_SalesTax_grid');
 
-
-
         $this->_initReportAction([ $gridBlock ],
             [ 'from' => date('m/d/Y'),
                 'to' => date('m/d/Y'),
                 'report_code' => 'SalesTax' ]);
 
         $content = $gridBlock->getCsvFile();
-        $this->_prepareDownloadResponse('foo.csv', $content);
+        $this->_prepareDownloadResponse('SalesTax.csv', $content);
+    }
 
-//        $this->renderLayout();
+    public function internationalsalesoverviewAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_InternationalSalesOverview.grid');
+        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
+        $this->_initReportAction(array(
+                $gridBlock,
+                $filterFormBlock
+            ),
+            array('from' => date('m/d/Y'),
+                'to' => date('m/d/Y')));
+
+        $this->renderLayout();
+    }
+
+    public function exportInternationalSalesOverviewCsvAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()
+            ->createBlock('trsreports/adminhtml_report_InternationalSalesOverview_CsvGrid');
+
+        $this->_initReportAction([ $gridBlock ],
+            [ 'from' => date('m/d/Y'),
+                'to' => date('m/d/Y'),
+                'report_code' => 'InternationalSalesOverview' ]);
+
+        $content = $gridBlock->getCsvFile();
+        $this->_prepareDownloadResponse('InternationalSalesOverview.csv', $content);
     }
 
     public function _initReportAction($blocks, $defaults = null, $additionalFilterDates = null)
