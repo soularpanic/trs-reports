@@ -26,10 +26,18 @@
                     <title>TRS Reports Dashboard</title>
                     <action>adminhtml/admin_trsreports/index</action>
                     <children>
+                        <!--<trsreport_test>-->
+                            <!--<title>Daily Metric Test</title>-->
+                            <!--<action>adminhtml/admin_trsreports/testDailyMetric</action>-->
+                        <!--</trsreport_test>-->
                         <trsreport_attributesetsales>
-                            <title>Category Sales Report</title>
+                            <title>Category Sales</title>
                             <action>adminhtml/admin_trsreports/attributesetsales</action>
                         </trsreport_attributesetsales>
+                        <trsreport_dailymetric>
+                            <title>Daily Metrics</title>
+                            <action>adminhtml/admin_trsreports/dailymetric</action>
+                        </trsreport_dailymetric>
                         <trsreport_futureforecast>
                             <title>Future Forecast</title>
                             <action>adminhtml/admin_trsreports/futureforecast</action>
@@ -43,7 +51,7 @@
                             <action>adminhtml/admin_trsreports/internationalsalesoverview</action>
                         </trsreport_internationalsalesoverview>
                         <trsreport_productsales>
-                            <title>Individual Sales Report</title>
+                            <title>Individual Sales</title>
                             <action>adminhtml/admin_trsreports/productsales</action>
                         </trsreport_productsales>
                         <trsreport_instockvalue>
@@ -113,14 +121,20 @@
                             <trsreports module="trs">
                                 <title>TRS Reports</title>
                                 <children>
+                                    <!--<trsreport_test>-->
+                                        <!--<title>Daily Metric Test</title>-->
+                                    <!--</trsreport_test>-->
                                     <trsreport_attributesetsales module="trs">
-                                        <title>Category Sales Report</title>
+                                        <title>Category Sales</title>
                                     </trsreport_attributesetsales>
+                                    <trsreport_dailymetric>
+                                        <title>Daily Metrics</title>
+                                    </trsreport_dailymetric>
                                     <trsreport_futureforecast>
                                         <title>Future Forecast</title>
                                     </trsreport_futureforecast>
                                     <trsreport_productsales module="trs">
-                                        <title>Individual Sales Report</title>
+                                        <title>Individual Sales</title>
                                     </trsreport_productsales>
                                     <trsreport_internationalsalesoverview>
                                         <title>International Sales Overview</title>

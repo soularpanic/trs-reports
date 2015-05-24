@@ -254,6 +254,41 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $this->_prepareDownloadResponse('InternationalSalesOverview.csv', $content);
     }
 
+    public function dailymetricAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_DailyMetric.grid');
+        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
+
+        $this->_initReportAction(array(
+                $gridBlock,
+                $filterFormBlock
+            ),
+            array('from' => date('m/d/Y'),
+                'to' => date('m/d/Y')));
+
+        $this->renderLayout();
+    }
+
+    public function exportDailyMetricCsvAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()
+            ->createBlock('trsreports/adminhtml_report_DailyMetric_Grid');
+
+        $this->_initReportAction([ $gridBlock ],
+            [ 'from' => date('m/d/Y'),
+                'to' => date('m/d/Y'),
+                'report_code' => 'DailyMetric' ]);
+
+        $content = $gridBlock->getCsvFile();
+        $this->_prepareDownloadResponse('DailyMetrics.csv', $content);
+    }
+
+    public function testDailyMetricAction() {
+        Mage::log("testDailyMetricAction controller method - start", null, 'trs_reports.log');
+        $model = Mage::getModel('trsreports/observers_reports_schedule');
+        $model->updateDailyMetrics();
+    }
+
     public function _initReportAction($blocks, $defaults = null, $additionalFilterDates = null)
     {
         if (!is_array($blocks)) {

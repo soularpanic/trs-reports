@@ -10,8 +10,8 @@
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
             <groups>
-                <sales_tax_report translate="label">
-                    <label>Sales Tax Report</label>
+                <daily_metrics_report translate="label">
+                    <label>Daily Metrics Report</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>100</sort_order>
                     <show_in_default>1</show_in_default>
@@ -19,7 +19,7 @@
                     <show_in_store>1</show_in_store>
                     <fields>
                         <recipients translate="label">
-                            <label>TRS Sales Tax Report Recipients</label>
+                            <label>TRS Daily Metrics Report Recipients</label>
                             <comment>Separate recipients with a comma</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>100</sort_order>
@@ -28,11 +28,11 @@
                             <show_in_store>0</show_in_store>
                         </recipients>
                     </fields>
-                </sales_tax_report>
+                </daily_metrics_report>
                 <international_sales_reports translate="label">
                     <label>International Sales Report</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>100</sort_order>
+                    <sort_order>150</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
@@ -48,6 +48,25 @@
                         </recipients>
                     </fields>
                 </international_sales_reports>
+                <sales_tax_report translate="label">
+                    <label>Sales Tax Report</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>100</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <recipients translate="label">
+                            <label>TRS Sales Tax Report Recipients</label>
+                            <comment>Separate recipients with a comma</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </recipients>
+                    </fields>
+                </sales_tax_report>
             </groups>
         </trs_automated_reports>
         <trs_logging>
