@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Soularpanic_TRSReports>
-            <version>0.0.7</version>
+            <version>0.0.8</version>
         </Soularpanic_TRSReports>
     </modules>
 
@@ -42,6 +42,10 @@
                     <product_tree_node>
                         <table>trs_product_tree_nodes</table>
                     </product_tree_node>
+
+                    <daily_metric>
+                        <table>trsreports_daily_metrics</table>
+                    </daily_metric>
 
                 </entities>
             </trsreports_resource>
@@ -89,6 +93,16 @@
                 </observers>
             </catalog_product_collection_load_before>
         </events>
+
+        <template>
+            <email>
+                <test_email_template module="TRSReports">
+                    <label>Test Label</label>
+                    <file>trsreports_proto.html</file>
+                    <type>html</type>
+                </test_email_template>
+            </email>
+        </template>
     </global>
 
     <admin>
@@ -112,4 +126,58 @@
             </updates>
         </layout>
     </adminhtml>
+
+    <crontab>
+        <jobs>
+            <trsreports_update_daily_metrics>
+                <schedule>
+                    <cron_expr>0 3 * * *</cron_expr> <!-- 0300 daily -->
+                    <!--<cron_expr>* * * * *</cron_expr>-->
+                </schedule>
+                <run>
+                    <model>trsreports/observers_reports_schedule::updateDailyMetrics</model>
+                </run>
+            </trsreports_update_daily_metrics>
+            <trsreports_daily_metrics_report>
+                <schedule>
+                    <cron_expr>0 4 * * *</cron_expr> <!-- 0400 daily -->
+                </schedule>
+                <run>
+                    <model>trsreports/observers_reports_schedule::emailDailyMetricsReport</model>
+                </run>
+            </trsreports_daily_metrics_report>
+            <trsreports_sales_tax_report>
+                <schedule>
+                    <cron_expr>1 0 1 * *</cron_expr> <!-- 0001 each first of the month -->
+                    <!--<cron_expr>* * * * *</cron_expr>-->
+                </schedule>
+                <run>
+                    <model>trsreports/observers_reports_schedule::emailSalesTaxReport</model>
+                </run>
+            </trsreports_sales_tax_report>
+            <trsreports_international_sales_overview_report>
+                <schedule>
+                    <cron_expr>1 0 1 * *</cron_expr> <!-- 0001 each first of the month -->
+                    <!--<cron_expr>* * * * *</cron_expr>-->
+                </schedule>
+                <run>
+                    <model>trsreports/observers_reports_schedule::emailInternationalSalesOverviewReport</model>
+                </run>
+            </trsreports_international_sales_overview_report>
+        </jobs>
+    </crontab>
+
+    <default>
+        <trs_automated_reports>
+            <sales_tax_report>
+                <recipients>josh@theretrofitsource.com</recipients>
+            </sales_tax_report>
+            <international_sales_reports>
+                <recipients>josh@theretrofitsource.com</recipients>
+            </international_sales_reports>
+            <daily_metrics_report>
+                <recipients>josh@theretrofitsource.com</recipients>
+            </daily_metrics_report>
+        </trs_automated_reports>
+    </default>
 </config>

@@ -3,6 +3,7 @@ abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract
     extends Mage_Adminhtml_Block_Report_Grid_Abstract {
 
     protected $_columnGroupBy = 'derived_id';
+    protected $_massactionIdField = 'derived_sku';
 
     public function getCollection()
     {
@@ -31,7 +32,7 @@ abstract class Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract
 
     protected function _prepareMassAction() {
         parent::_prepareMassaction();
-        $this->setMassactionIdField('derived_sku');
+        $this->setMassactionIdField($this->_massactionIdField);
         $this->getMassActionBlock()->setFormFieldName('sku');
         $reportCode = $this->_getReportCode();
         $this->getMassactionBlock()->addItem(

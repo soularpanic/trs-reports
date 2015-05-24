@@ -75,19 +75,10 @@ class Soularpanic_TRSReports_Helper_Collection
         $this->log("\n\n==INVENTORY SELECT:==\n".$inventorySelect->__toString());
 
         $suppliersSelect = $this->_getNewSelect();
-//        $suppliersSelect
-//            ->from(['pop' => $this->getTable('Purchase/OrderProduct')],
-//                ['product_id' => 'pop_product_id'])
-//            ->joinLeft(['po' => $this->getTable('Purchase/Order')],
-//                "pop.pop_order_num = po.po_num",
-//                [])
-//            ->joinLeft(['ps' => $this->getTable('Purchase/Supplier')],
-//                "po.po_sup_num = ps.sup_id",
-//                [ 'suppliers' => "(GROUP_CONCAT(DISTINCT ps.sup_name ORDER BY ps.sup_name ASC))"])
-//            ->group('pop.pop_product_id');
         $suppliersSelect
             ->from([ 'pps' => $this->getTable('Purchase/ProductSupplier') ],
-                [ 'product_id' => 'pps_product_id' ])
+                [ 'product_id' => 'pps_product_id',
+                    'unit_price' => "max(pps_last_price)" ])
             ->joinLeft([ 'ps' => $this->getTable('Purchase/Supplier') ],
                 "ps.sup_id = pps.pps_supplier_num",
                 [ 'suppliers' => "(GROUP_CONCAT(DISTINCT ps.sup_name ORDER BY ps.sup_name ASC))" ])
@@ -113,7 +104,8 @@ class Soularpanic_TRSReports_Helper_Collection
                     'qty' ])
             ->joinLeft([ 'suppliers' => $suppliersSelect ],
                 "suppliers.product_id = inventory.product_id",
-                [ "suppliers" ])
+                [ "suppliers",
+                    'unit_price' => "ifnull(unit_price, 0)" ])
             ->joinLeft([ 'pos' => $wrappedPOs ],
                 'pos.product_id = inventory.product_id',
                 [ 'purchase_orders',
@@ -128,28 +120,13 @@ class Soularpanic_TRSReports_Helper_Collection
 
     public function getPurchaseOrdersSelect() {
         $select = $this->_getNewSelect();
-//        $select
-//            ->from([ 'pps' => $this->getTable('Purchase/ProductSupplier') ],
-//                [ 'product_id' => 'pps_product_id' ])
-//            ->joinLeft([ 'ps' => $this->getTable('Purchase/Supplier') ],
-//                "ps.sup_id = pps.pps_supplier_num",
-//                [ 'sup_name' ])
-//            ->joinLeft( ['pop' => $this->getTable('Purchase/OrderProduct') ],
-//                "pop.pop_product_id = pps.pps_product_id AND pop.pop_supplied_qty < pop.pop_qty",
-//                [ 'pop_order_num' => 'pop_order_num',
-//                    'pop_supplied_qty'    => "ifnull(pop_supplied_qty, 0)",
-//                    'pop_qty'           => "ifnull(pop_qty, 0)" ])
-//            ->joinLeft( [ 'po' => $this->getTable('Purchase/Order') ],
-//                "po.po_num = pop.pop_order_num AND po.po_status in ('waiting_for_delivery')",
-//                [ 'po_order_id',
-//                    'po_supply_date' ])
-//            ->where('po.po_num is not null');
         $select
             ->from([ 'pop' => $this->getTable('Purchase/OrderProduct') ],
                 [ 'product_id' => 'pop_product_id',
                     'pop_order_num' => 'pop_order_num',
                     'pop_supplied_qty' => "ifnull(pop_supplied_qty, 0)",
-                    "pop_qty" => "ifnull(pop_qty, 0)" ])
+                    "pop_qty" => "ifnull(pop_qty, 0)",
+                    "pop_price" => "pop_price_ht" ])
             ->joinLeft([ 'po' => $this->getTable('Purchase/Order') ],
                 "po.po_num = pop.pop_order_num AND po.po_status in ('waiting_for_delivery')",
                 [ 'po_order_id',
