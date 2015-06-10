@@ -96,7 +96,7 @@
 
         <template>
             <email>
-                <test_email_template module="TRSReports">
+                <test_email_template module="trsreports">
                     <label>Test Label</label>
                     <file>trsreports_proto.html</file>
                     <type>html</type>
