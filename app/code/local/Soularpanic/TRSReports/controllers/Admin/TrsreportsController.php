@@ -357,6 +357,10 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         return $var;
     }
 
+    protected function _isAllowed() {
+        return Mage::getSingleton('admin/session')->isAllowed('report/trsreports');
+    }
+
     protected function _shouldCheckSession() {
         return (Mage::app()->getRequest()->getParam('ignoreSession') ? false : true);
     }
