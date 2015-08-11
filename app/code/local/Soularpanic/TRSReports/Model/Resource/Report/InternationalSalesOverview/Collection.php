@@ -53,7 +53,6 @@ class Soularpanic_TRSReports_Model_Resource_Report_InternationalSalesOverview_Co
                 "$_orderAlias.entity_id = $_addressAlias.parent_id",
                 [ "country_id" ])
             ->where("$_orderAlias.created_at between '{$this->_from}' and '{$this->_to}'")
-            ->where("$_addressAlias.country_id != 'US'")
             ->where("$_addressAlias.address_type = 'shipping'")
             ->group("$_addressAlias.country_id");
 
