@@ -78,7 +78,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_LowStockAvailability_Collecti
                 "attribute_set_name")
             ->where("time_in_days is not null")
             ->where("catalog.type_id = 'simple'")
-            ->where('attribute_set_name not in("Closeouts", "Internal Use", "TRS-ZHacks")');
+            ->where('attribute_set_name not in("Internal Use", "TRS-ZHacks")');
 
         $this->log("LowStockAvailability SQL:\n".$_select->__toString());
     }

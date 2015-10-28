@@ -32,7 +32,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_FutureForecast_Grid
         ));
 
         $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
-            ->addFieldToFilter('attribute_set_name', [ 'nin' => [ "Closeouts", "Internal Use", "TRS-ZHacks" ] ])
+            ->addFieldToFilter('attribute_set_name', [ 'nin' => [ "Internal Use", "TRS-ZHacks" ] ])
             ->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
             ->load()
             ->toOptionHash();
