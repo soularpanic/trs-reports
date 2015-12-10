@@ -76,12 +76,12 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
         $today = date('m/d/Y');
-        $fiveWeeksAgo = date('m/d/Y', time() - (5 * 7 * 24 * 60 * 60));
+        $tenWeeksAgo = date('m/d/Y', time() - (10 * 7 * 24 * 60 * 60));
         $this->_initReportAction(array(
                 $gridBlock,
                 $filterFormBlock
             ),
-            array('from' => $fiveWeeksAgo,
+            array('from' => $tenWeeksAgo,
                 'to' => $today));
 
         $this->renderLayout();
@@ -94,12 +94,12 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
         $today = date('m/d/Y');
-        $fiveWeeksAgo = date('m/d/Y', time() - (5 * 7 * 24 * 60 * 60));
+        $tenWeeksAgo = date('m/d/Y', time() - (10 * 7 * 24 * 60 * 60));
         $this->_initReportAction(array(
                 $gridBlock,
                 $filterFormBlock
             ),
-            array('from' => $fiveWeeksAgo,
+            array('from' => $tenWeeksAgo,
                 'to' => $today));
 
         $this->renderLayout();
