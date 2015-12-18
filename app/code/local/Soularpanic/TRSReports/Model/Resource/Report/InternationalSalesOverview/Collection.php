@@ -44,8 +44,9 @@ class Soularpanic_TRSReports_Model_Resource_Report_InternationalSalesOverview_Co
             ->from([ $_orderAlias => $this->getTable('sales/order') ],
                 [ 'entity_id',
                     'order_count' => "count(distinct $_orderAlias.entity_id)",
-                    'sold_value' => "sum(grand_total)",
+                    'sold_value' => "sum(grand_total) - sum(ifnull(total_refunded, 0))",
                     'credit_value' => "sum(ifnull(customer_credit_amount, 0))",
+                    'refund_value' => "sum(ifnull(total_refunded, 0))",
                     'total_value' => "sum(grand_total) + sum(ifnull(customer_credit_amount, 0))",
                     'order_numbers' => "group_concat(distinct concat($_orderAlias.entity_id, ':', $_orderAlias.increment_id))" ])
             ->joinLeft([ $_addressAlias => $this->getTable('sales/order_address') ],
@@ -59,6 +60,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_InternationalSalesOverview_Co
             [ "order_count",
                 "sold_value",
                 "credit_value",
+                "refund_value",
                 "total_value",
                 "order_numbers" ])
             ->joinLeft([ $_countryAlias => $this->getTable('directory/country') ],

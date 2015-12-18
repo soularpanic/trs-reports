@@ -20,8 +20,29 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InternationalSalesOverview_G
             'index'     => 'region'
         ]);
 
-        $this->addColumn('total_value', [
+        $this->addColumn('sold_value', [
             'header'        => 'Sales',
+            'index'         => 'sold_value',
+            'renderer'      => 'adminhtml/report_grid_column_renderer_currency',
+            'currency_code' => 'USD'
+        ]);
+
+        $this->addColumn('credit_value', [
+            'header'        => 'Credits',
+            'index'         => 'credit_value',
+            'renderer'      => 'adminhtml/report_grid_column_renderer_currency',
+            'currency_code' => 'USD'
+        ]);
+
+        $this->addColumn('refund_value', [
+            'header'        => 'Refunds',
+            'index'         => 'refund_value',
+            'renderer'      => 'adminhtml/report_grid_column_renderer_currency',
+            'currency_code' => 'USD'
+        ]);
+
+        $this->addColumn('total_value', [
+            'header'        => 'Total',
             'index'         => 'total_value',
             'renderer'      => 'adminhtml/report_grid_column_renderer_currency',
             'currency_code' => 'USD'
