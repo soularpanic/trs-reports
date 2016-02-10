@@ -97,11 +97,12 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_LowStockAvailability_Grid
 
     public function getRowClass($row) {
         $remainingWeeks = $row->getData('estimated_remaining_weeks');
+        $configHelper = Mage::helper('trsreports/report_config');
         if ($remainingWeeks) {
-            if ($remainingWeeks < 3) {
+            if ($remainingWeeks < $configHelper->getLowStockLowMediumThreshold()) {
                 return 'critical';
             }
-            elseif ($remainingWeeks < 6) {
+            elseif ($remainingWeeks < $configHelper->getLowStockMediumHighThreshold()) {
                 return 'warning';
             }
             else {

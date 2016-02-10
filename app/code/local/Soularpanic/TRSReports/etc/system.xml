@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <config>
     <sections>
-        <trs_automated_reports translate="label">
-            <label>Automated Reports</label>
+        <trs_reports translate="label">
+            <label>TRS Reports</label>
             <tab>trs</tab>
             <frontend_type>text</frontend_type>
             <sort_order>700</sort_order>
@@ -67,8 +67,38 @@
                         </recipients>
                     </fields>
                 </sales_tax_report>
+                <low_stock_by_availability_report translate="label">
+                    <label>Low Stock By Availability Reports</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>250</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <low_medium_threshold translate="label">
+                            <label>Low-Medium Availability Threshold</label>
+                            <comment>In Weeks</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-number</validate>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </low_medium_threshold>
+                        <medium_high_threshold translate="label">
+                            <label>Medium-High Availability Threshold</label>
+                            <comment>In Weeks</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-number</validate>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </medium_high_threshold>
+                    </fields>
+                </low_stock_by_availability_report>
             </groups>
-        </trs_automated_reports>
+        </trs_reports>
         <trs_logging>
             <groups>
                 <logs>

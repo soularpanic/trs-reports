@@ -7,10 +7,10 @@
                         <children>
                             <config>
                                 <children>
-                                    <trs_automated_reports translate="title">
-                                        <title>Automated Reports</title>
+                                    <trs_reports translate="title">
+                                        <title>TRS Reports</title>
                                         <sort_order>50</sort_order>
-                                    </trs_automated_reports>
+                                    </trs_reports>
                                 </children>
                             </config>
                         </children>
