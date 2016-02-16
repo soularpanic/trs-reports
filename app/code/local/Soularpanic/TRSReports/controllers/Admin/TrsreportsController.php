@@ -126,7 +126,10 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
         $today = date('m/d/Y');
-        $fifteenWeeksAgo = date('m/d/Y', time() - (15 * 7 * 24 * 60 * 60));
+        $helper = Mage::helper('trsreports/report_config');
+        $averagePeriod = $helper->getFutureForecastAveragePeriod();
+        $weeksAgo = date('m/d/Y', time() - ($averagePeriod * 7 * 24 * 60 * 60));
+        $helper->log("calculating future forecast over $averagePeriod, i.e. since $weeksAgo");
 
         $future = $this->_store('future', true);
         if (!$future) {
@@ -142,7 +145,7 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
                 $gridBlock,
                 $filterFormBlock
             ),
-            array('from' => $fifteenWeeksAgo,
+            array('from' => $weeksAgo,
                 'to' => $today,
                 'future' => $future,
                 'growth_percent' => $growthPercent),

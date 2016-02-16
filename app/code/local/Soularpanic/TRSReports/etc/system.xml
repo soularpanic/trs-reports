@@ -97,6 +97,26 @@
                         </medium_high_threshold>
                     </fields>
                 </low_stock_by_availability_report>
+                <future_forecast_report translate="label">
+                    <label>Future Forecast Report</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>300</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <average_period translate="label">
+                            <label>Average Period</label>
+                            <comment>Current sales average to be calculated over n weeks</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-number</validate>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </average_period>
+                    </fields>
+                </future_forecast_report>
             </groups>
         </trs_reports>
         <trs_logging>
