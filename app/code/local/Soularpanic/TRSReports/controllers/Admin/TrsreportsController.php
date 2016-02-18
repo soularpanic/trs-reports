@@ -133,11 +133,6 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $weeksAgo = date($dateFormatString, time() - ($averagePeriod * 7 * 24 * 60 * 60));
         $helper->log("calculating future forecast over $averagePeriod, i.e. since $weeksAgo");
 
-        $future = $this->_store('future', true);
-        if (!$future) {
-            $future = $today;
-        }
-
         $growthPercent = $this->_store('growth_percent', true);
         if (!$growthPercent) {
             $growthPercent = "0";
@@ -149,7 +144,9 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $oneYear = new DateInterval('P1Y');
         $futureStartDate = DateTime::createFromFormat($dateFormatString, $futureStart);
         $pastStartDate = $futureStartDate->sub($oneYear);
-        $pastStart = $pastStartDate->format($dateFormatString);
+        if ($pastStartDate > new DateTime("now")) {
+            Mage::getSingleton('adminhtml/session')->addError("Future date should be less than a year from now to generate meaningful results");
+        }
 
 
         $this->_initReportAction(array(
