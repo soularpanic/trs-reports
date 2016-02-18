@@ -82,7 +82,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_FutureForecast_Grid
             'index'             => 'future_qty',
             'sortable'          => false,
             'filter'            => false,
-            'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FlooredDecimal',
+            'renderer'          => 'trsreports/adminhtml_widget_grid_column_renderer_FutureForecast_FutureQtyWithCalculations',
             'decimal_places'    => 0
         ));
 

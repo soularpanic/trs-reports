@@ -125,10 +125,12 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $gridBlock = $this->getLayout()->getBlock('adminhtml_report_FutureForecast.grid');
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
-        $today = date('m/d/Y');
+        $dateFormatString = 'm/d/Y';
+
+        $today = date($dateFormatString);
         $helper = Mage::helper('trsreports/report_config');
         $averagePeriod = $helper->getFutureForecastAveragePeriod();
-        $weeksAgo = date('m/d/Y', time() - ($averagePeriod * 7 * 24 * 60 * 60));
+        $weeksAgo = date($dateFormatString, time() - ($averagePeriod * 7 * 24 * 60 * 60));
         $helper->log("calculating future forecast over $averagePeriod, i.e. since $weeksAgo");
 
         $future = $this->_store('future', true);
@@ -141,15 +143,26 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
             $growthPercent = "0";
         }
 
+        $futureStart = $this->_store('future_start', true) ?: $today;
+        $futureEnd = $this->_store('future_end', true) ?: $today;
+
+        $oneYear = new DateInterval('P1Y');
+        $futureStartDate = DateTime::createFromFormat($dateFormatString, $futureStart);
+        $pastStartDate = $futureStartDate->sub($oneYear);
+        $pastStart = $pastStartDate->format($dateFormatString);
+
+
         $this->_initReportAction(array(
                 $gridBlock,
                 $filterFormBlock
             ),
-            array('from' => $weeksAgo,
+            [ 'from' => $weeksAgo,
                 'to' => $today,
-                'future' => $future,
-                'growth_percent' => $growthPercent),
-            array('future'));
+                'future_start' => $futureStart,
+                'future_end' => $futureEnd,
+                'growth_percent' => $growthPercent ],
+            [ 'future_start',
+                'future_end' ]);
 
         $this->renderLayout();
     }

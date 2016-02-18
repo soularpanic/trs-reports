@@ -10,12 +10,20 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_FutureForecast_Form
             'label' => $this->__("Growth Percent"),
             'title' => $this->__("Growth Percent")
         ));
-        $fieldset->addField('future', 'date', array(
-            'name'      => 'future',
+        $fieldset->addField('future_start', 'date', array(
+            'name'      => 'future_start',
             'format'    => Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT),
             'image'     => $this->getSkinUrl('images/grid-cal.gif'),
-            'label'     => Mage::helper('reports')->__('Future'),
-            'title'     => Mage::helper('reports')->__('Future'),
+            'label'     => Mage::helper('reports')->__('Future Start'),
+            'title'     => Mage::helper('reports')->__('Future Start'),
+            'required'  => true
+        ));
+        $fieldset->addField('future_end', 'date', array(
+            'name'      => 'future_end',
+            'format'    => Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT),
+            'image'     => $this->getSkinUrl('images/grid-cal.gif'),
+            'label'     => Mage::helper('reports')->__('Future End'),
+            'title'     => Mage::helper('reports')->__('Future End'),
             'required'  => true
         ));
     }
