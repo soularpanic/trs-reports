@@ -18,7 +18,8 @@ class Soularpanic_TRSReports_Model_Resource_Excludedproduct_Grid_Collection
                 ['sku' ])
             ->join(['product_name' => $productName->getBackendTable()],
                 "`product_name`.entity_id = `$mainTable`.product_id and `product_name`.attribute_id = '{$productName->getId()}'",
-                [ 'product_name' => 'value' ]);
+                [ 'product_name' => 'value' ])
+            ->group("$mainTable.entity_id");
 
         Mage::log("manage exclusion sql:\n".$_select->__toString(), null, 'trs_reports.log');
     }
