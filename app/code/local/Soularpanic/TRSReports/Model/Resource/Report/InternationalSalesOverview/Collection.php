@@ -52,7 +52,9 @@ class Soularpanic_TRSReports_Model_Resource_Report_InternationalSalesOverview_Co
             ->joinLeft([ $_addressAlias => $this->getTable('sales/order_address') ],
                 "$_orderAlias.entity_id = $_addressAlias.parent_id",
                 [ "country_id" ])
-            ->where("$_orderAlias.created_at between '{$this->_from}' and '{$this->_to}'")
+            // Use CST since that is what Braintree uses for its reports
+            ->where("$_orderAlias.created_at between CONVERT_TZ('{$this->_from}', '-06:00', '+00:00') and CONVERT_TZ(DATE_ADD('{$this->_to}', INTERVAL '23:59:59' HOUR_SECOND), '-06:00', '+00:00')")
+            ->where("$_orderAlias.status not in ('fraud', 'canceled', 'canceled_request')")
             ->where("$_addressAlias.address_type = 'shipping'")
             ->group("$_addressAlias.country_id");
 
