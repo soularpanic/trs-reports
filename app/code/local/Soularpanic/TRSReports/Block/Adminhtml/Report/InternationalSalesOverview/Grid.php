@@ -27,6 +27,13 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_InternationalSalesOverview_G
             'currency_code' => 'USD'
         ]);
 
+        $this->addColumn('cash_value', [
+            'header'        => 'Cash Sales',
+            'index'         => 'cash_value',
+            'renderer'      => 'adminhtml/report_grid_column_renderer_currency',
+            'currency_code' => 'USD'
+        ]);
+
         $this->addColumn('credit_value', [
             'header'        => 'Credits',
             'index'         => 'credit_value',
