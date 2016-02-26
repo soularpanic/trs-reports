@@ -34,35 +34,53 @@ class Soularpanic_TRSReports_Model_Resource_Report_InternationalSalesOverview_Co
         $_helper = Mage::helper('trsreports/collection');
         $_select = $this->getSelect();
 
-        $_internationalSelect = $_helper->_getNewSelect();
+        $_startDateSql = "CONVERT_TZ('{$this->_from}', '-06:00', '+00:00')";
+        $_endDateSql = "CONVERT_TZ(DATE_ADD('{$this->_to}', INTERVAL '23:59:59' HOUR_SECOND), '-06:00', '+00:00')";
+
+
+        $_internationalSalesSelect = $_helper->_getNewSelect();
+        $_internationalRefundsSelect = $_helper->_getNewSelect();
 
         $_internationalAlias = self::TOP_LEVEL_TABLE_ALIAS;
         $_orderAlias = 'orders';
         $_addressAlias = 'addresses';
+        $_creditAlias = 'refunds';
         $_paymentAlias = 'payments';
         $_countryAlias = 'countries';
-        $_internationalSelect
+
+        $_internationalRefundsSelect
+            ->from($this->getTable('sales/creditmemo'),
+                [ 'order_id' => 'order_id',
+                    'refund_value' => 'sum(grand_total)',
+                    'created_at' => 'created_at' ])
+            ->where("created_at between $_startDateSql and $_endDateSql")
+            ->group("order_id");
+        $this->log("Intl Refunds Select:\n".$_internationalRefundsSelect->__toString());
+
+        $_internationalSalesSelect
             ->from([ $_orderAlias => $this->getTable('sales/order') ],
                 [ "entity_id" => "$_orderAlias.entity_id",
                     'order_count' => "count(distinct $_orderAlias.entity_id)",
-                    'sold_value' => "sum(grand_total)",
-                    'credit_value' => "sum(ifnull(customer_credit_amount, 0))",
-                    'refund_value' => "sum(ifnull(total_refunded, 0))",
+                    'sold_value' => "sum(if($_orderAlias.created_at between $_startDateSql and $_endDateSql, grand_total, 0))",
+                    'credit_value' => "sum(if($_orderAlias.created_at between $_startDateSql and $_endDateSql, ifnull(customer_credit_amount, 0), 0))",
                     'total_value' => "sum(grand_total) + sum(ifnull(customer_credit_amount, 0))",
                     'order_numbers' => "group_concat(distinct concat($_orderAlias.entity_id, ':', $_orderAlias.increment_id))" ])
             ->join([ $_paymentAlias => $this->getTable('sales/order_payment') ],
                 "$_orderAlias.entity_id = $_paymentAlias.parent_id ",
                 [ 'cash_value' => "sum(if($_paymentAlias.method = 'Money', $_orderAlias.grand_total, 0))" ])
+            ->joinLeft([ $_creditAlias => $_internationalRefundsSelect ],
+                "$_orderAlias.entity_id = $_creditAlias.order_id",
+                [ "refund_value" => "sum(ifnull(refund_value, 0))" ])
             ->joinLeft([ $_addressAlias => $this->getTable('sales/order_address') ],
                 "$_orderAlias.entity_id = $_addressAlias.parent_id",
                 [ "country_id" ])
             // Use CST since that is what Braintree uses for its reports
-            ->where("$_orderAlias.created_at between CONVERT_TZ('{$this->_from}', '-06:00', '+00:00') and CONVERT_TZ(DATE_ADD('{$this->_to}', INTERVAL '23:59:59' HOUR_SECOND), '-06:00', '+00:00')")
+            ->where("$_orderAlias.created_at between $_startDateSql and $_endDateSql or $_creditAlias.created_at between $_startDateSql and $_endDateSql")
             ->where("(($_orderAlias.state is null or $_orderAlias.state in ('complete', 'closed')) and ($_orderAlias.status is null or $_orderAlias.status in ('complete', 'closed')) or $_orderAlias.status = 'processing_invoiced')")
             ->where("$_addressAlias.address_type = 'shipping'")
             ->group("$_addressAlias.country_id");
 
-        $_select->from([ $_internationalAlias => $_internationalSelect ],
+        $_select->from([ $_internationalAlias => $_internationalSalesSelect ],
             [ "order_count",
                 "sold_value",
                 "cash_value",
