@@ -481,6 +481,56 @@
         </reference>
     </adminhtml_admin_trsreports_dailymetric>
 
+    <adminhtml_admin_trsreports_deliveryandvalue>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports/moreDetailsGrid.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>js/trsreports/deliveryAndValueMoreDetailsGridInit.js</script>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_DeliveryAndValue" name="delivery.and.value.container" template="report/grid/container.phtml">
+                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                    <action method="setFieldVisibility">
+                        <field>report_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>period_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_deliveryandvalue>
+
+    <adminhtml_admin_trsreports_deliveryandvaluedetailajax>
+        <block type="trsreports/adminhtml_report_DeliveryAndValueDetail" name="root" as="root" template="report/grid/container.phtml">
+            <!--<block type="adminhtml/report_filter_form" name="grid.filter.form">-->
+                <!--<action method="setFieldVisibility">-->
+                    <!--<field>report_type</field>-->
+                    <!--<visibility>0</visibility>-->
+                <!--</action>-->
+                <!--<action method="setFieldVisibility">-->
+                    <!--<field>period_type</field>-->
+                    <!--<visibility>0</visibility>-->
+                <!--</action>-->
+                <!--<action method="setFieldVisibility">-->
+                    <!--<field>show_empty_rows</field>-->
+                    <!--<visibility>0</visibility>-->
+                <!--</action>-->
+            <!--</block>-->
+        </block>
+    </adminhtml_admin_trsreports_deliveryandvaluedetailajax>
+
     <adminhtml_admin_trsreports_manage>
         <reference name="content">
             <block type="trsreports/adminhtml_report_manage_exclusions" name="manage.exclusions.container" template="report/grid/container.phtml"/>

@@ -38,6 +38,10 @@
                             <title>Daily Metrics</title>
                             <action>adminhtml/admin_trsreports/dailymetric</action>
                         </trsreport_dailymetric>
+                        <trsreport_deliveryandvalue>
+                            <title>Delivery and Value</title>
+                            <action>adminhtml/admin_trsreports/deliveryandvalue</action>
+                        </trsreport_deliveryandvalue>
                         <trsreport_futureforecast>
                             <title>Future Forecast</title>
                             <action>adminhtml/admin_trsreports/futureforecast</action>
@@ -130,6 +134,9 @@
                                     <trsreport_dailymetric>
                                         <title>Daily Metrics</title>
                                     </trsreport_dailymetric>
+                                    <trsreport_deliveryandvalue>
+                                        <title>Delivery and Value</title>
+                                    </trsreport_deliveryandvalue>
                                     <trsreport_futureforecast>
                                         <title>Future Forecast</title>
                                     </trsreport_futureforecast>
