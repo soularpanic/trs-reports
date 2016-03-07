@@ -31,7 +31,7 @@ var MoreDetailsGrid = Class.create({
         new Ajax.Request(url, {
             onSuccess: function(response) {
                 parentRow.insert({
-                    after: "<tr id=\"" + context.CONTAINER_PREFIX + containerId + "\"><td colspan=\"" + tableColumns + "\">" + response.responseText + "</td></tr>"
+                    after: "<tr id=\"" + context.CONTAINER_PREFIX + containerId + "\" style=\"background:#728993;\"><td colspan=\"" + tableColumns + "\">" + response.responseText + "</td></tr>"
                 });
             }
         })
