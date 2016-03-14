@@ -105,7 +105,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
                     'total_qty_stock' => 'sum(ifnull(qty, 0))',
                     'total_qty_stock_and_transit' => 'sum(ifnull(qty, 0)) + sum(incoming_qty)',
                     'total_qty_sold' => "sum(ifnull(total_qty_ordered, 0))",
-                    'time_in_days' => 'sum(time_in_days)',
+                    'time_in_days' => 'if(derived_id like "L-%", max(time_in_days) , sum(time_in_days))',
                     'using_period',
                     'start' => 'group_concat(start SEPARATOR ", ")',
                     'end' => 'group_concat(end SEPARATOR ", ")',
