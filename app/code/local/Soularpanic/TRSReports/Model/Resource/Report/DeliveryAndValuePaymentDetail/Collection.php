@@ -26,7 +26,6 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValuePaymentDetail
             ->where("purchase_order_id = '$poId'")
             ->where("created_at < $_toSql");
 
-
         $_helper->log("\nDelivery and Value Payment Detail select:\n\n{$_select->__toString()}");
     }
 

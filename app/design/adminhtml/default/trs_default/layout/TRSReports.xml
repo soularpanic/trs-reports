@@ -494,7 +494,7 @@
         </reference>
         <reference name="content">
             <block type="trsreports/adminhtml_report_DeliveryAndValue" name="delivery.and.value.container" template="report/grid/container.phtml">
-                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                <block type="trsreports/adminhtml_report_DeliveryAndValue_form" name="grid.filter.form">
                     <action method="setFieldVisibility">
                         <field>report_type</field>
                         <visibility>0</visibility>
@@ -505,6 +505,11 @@
                     </action>
                     <action method="setFieldVisibility">
                         <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+
+                    <action method="setFieldVisibility">
+                        <field>from</field>
                         <visibility>0</visibility>
                     </action>
                 </block>

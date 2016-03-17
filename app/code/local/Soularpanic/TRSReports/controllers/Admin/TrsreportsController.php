@@ -302,13 +302,13 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
         $this->_initReportAction([
-            $gridBlock,
-            $filterFormBlock
-        ],
-        [
-            'from' => date('m/d/Y'),
-            'to' => date('m/d/Y')
-        ]);
+                $gridBlock,
+                $filterFormBlock
+            ],
+            [
+                'from' => date('m/d/Y'),
+                'to' => date('m/d/Y')
+            ]);
         $this->renderLayout();
     }
 
@@ -342,6 +342,21 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
                 'to' => date('m/d/Y')
             ]);
         $this->renderLayout();
+    }
+
+    public function exportDeliveryAndValueCsvAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()
+            ->createBlock('trsreports/adminhtml_report_DeliveryAndValue_CsvGrid');
+
+        $this->_initReportAction([ $gridBlock ],
+            [ 'from' => date('m/d/Y'),
+                'to' => date('m/d/Y'),
+                'report_code' => 'DeliveryAndValue',
+                'show_zero_remaining_delivery' => '1' ]);
+
+        $content = $gridBlock->getCsvFile();
+        $this->_prepareDownloadResponse('DeliveryAndValue.csv', $content);
     }
 
     public function testDailyMetricAction() {
@@ -382,7 +397,7 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $params = new Varien_Object();
 
         foreach ($requestData as $key => $value) {
-            if (!empty($value)) {
+            if (isset($value)) {
                 $params->setData($key, $value);
             }
         }

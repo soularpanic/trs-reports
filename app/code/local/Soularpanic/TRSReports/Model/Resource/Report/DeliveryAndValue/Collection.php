@@ -97,15 +97,12 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
                     "supplied_value" => "(pop_price_ht * sm_qty)"])
             ->joinLeft([ $_totalDeliveredAlias => $_totalDeliveredSelect ],
                 "$_stockMovementAlias.sm_product_id = $_totalDeliveredAlias.product_id and $_stockMovementAlias.sm_po_num = $_totalDeliveredAlias.purchase_order_id",
-                [ 'total_delivered_qty' => 'delivered_qty'
-//                    'remaining_value' => "($_purchaseOrderProductAlias.pop_qty - delivered_qty) * $_purchaseOrderProductAlias.pop_price_ht" ])
-                ])
+                [ 'total_delivered_qty' => 'delivered_qty' ])
             ->joinLeft([ $_purchaseOrderSupplierAlias => $this->getTable('Purchase/Supplier') ],
                 "$_purchaseOrderAlias.po_sup_num = $_purchaseOrderSupplierAlias.sup_id",
                 [ "supplier_name" => "sup_name" ])
             ->where("sm_po_num is not null")
             ->where("sm_date < $_toSql");
-//            ->where("sm_date between $_fromSql and $_toSql");
 
         $_helper->log("\nDelivery and Value line items select:\n\n{$_lineItemsSelect->__toString()}");
 
@@ -124,9 +121,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
                     "product_id",
                     "ordered_qty",
                     "unit_price",
-                    "total_supplied_value" => "sum(supplied_value)"
-//                    "remaining_delivery_value" => "remaining_value"])
-                ])
+                    "total_supplied_value" => "sum(supplied_value)" ])
             ->group("purchase_order_id")
             ->group("product_id");
 
@@ -153,9 +148,12 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
             ->joinLeft([ $_totalPaidAlias => $_totalPaidSelect ],
                 "$_subSelectAlias.purchase_order_id = $_totalPaidAlias.purchase_order_id",
                 [ "total_paid_value" => "ifnull(total_paid, 0)",
-                    "remaining_balance_value" => "$_totalValueAlias.total_value - ifnull(total_paid, 0)"])
-            ->group("purchase_order_id");
+                    "remaining_balance_value" => "$_totalValueAlias.total_value - ifnull(total_paid, 0)" ])
+            ->group("$_subSelectAlias.purchase_order_id");
 
+        if (!$this->getCustomFilterData()->getShowZeroRemainingDelivery()) {
+            $_select->where("remaining_value != 0");
+        }
 
         $_helper->log("\nDelivery and Value SQL:\n\n{$_select->__toString()}");
     }

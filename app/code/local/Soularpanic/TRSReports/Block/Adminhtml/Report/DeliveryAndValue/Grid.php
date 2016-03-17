@@ -15,7 +15,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_DeliveryAndValue_Grid
     protected function _prepareColumns()
     {
         $this->addColumn('purchase_order_name', [
-            'header' => 'ID',
+            'header' => 'Purchase Order',
             'index' => 'purchase_order_name',
             'filter_index' => 'purchase_order_name',
             'sortable' => true
@@ -33,12 +33,6 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_DeliveryAndValue_Grid
             'header' => 'Supplier',
             'index' => 'supplier_name'
         ]);
-//
-//        $this->addColumn('date', [
-//            'header' => 'Delivery Date',
-//            'index' => 'supplied_dates',
-//            'sortable' => false
-//        ]);
 
         $this->addColumn('total_supplied_qty', [
             'header' => 'QTY Delivered',
@@ -108,7 +102,14 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_DeliveryAndValue_Grid
             'sortable' => false
         ]);
 
+        $this->addExportType('*/*/exportDeliveryAndValueCsv', 'CSV');
+
         return parent::_prepareColumns();
+    }
+
+    protected function _addOrderStatusFilter($collection, $filterData) {
+        $collection->setCustomFilterData($filterData); // doing this here so that the getCountTotals collection has filter out zero balance flag
+        return parent::_addOrderStatusFilter($collection, $filterData);
     }
 
     protected function _prepareMassAction() {
