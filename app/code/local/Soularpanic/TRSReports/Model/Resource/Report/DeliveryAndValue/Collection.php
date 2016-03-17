@@ -10,14 +10,35 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
 
     protected function _initSelect() {
         $_helper = Mage::helper('trsreports/collection');
-        $_helper->log("Delivery and Value resource starting {$this->_from} - {$this->_to}");
-        $_fromSql = "'{$this->_from}'";
+        $_helper->log("Delivery and Value resource starting {$this->_to}");
         $_toSql = "DATE_ADD('{$this->_to}', INTERVAL '23:59:59' HOUR_SECOND)";
 
         $_stockMovementAlias = 'stock_movements';
         $_purchaseOrderAlias = 'purchase_orders';
         $_purchaseOrderProductAlias = 'purchase_order_products';
         $_totalDeliveredAlias = 'total_delivered';
+        $_totalValueAlias = 'total_value';
+        $_totalPaidAlias = 'total_paid';
+
+        $_totalPaidSelect = $_helper->_getNewSelect();
+        $_totalPaidSelect
+            ->from([ $this->getTable('MDNPurchase/order_payment') ],
+                [ 'purchase_order_id',
+                    'total_paid' => 'sum(payment)' ])
+            ->where("created_at < {$_toSql}")
+            ->group('purchase_order_id');
+
+        $_helper->log("\nDelivery and Value total paid select:\n\n{$_totalPaidSelect->__toString()}");
+
+
+        $_totalValueSelect = $_helper->_getNewSelect();
+        $_totalValueSelect
+            ->from([ $this->getTable('Purchase/OrderProduct') ],
+                [ 'purchase_order_id' => 'pop_order_num',
+                    'total_value' => 'sum(pop_qty * pop_price_ht)' ])
+            ->group('pop_order_num');
+
+        $_helper->log("\nDelivery and Value total value select:\n\n{$_totalValueSelect->__toString()}");
 
         $_totalDeliveredSelect = $_helper->_getNewSelect();
         $_totalDeliveredSelect
@@ -56,7 +77,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
         $_helper->log("\nDelivery and Value total remaining by PO select:\n\n{$_totalRemainingByPurchaseOrderSelect->__toString()}");
 
 
-
+        $_purchaseOrderSupplierAlias = "supplier";
         $_lineItemsSelect = $_helper->_getNewSelect();
         $_lineItemsSelect
             ->from([ $_stockMovementAlias => $this->getTable('AdvancedStock/StockMovement') ],
@@ -65,7 +86,8 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
             ->join([ $_purchaseOrderAlias => $this->getTable('Purchase/Order') ],
                 "$_stockMovementAlias.sm_po_num = $_purchaseOrderAlias.po_num",
                 [ "purchase_order_name" => "po_order_id",
-                    "purchase_order_id" => "po_num"])
+                    "purchase_order_id" => "po_num",
+                    "purchase_order_status" => "po_status" ])
             ->joinLeft([ $_purchaseOrderProductAlias => $this->getTable('Purchase/OrderProduct') ],
                 "$_stockMovementAlias.sm_po_num = $_purchaseOrderProductAlias.pop_order_num and $_stockMovementAlias.sm_product_id = $_purchaseOrderProductAlias.pop_product_id",
                 [ "product_name" => "pop_product_name",
@@ -78,9 +100,12 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
                 [ 'total_delivered_qty' => 'delivered_qty'
 //                    'remaining_value' => "($_purchaseOrderProductAlias.pop_qty - delivered_qty) * $_purchaseOrderProductAlias.pop_price_ht" ])
                 ])
+            ->joinLeft([ $_purchaseOrderSupplierAlias => $this->getTable('Purchase/Supplier') ],
+                "$_purchaseOrderAlias.po_sup_num = $_purchaseOrderSupplierAlias.sup_id",
+                [ "supplier_name" => "sup_name" ])
             ->where("sm_po_num is not null")
-//            ->where("sm_date < $_toSql");
-            ->where("sm_date between $_fromSql and $_toSql");
+            ->where("sm_date < $_toSql");
+//            ->where("sm_date between $_fromSql and $_toSql");
 
         $_helper->log("\nDelivery and Value line items select:\n\n{$_lineItemsSelect->__toString()}");
 
@@ -92,14 +117,16 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
                 [ "supplied_dates" => "group_concat(distinct(supplied_date))",
                     "total_supplied_qty" => "sum(supplied_qty)",
                     "purchase_order_name",
+                    "supplier_name",
                     "purchase_order_id",
+                    "purchase_order_status",
                     "product_name",
                     "product_id",
                     "ordered_qty",
                     "unit_price",
                     "total_supplied_value" => "sum(supplied_value)"
 //                    "remaining_delivery_value" => "remaining_value"])
-        ])
+                ])
             ->group("purchase_order_id")
             ->group("product_id");
 
@@ -111,13 +138,22 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
         $_select->from([ $_subSelectAlias => $_subSelect ],
             [ "supplied_dates" => "concat_ws(',', supplied_dates)",
                 "total_supplied_qty" => "sum(total_supplied_qty)",
+                "total_ordered_qty" => "sum(ordered_qty)",
                 "purchase_order_name",
+                "supplier_name",
                 "purchase_order_id",
+                "purchase_order_status",
                 "total_delivery_value" => "sum(total_supplied_value)" ])
-//                "balance_remaining" => "sum(remaining_delivery_value)" ])
             ->joinLeft([ $_totalRemainingByPurchaseOrderSelectAlias => $_totalRemainingByPurchaseOrderSelect ],
                 "$_subSelectAlias.purchase_order_id = $_totalRemainingByPurchaseOrderSelectAlias.purchase_order_id",
                 [ "remaining_value" ])
+            ->joinLeft([ $_totalValueAlias => $_totalValueSelect ],
+                "$_subSelectAlias.purchase_order_id = $_totalValueAlias.purchase_order_id",
+                [ "total_purchase_order_value" => "total_value" ])
+            ->joinLeft([ $_totalPaidAlias => $_totalPaidSelect ],
+                "$_subSelectAlias.purchase_order_id = $_totalPaidAlias.purchase_order_id",
+                [ "total_paid_value" => "ifnull(total_paid, 0)",
+                    "remaining_balance_value" => "$_totalValueAlias.total_value - ifnull(total_paid, 0)"])
             ->group("purchase_order_id");
 
 

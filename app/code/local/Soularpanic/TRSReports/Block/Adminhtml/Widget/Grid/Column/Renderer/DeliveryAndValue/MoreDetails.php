@@ -19,8 +19,14 @@ class Soularpanic_TRSReports_Block_Adminhtml_Widget_Grid_Column_Renderer_Deliver
 
         $newFilter = base64_encode($newFilterStr);
 
-        $url = Mage::helper('adminhtml')->getUrl('*/*/deliveryandvaluedetailajax', [ 'filter' => $newFilter ]);
+        $targetUrl = $this->getColumn()->getLinkUrl();
+        $display = $this->getColumn()->getLinkText();
+        $prefix = $this->getColumn()->getPrefix();
 
-        return "<a class='moreDetails' data-url='$url' data-containerId='$data'>Toggle Details</a>";
+        $containerId = $prefix ? "$prefix-$data" : $data;
+
+        $url = Mage::helper('adminhtml')->getUrl($targetUrl, [ 'filter' => $newFilter ]);
+
+        return "<a class='moreDetails' data-url='$url' data-containerId='$containerId'>$display</a>";
     }
 }

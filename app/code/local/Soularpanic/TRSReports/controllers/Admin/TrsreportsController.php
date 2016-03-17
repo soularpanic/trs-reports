@@ -312,9 +312,25 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $this->renderLayout();
     }
 
-    public function deliveryandvaluedetailajaxAction() {
+    public function deliveryandvaluedeliverydetailajaxAction() {
         $this->_initAction();
-        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_DeliveryAndValueDetail.grid');
+        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_DeliveryAndValueDeliveryDetail.grid');
+        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
+
+        $this->_initReportAction([
+                $gridBlock,
+                $filterFormBlock
+            ],
+            [
+                'from' => date('m/d/Y'),
+                'to' => date('m/d/Y')
+            ]);
+        $this->renderLayout();
+    }
+
+    public function deliveryandvaluepaymentdetailajaxAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_DeliveryAndValuePaymentDetail.grid');
         $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
 
         $this->_initReportAction([
