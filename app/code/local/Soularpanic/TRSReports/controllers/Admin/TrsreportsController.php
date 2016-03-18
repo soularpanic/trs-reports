@@ -365,6 +365,12 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $model->updateDailyMetrics();
     }
 
+    public function testDeliveryAndValueAction() {
+        Mage::log("testDeliveryAndValue controller method - start", null, 'trs_reports.log');
+        $model = Mage::getModel('trsreports/observers_reports_schedule');
+        $model->emailDeliveryAndValueReport();
+    }
+
     public function _initReportAction($blocks, $defaults = null, $additionalFilterDates = null)
     {
         if (!is_array($blocks)) {

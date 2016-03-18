@@ -27,9 +27,13 @@
                     <action>adminhtml/admin_trsreports/index</action>
                     <children>
                         <!--<trsreport_test>-->
-                            <!--<title>Daily Metric Test</title>-->
-                            <!--<action>adminhtml/admin_trsreports/testDailyMetric</action>-->
+                        <!--<title>Daily Metric Test</title>-->
+                        <!--<action>adminhtml/admin_trsreports/testDailyMetric</action>-->
                         <!--</trsreport_test>-->
+                        <!--<trsreport_deliveryandvalue_test>-->
+                            <!--<title>Delivery and Value Test</title>-->
+                            <!--<action>adminhtml/admin_trsreports/testDeliveryAndValue</action>-->
+                        <!--</trsreport_deliveryandvalue_test>-->
                         <trsreport_attributesetsales>
                             <title>Category Sales</title>
                             <action>adminhtml/admin_trsreports/attributesetsales</action>
@@ -126,8 +130,11 @@
                                 <title>TRS Reports</title>
                                 <children>
                                     <!--<trsreport_test>-->
-                                        <!--<title>Daily Metric Test</title>-->
+                                    <!--<title>Daily Metric Test</title>-->
                                     <!--</trsreport_test>-->
+                                    <!--<trsreport_deliveryandvalue_test>-->
+                                        <!--<title>Delivery and Value Test</title>-->
+                                    <!--</trsreport_deliveryandvalue_test>-->
                                     <trsreport_attributesetsales module="trs">
                                         <title>Category Sales</title>
                                     </trsreport_attributesetsales>

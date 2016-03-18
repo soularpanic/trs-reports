@@ -164,6 +164,15 @@
                     <model>trsreports/observers_reports_schedule::emailInternationalSalesOverviewReport</model>
                 </run>
             </trsreports_international_sales_overview_report>
+            <trsreports_delivery_and_value_report>
+                <schedule>
+                    <cron_expr>1 0 1 * *</cron_expr> <!-- 0001 each first of the month -->
+                    <!--<cron_expr>* * * * *</cron_expr>-->
+                </schedule>
+                <run>
+                    <model>trsreports/observers_reports_schedule::emailDeliveryAndValueReport</model>
+                </run>
+            </trsreports_delivery_and_value_report>
         </jobs>
     </crontab>
 
@@ -178,6 +187,9 @@
             <daily_metrics_report>
                 <recipients>josh@theretrofitsource.com</recipients>
             </daily_metrics_report>
+            <delivery_and_value_report>
+                <recipients>josh@theretrofitsource.com</recipients>
+            </delivery_and_value_report>
         </trs_automated_reports>
     </default>
 </config>
