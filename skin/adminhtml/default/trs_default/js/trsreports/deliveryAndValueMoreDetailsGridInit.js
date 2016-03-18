@@ -1,5 +1,5 @@
 document.observe('dom:loaded', function() {
     moreDetailsGrid = new MoreDetailsGrid({
-        tableColumns: 7
+        tableColumns: 12
     });
 });

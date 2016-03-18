@@ -5,6 +5,7 @@ class Soularpanic_TRSReports_Helper_Report_Automation
     const SALES_TAX_RECIPIENTS_PATH = 'trs_reports/sales_tax_report/recipients';
     const INTERNATIONAL_SALES_RECIPIENTS_PATH = 'trs_reports/sales_tax_report/recipients';
     const DAILY_METRIC_RECIPIENTS_PATH = 'trs_reports/daily_metrics_report/recipients';
+    const DELIVERY_AND_VALUE_RECIPIENTS_PATH = 'trs_reports/delivery_and_value_report/recipients';
 
     public function getSalesTaxReportRecipients() {
         return $this->_getReportRecipients(Mage::getStoreConfig(self::SALES_TAX_RECIPIENTS_PATH));
@@ -16,6 +17,10 @@ class Soularpanic_TRSReports_Helper_Report_Automation
 
     public function getDailyMetricReportRecipients() {
         return $this->_getReportRecipients(Mage::getStoreConfig(self::DAILY_METRIC_RECIPIENTS_PATH));
+    }
+
+    public function getDeliveryAndValueReportRecipients() {
+        return $this->_getReportRecipients(Mage::getStoreConfig(self::DELIVERY_AND_VALUE_RECIPIENTS_PATH));
     }
 
     private function _getReportRecipients($recipientsStr) {

@@ -2,7 +2,8 @@
 class Soularpanic_TRSReports_Model_Observers_Reports_Schedule {
 
     public function updateDailyMetrics() {
-        Mage::log("I'm the update daily metrics method", null, 'trs_reports.log');
+        $logger = Mage::helper('trsreports');
+        $logger->log("I'm the update daily metrics method");
 //        $collection = Mage::getModel('trsreports/daily_metric')->getCollection();
         $productCollection = Mage::getModel('catalog/product')->getCollection();
 
@@ -32,7 +33,8 @@ class Soularpanic_TRSReports_Model_Observers_Reports_Schedule {
     }
 
     public function emailDailyMetricsReport() {
-        Mage::log("I am the schedule emailDailyMetrics method!", null, 'trs_reports.log');
+        $logger = Mage::helper('trsreports');
+        $logger->log("I am the schedule emailDailyMetrics method!");
 
         $this->_emailMonthlyReport(
             "Daily Metrics",
@@ -43,7 +45,8 @@ class Soularpanic_TRSReports_Model_Observers_Reports_Schedule {
     }
 
     public function emailInternationalSalesOverviewReport() {
-        Mage::log("I am the schedule emailInternationalSalesOverview method!", null, 'trs_reports.log');
+        $logger = Mage::helper('trsreports');
+        $logger->log("I am the schedule emailInternationalSalesOverview method!");
 
         $this->_emailMonthlyReport(
             "International Sales Overview",
@@ -54,7 +57,8 @@ class Soularpanic_TRSReports_Model_Observers_Reports_Schedule {
     }
 
     public function emailSalesTaxReport() {
-        Mage::log("I am the schedule emailSalesTaxReport method!", null, 'trs_reports.log');
+        $logger = Mage::helper('trsreports');
+        $logger->log("I am the schedule emailSalesTaxReport method!");
 
         $this->_emailMonthlyReport(
             "Sales Tax",
@@ -64,8 +68,22 @@ class Soularpanic_TRSReports_Model_Observers_Reports_Schedule {
         );
     }
 
-    protected function _emailMonthlyReport($emailSubjectLead, $emailAddressesArray, $reportCode, $reportBlock) {
-        Mage::log("I am the schedule _emailMonthlyReport method!", null, 'trs_reports.log');
+    public function emailDeliveryAndValueReport() {
+        $logger = Mage::helper('trsreports');
+        $logger->log("I am the schedule emailDeliveryAndValue method!");
+
+        $this->_emailMonthlyReport(
+            "Delivery and Value",
+            Mage::helper('trsreports/report_automation')->getDeliveryAndValueReportRecipients(),
+            "DeliveryAndValue",
+            "trsreports/adminhtml_report_DeliveryAndValue_CsvGrid",
+            [ 'show_zero_remaining_delivery' => '1' ]
+        );
+    }
+
+    protected function _emailMonthlyReport($emailSubjectLead, $emailAddressesArray, $reportCode, $reportBlock, $customFilterData = []) {
+        $logger = Mage::helper('trsreports');
+        $logger->log("I am the schedule _emailMonthlyReport method!");
 
 
         $_reportBlock = Mage::getSingleton('core/layout')->createBlock($reportBlock);
@@ -73,19 +91,19 @@ class Soularpanic_TRSReports_Model_Observers_Reports_Schedule {
         $to = new DateTime();
         $year = (int)$to->format('Y');
         $month = (int)$to->format('m');
-        Mage::log("to year: $year; to month: $month", null, 'trs_reports.log');
+        $logger->log("to year: $year; to month: $month");
         $fromMonth = $month === 1 ? 12 : $month - 1;
         $fromYear = $month === 1 ? $year - 1 : $year;
         $from = new DateTime("$fromYear-$fromMonth-01");
         $formattedFrom = $from->format('Y-m-d');
         $formattedTo = $to->format('Y-m-d');
-        Mage::log("from date: $formattedFrom", null, 'trs_reports.log');
+        $logger->log("from date: $formattedFrom");
 
-        $params = new Varien_Object([
+        $params = new Varien_Object(array_merge([
             'from' => $formattedFrom,
             'to' => $formattedTo,
             'report_code' => $reportCode
-        ]);
+        ], $customFilterData));
         $_reportBlock->setFilterData($params);
         $fileContents = $_reportBlock->getCsv();
 

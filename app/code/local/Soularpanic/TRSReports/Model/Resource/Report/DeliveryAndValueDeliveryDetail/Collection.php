@@ -1,5 +1,5 @@
 <?php
-class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValueDetail_Collection
+class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValueDeliveryDetail_Collection
     extends Soularpanic_TRSReports_Model_Resource_Report_Collection_Abstract {
 
     protected $_aggregationTable = 'AdvancedStock/StockMovement';
@@ -10,8 +10,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValueDetail_Collec
 
     protected function _initSelect() {
         $_helper = Mage::helper('trsreports/collection');
-        $_helper->log("Delivery and Value resource starting {$this->_from} - {$this->_to}");
-        $_fromSql = "'{$this->_from}'";
+        $_helper->log("Delivery and Value Delivery Detail resource starting");
         $_toSql = "DATE_ADD('{$this->_to}', INTERVAL '23:59:59' HOUR_SECOND)";
 
         $customFilterData = $this->getCustomFilterData();
@@ -59,7 +58,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValueDetail_Collec
                 [ 'total_delivered_qty' => 'delivered_qty',
                     'remaining_value' => "($_purchaseOrderProductAlias.pop_qty - delivered_qty) * $_purchaseOrderProductAlias.pop_price_ht" ])
             ->where("sm_po_num = '$poId'")
-            ->where("sm_date between $_fromSql and $_toSql");
+            ->where("sm_date < $_toSql");
 
         $_helper->log("\nDelivery and Value Detail line items select:\n\n{$_select->__toString()}");
     }

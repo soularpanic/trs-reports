@@ -1,9 +1,9 @@
 <?php
-class Soularpanic_TRSReports_Block_Adminhtml_Report_DeliveryAndValueDetail_Grid
+class Soularpanic_TRSReports_Block_Adminhtml_Report_DeliveryAndValueDeliveryDetail_Grid
     extends Soularpanic_TRSReports_Block_Adminhtml_Report_Grid_Abstract {
 
     protected $_columnGroupBy = 'product_name';
-    protected $_resourceCollectionName = 'trsreports/report_DeliveryAndValueDetail_collection';
+    protected $_resourceCollectionName = 'trsreports/report_DeliveryAndValueDeliveryDetail_collection';
 
     public function __construct() {
         parent::__construct();
