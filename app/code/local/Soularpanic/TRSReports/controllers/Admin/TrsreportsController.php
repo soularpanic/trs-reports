@@ -359,6 +359,36 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $this->_prepareDownloadResponse('DeliveryAndValue.csv', $content);
     }
 
+    public function productmarginsAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_ProductMargins.grid');
+        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
+
+        $this->_initReportAction([
+                $gridBlock,
+                $filterFormBlock
+            ],
+            [
+                'from' => date('m/d/Y'),
+                'to' => date('m/d/Y')
+            ]);
+        $this->renderLayout();
+    }
+
+    public function exportProductMarginsCsvAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()
+            ->createBlock('trsreports/adminhtml_report_ProductMargins_CsvGrid');
+
+        $this->_initReportAction([ $gridBlock ],
+            [ 'from' => date('m/d/Y'),
+                'to' => date('m/d/Y'),
+                'report_code' => 'ProductMargins' ]);
+
+        $content = $gridBlock->getCsvFile();
+        $this->_prepareDownloadResponse('ProductMargins.csv', $content);
+    }
+
     public function testDailyMetricAction() {
         Mage::log("testDailyMetricAction controller method - start", null, 'trs_reports.log');
         $model = Mage::getModel('trsreports/observers_reports_schedule');

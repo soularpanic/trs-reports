@@ -7,6 +7,7 @@
             <codePool>local</codePool>
             <depends>
                 <Soularpanic_TheRetroFitSourceTheme/>
+                <Soularpanic_BundlePrice/>
             </depends>
         </Soularpanic_TRSReports>
     </modules>
