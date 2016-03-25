@@ -4,10 +4,6 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
 
     protected $_aggregationTable = 'AdvancedStock/StockMovement';
 
-    public function __construct() {
-        parent::__construct();
-    }
-
     protected function _initSelect() {
         $_helper = Mage::helper('trsreports/collection');
         $_helper->log("Delivery and Value resource starting {$this->_to}");

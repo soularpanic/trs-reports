@@ -525,6 +525,27 @@
         <block type="trsreports/adminhtml_report_DeliveryAndValuePaymentDetail" name="root" as="root" template="report/grid/container.phtml"/>
     </adminhtml_admin_trsreports_deliveryandvaluepaymentdetailajax>
 
+    <adminhtml_admin_trsreports_productmargins>
+        <reference name="content">
+            <block type="trsreports/adminhtml_report_ProductMargins" name="product.margins.container" template="report/grid/container.phtml">
+                <block type="adminhtml/report_filter_form" name="grid.filter.form">
+                    <action method="setFieldVisibility">
+                        <field>report_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>period_type</field>
+                        <visibility>0</visibility>
+                    </action>
+                    <action method="setFieldVisibility">
+                        <field>show_empty_rows</field>
+                        <visibility>0</visibility>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_admin_trsreports_productmargins>
+
     <adminhtml_admin_trsreports_manage>
         <reference name="content">
             <block type="trsreports/adminhtml_report_manage_exclusions" name="manage.exclusions.container" template="report/grid/container.phtml"/>
