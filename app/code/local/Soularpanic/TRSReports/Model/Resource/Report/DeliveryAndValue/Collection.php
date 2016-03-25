@@ -76,14 +76,14 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
         $_purchaseOrderSupplierAlias = "supplier";
         $_lineItemsSelect = $_helper->_getNewSelect();
         $_lineItemsSelect
-            ->from([ $_stockMovementAlias => $this->getTable('AdvancedStock/StockMovement') ],
-                [ "supplied_date" => "sm_date",
-                    "supplied_qty" => "sm_qty" ])
-            ->join([ $_purchaseOrderAlias => $this->getTable('Purchase/Order') ],
-                "$_stockMovementAlias.sm_po_num = $_purchaseOrderAlias.po_num",
+            ->from([ $_purchaseOrderAlias => $this->getTable('Purchase/Order') ],
                 [ "purchase_order_name" => "po_order_id",
                     "purchase_order_id" => "po_num",
                     "purchase_order_status" => "po_status" ])
+            ->joinLeft([ $_stockMovementAlias => $this->getTable('AdvancedStock/StockMovement') ],
+                "$_purchaseOrderAlias.po_num = $_stockMovementAlias.sm_po_num",
+                [ "supplied_date" => "sm_date",
+                    "supplied_qty" => "sm_qty" ])
             ->joinLeft([ $_purchaseOrderProductAlias => $this->getTable('Purchase/OrderProduct') ],
                 "$_stockMovementAlias.sm_po_num = $_purchaseOrderProductAlias.pop_order_num and $_stockMovementAlias.sm_product_id = $_purchaseOrderProductAlias.pop_product_id",
                 [ "product_name" => "pop_product_name",
@@ -97,8 +97,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
             ->joinLeft([ $_purchaseOrderSupplierAlias => $this->getTable('Purchase/Supplier') ],
                 "$_purchaseOrderAlias.po_sup_num = $_purchaseOrderSupplierAlias.sup_id",
                 [ "supplier_name" => "sup_name" ])
-            ->where("sm_po_num is not null")
-            ->where("sm_date < $_toSql");
+            ->where("(sm_date < $_toSql or sm_date is null)");
 
         $_helper->log("\nDelivery and Value line items select:\n\n{$_lineItemsSelect->__toString()}");
 
