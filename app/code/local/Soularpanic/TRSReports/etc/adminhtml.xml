@@ -62,10 +62,6 @@
                             <title>Individual Sales</title>
                             <action>adminhtml/admin_trsreports/productsales</action>
                         </trsreport_productsales>
-                        <trsreport_productmargins>
-                            <title>Product Margins</title>
-                            <action>adminhtml/admin_trsreports/productmargins</action>
-                        </trsreport_productmargins>
                         <trsreport_instockvalue>
                             <title>Inventory Value</title>
                             <action>adminhtml/admin_trsreports/instockvalue</action>
@@ -86,6 +82,10 @@
                             <title>P/O Overview</title>
                             <action>adminhtml/admin_trsreports/purchaseorderoverview</action>
                         </trsreport_purchaseorderoverview>
+                        <trsreport_productmargins>
+                            <title>Product Margins</title>
+                            <action>adminhtml/admin_trsreports/productmargins</action>
+                        </trsreport_productmargins>
                         <trsreport_profitandsales>
                             <title>Profit and Sales</title>
                             <action>adminhtml/admin_trsreports/profitandsales</action>
