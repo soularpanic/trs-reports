@@ -80,17 +80,17 @@ class Soularpanic_TRSReports_Model_Resource_Report_DeliveryAndValue_Collection
                 [ "purchase_order_name" => "po_order_id",
                     "purchase_order_id" => "po_num",
                     "purchase_order_status" => "po_status" ])
-            ->joinLeft([ $_stockMovementAlias => $this->getTable('AdvancedStock/StockMovement') ],
-                "$_purchaseOrderAlias.po_num = $_stockMovementAlias.sm_po_num",
-                [ "supplied_date" => "sm_date",
-                    "supplied_qty" => "sm_qty" ])
             ->joinLeft([ $_purchaseOrderProductAlias => $this->getTable('Purchase/OrderProduct') ],
-                "$_stockMovementAlias.sm_po_num = $_purchaseOrderProductAlias.pop_order_num and $_stockMovementAlias.sm_product_id = $_purchaseOrderProductAlias.pop_product_id",
+                "$_purchaseOrderAlias.po_num = $_purchaseOrderProductAlias.pop_order_num",
                 [ "product_name" => "pop_product_name",
                     "product_id" => "pop_product_id",
                     "ordered_qty" => "pop_qty",
                     "unit_price" => "pop_price_ht",
                     "supplied_value" => "(pop_price_ht * sm_qty)"])
+            ->joinLeft([ $_stockMovementAlias => $this->getTable('AdvancedStock/StockMovement') ],
+                "$_purchaseOrderAlias.po_num = $_stockMovementAlias.sm_po_num and $_stockMovementAlias.sm_product_id = $_purchaseOrderProductAlias.pop_product_id",
+                [ "supplied_date" => "sm_date",
+                    "supplied_qty" => "ifnull(sm_qty, 0)" ])
             ->joinLeft([ $_totalDeliveredAlias => $_totalDeliveredSelect ],
                 "$_stockMovementAlias.sm_product_id = $_totalDeliveredAlias.product_id and $_stockMovementAlias.sm_po_num = $_totalDeliveredAlias.purchase_order_id",
                 [ 'total_delivered_qty' => 'delivered_qty' ])
