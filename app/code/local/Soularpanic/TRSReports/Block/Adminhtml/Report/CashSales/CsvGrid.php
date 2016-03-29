@@ -1,0 +1,3 @@
+<?php
+class Soularpanic_TRSReports_Block_Adminhtml_Report_CashSales_CsvGrid
+    extends Soularpanic_TRSReports_Block_Adminhtml_Report_CashSales_Grid { }
