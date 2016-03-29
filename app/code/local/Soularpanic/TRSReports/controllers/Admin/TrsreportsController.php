@@ -238,6 +238,35 @@ class Soularpanic_TRSReports_Admin_TrsreportsController
         $this->_prepareDownloadResponse('SalesTax.csv', $content);
     }
 
+    public function cashsalesAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()->getBlock('adminhtml_report_CashSales.grid');
+        $filterFormBlock = $this->getLayout()->getBlock('grid.filter.form');
+
+        $this->_initReportAction(array(
+                $gridBlock,
+                $filterFormBlock
+            ),
+            array('from' => date('m/d/Y'),
+                'to' => date('m/d/Y')));
+
+        $this->renderLayout();
+    }
+
+    public function exportCashSalesCsvAction() {
+        $this->_initAction();
+        $gridBlock = $this->getLayout()
+            ->createBlock('trsreports/adminhtml_report_CashSales_CsvGrid');
+
+        $this->_initReportAction([ $gridBlock ],
+            [ 'from' => date('m/d/Y'),
+                'to' => date('m/d/Y'),
+                'report_code' => 'CashSales' ]);
+
+        $content = $gridBlock->getCsvFile();
+        $this->_prepareDownloadResponse('CashSales.csv', $content);
+    }
+
     public function internationalsalesoverviewAction() {
         $this->_initAction();
         $gridBlock = $this->getLayout()->getBlock('adminhtml_report_InternationalSalesOverview.grid');

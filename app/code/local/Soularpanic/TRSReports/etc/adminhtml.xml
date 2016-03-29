@@ -34,6 +34,10 @@
                         <!--<title>Delivery and Value Test</title>-->
                         <!--<action>adminhtml/admin_trsreports/testDeliveryAndValue</action>-->
                         <!--</trsreport_deliveryandvalue_test>-->
+                        <trsreport_cashsales>
+                            <title>Cash Sales</title>
+                            <action>adminhtml/admin_trsreports/cashsales</action>
+                        </trsreport_cashsales>
                         <trsreport_attributesetsales>
                             <title>Category Sales</title>
                             <action>adminhtml/admin_trsreports/attributesetsales</action>
@@ -139,6 +143,9 @@
                                     <!--<trsreport_deliveryandvalue_test>-->
                                     <!--<title>Delivery and Value Test</title>-->
                                     <!--</trsreport_deliveryandvalue_test>-->
+                                    <trsreport_cashsales>
+                                        <title>Cash Sales</title>
+                                    </trsreport_cashsales>
                                     <trsreport_attributesetsales module="trs">
                                         <title>Category Sales</title>
                                     </trsreport_attributesetsales>
