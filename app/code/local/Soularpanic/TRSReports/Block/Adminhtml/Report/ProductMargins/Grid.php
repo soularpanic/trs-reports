@@ -66,7 +66,26 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_ProductMargins_Grid
             'filter'    => false
         ]);
 
+        $this->addColumn('item_discount', [
+            'header' => 'Unit Tax',
+            'index' => 'item_id',
+            'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_ProductMargins_ItemTax',
+            'sortable'  => false,
+            'filter'    => false
+        ]);
+
         $currencyRenderer = "adminhtml/report_grid_column_renderer_currency";
+
+        $this->addColumn('shipping_cost', [
+            'header' => 'Shipping and Handling',
+            'index' => 'shipping_cost',
+            'renderer' => $currencyRenderer,
+            'currency_code' => 'USD',
+            'sortable' => false,
+            'filter' => false
+        ]);
+
+
         $this->addColumn('unit_cost', [
             'header' => 'Unit Cost',
             'index' => 'unit_cost',

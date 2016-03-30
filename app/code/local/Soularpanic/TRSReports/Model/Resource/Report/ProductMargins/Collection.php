@@ -58,11 +58,13 @@ class Soularpanic_TRSReports_Model_Resource_Report_ProductMargins_Collection
                         "sku",
                         "name",
                         "qty_ordered",
-                        "qty_refunded" ])
+                        "qty_refunded",
+                        "shipping_cost" => "($_orderAlias.shipping_amount * $_orderItemAlias.weight * $_orderItemAlias.qty_ordered / $_orderAlias.weight)" ])
                 ->joinLeft([ $_unitCostAlias => $_unitCostSelect ],
                     "$_orderItemAlias.product_id = $_unitCostAlias.product_id",
                     [ "unit_cost" => "ifnull(unit_price, 0)" ])
                 ->where("$_orderItemAlias.product_type = 'simple'")
+                ->where("$_orderAlias.status != 'canceled'")
                 ->where("$_transactionAlias.created_at between $_fromSql and $_toSql");
         }
         if ($this->_pageSize) {
