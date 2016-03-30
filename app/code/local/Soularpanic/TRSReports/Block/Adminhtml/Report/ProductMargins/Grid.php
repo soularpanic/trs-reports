@@ -30,6 +30,12 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_ProductMargins_Grid
             'type' => 'datetime'
         ]);
 
+        $this->addColumn('refund_date', [
+            'header' => 'Refund Date',
+            'index' => 'refund_date',
+            'type' => 'datetime'
+        ]);
+
         $this->addColumn('sku', [
             'header' => 'SKU',
             'index' => 'sku'

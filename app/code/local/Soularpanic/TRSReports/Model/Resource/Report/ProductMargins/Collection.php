@@ -20,6 +20,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_ProductMargins_Collection
         $_newestPOAlias = 'newestPO';
         $_poAlias = 'PO';
         $_unitCostAlias = 'unitCost';
+        $_orderHistoryAlias = 'history';
 
         $_newestPOSelect = $_helper->_getNewSelect();
         $_newestPOSelect
@@ -60,12 +61,15 @@ class Soularpanic_TRSReports_Model_Resource_Report_ProductMargins_Collection
                         "qty_ordered",
                         "qty_refunded",
                         "shipping_cost" => "($_orderAlias.shipping_amount * $_orderItemAlias.weight * $_orderItemAlias.qty_ordered / $_orderAlias.weight)" ])
+                ->joinLeft([ $_orderHistoryAlias => $this->getTable('sales/order_status_history') ],
+                    "$_orderAlias.entity_id = $_orderHistoryAlias.parent_id and $_orderHistoryAlias.comment like 'Refunded amount of % online.%'",
+                    [ "refund_date" => "created_at" ])
                 ->joinLeft([ $_unitCostAlias => $_unitCostSelect ],
                     "$_orderItemAlias.product_id = $_unitCostAlias.product_id",
                     [ "unit_cost" => "ifnull(unit_price, 0)" ])
                 ->where("$_orderItemAlias.product_type = 'simple'")
                 ->where("$_orderAlias.status != 'canceled'")
-                ->where("$_transactionAlias.created_at between $_fromSql and $_toSql");
+                ->where("($_transactionAlias.created_at between $_fromSql and $_toSql or $_orderHistoryAlias.created_at between $_fromSql and $_toSql)");
         }
         if ($this->_pageSize) {
             $_select->limitPage($this->_curPage, $this->_pageSize);
