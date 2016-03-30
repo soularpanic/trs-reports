@@ -72,7 +72,7 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_ProductMargins_Grid
             'filter'    => false
         ]);
 
-        $this->addColumn('item_discount', [
+        $this->addColumn('item_tax', [
             'header' => 'Unit Tax',
             'index' => 'item_id',
             'renderer' => 'trsreports/adminhtml_widget_grid_column_renderer_ProductMargins_ItemTax',
