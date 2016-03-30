@@ -22,6 +22,11 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_CashSales_Grid
             'filter'    => false,
         ]);
 
+        $this->addColumn('customer_name', [
+            'header' => 'Customer Name',
+            'index' => 'customer_name'
+        ]);
+
         $this->addColumn('created_at', [
             'header'    => 'Order Date',
             'index'     => 'created_at',
@@ -30,12 +35,42 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_CashSales_Grid
             'type'      => 'datetime'
         ]);
 
+        $currencyRenderer = 'adminhtml/report_grid_column_renderer_currency';
+
+        $this->addColumn('subtotal', [
+            'header' => 'Product $',
+            'index' => 'subtotal',
+            'renderer' => $currencyRenderer,
+            'currency_code' => 'USD'
+        ]);
+
+        $this->addColumn('discount_amount', [
+            'header' => 'Discount',
+            'index' => 'discount_amount',
+            'renderer' => $currencyRenderer,
+            'currency_code' => 'USD'
+        ]);
+
+        $this->addColumn('customer_credit_amount', [
+            'header' => 'Internal Credit',
+            'index' => 'customer_credit_amount',
+            'renderer' => $currencyRenderer,
+            'currency_code' => 'USD'
+        ]);
+
+        $this->addColumn('tax_amount', [
+            'header' => 'Tax',
+            'index' => 'tax_amount',
+            'renderer' => $currencyRenderer,
+            'currency_code' => 'USD'
+        ]);
+
         $this->addColumn('grand_total', [
             'header'    => 'Order Total',
             'index'     => 'grand_total',
             'sortable'  => false,
             'filter'    => false,
-            'renderer'      => 'adminhtml/report_grid_column_renderer_currency',
+            'renderer'      => $currencyRenderer,
             'currency_code' => 'USD'
         ]);
 

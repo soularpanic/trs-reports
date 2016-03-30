@@ -15,7 +15,12 @@ class Soularpanic_TRSReports_Model_Resource_Report_CashSales_Collection
         $_select
             ->from([ $orderAlias => $this->getTable('sales/order') ],
                 [ "order_number" => "increment_id",
+                    "customer_name" => "concat_ws(' ', customer_firstname, customer_lastname)",
                     "created_at" => "created_at",
+                    "subtotal" => "subtotal",
+                    "discount_amount" => "discount_amount",
+                    "customer_credit_amount" => "customer_credit_amount",
+                    "tax_amount" => "tax_amount",
                     "grand_total" => "grand_total" ])
             ->joinLeft([ $paymentsAlias => $this->getTable('sales/order_payment') ],
                 "$orderAlias.entity_id = $paymentsAlias.parent_id",
