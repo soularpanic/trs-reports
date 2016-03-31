@@ -56,6 +56,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_ProductMargins_Collection
                 ->joinLeft([ $_orderItemAlias => $this->getTable('sales/order_item') ],
                     "$_orderAlias.entity_id = $_orderItemAlias.order_id",
                     [ "item_id",
+                        "product_id",
                         "sku",
                         "name",
                         "qty_ordered",

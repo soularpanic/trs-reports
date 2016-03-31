@@ -24,6 +24,11 @@ class Soularpanic_TRSReports_Block_Adminhtml_Report_ProductMargins_Grid
             'index' => 'order_id'
         ]);
 
+        $this->addColumn('product_id', [
+            'header' => 'Product ID',
+            'index' => 'product_id'
+        ]);
+
         $this->addColumn('txn_date', [
             'header' => 'Transaction Date',
             'index' => 'txn_date',
