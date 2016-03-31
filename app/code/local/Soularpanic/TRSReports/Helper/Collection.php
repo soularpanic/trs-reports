@@ -70,7 +70,7 @@ class Soularpanic_TRSReports_Helper_Collection
         $inventorySelect
             ->from($this->getTable('cataloginventory/stock_item'),
                 [ 'product_id',
-                    'qty' => '(ifnull(qty, 0))' ]);
+                    'qty' => '(ifnull(qty, 0) - ifnull(stock_reserved_qty, 0))' ]);
 
         $this->log("\n\n==INVENTORY SELECT:==\n".$inventorySelect->__toString());
 
