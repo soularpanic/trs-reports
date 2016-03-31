@@ -69,7 +69,7 @@ class Soularpanic_TRSReports_Model_Resource_Report_ProductMargins_Collection
                     "$_orderItemAlias.product_id = $_unitCostAlias.product_id",
                     [ "unit_cost" => "ifnull(unit_price, 0)" ])
                 ->where("$_orderItemAlias.product_type = 'simple'")
-                ->where("$_orderAlias.status != 'canceled'")
+                ->where("$_orderAlias.status != 'canceled' or $_orderAlias.status is null")
                 ->where("($_transactionAlias.created_at between $_fromSql and $_toSql or $_orderHistoryAlias.created_at between $_fromSql and $_toSql)");
         }
         if ($this->_pageSize) {
