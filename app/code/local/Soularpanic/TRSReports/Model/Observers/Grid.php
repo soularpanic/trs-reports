@@ -43,7 +43,8 @@ class Soularpanic_TRSReports_Model_Observers_Grid {
 
         if (Mage::app()->getRequest()->getRouteName() === 'adminhtml'
             && ($this->endsWith('_Grid', $blockClass)
-                || $this->endsWith('_Grid', $blockParentClass))) {
+                || $this->endsWith('_Grid', $blockParentClass))
+            && $blockClass != 'Soularpanic_CmsmartAdminTheme_Block_Dashboard_Orders_Grid') {
             $block->setDefaultLimit(200);
         }
     }
