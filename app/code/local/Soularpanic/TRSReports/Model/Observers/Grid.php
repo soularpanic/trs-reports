@@ -44,9 +44,18 @@ class Soularpanic_TRSReports_Model_Observers_Grid {
         if (Mage::app()->getRequest()->getRouteName() === 'adminhtml'
             && ($this->endsWith('_Grid', $blockClass)
                 || $this->endsWith('_Grid', $blockParentClass))
-            && $blockClass != 'Soularpanic_CmsmartAdminTheme_Block_Dashboard_Orders_Grid') {
+            && !in_array($blockClass, $this->getOmittedGridClasses())) {
             $block->setDefaultLimit(200);
         }
+    }
+
+    /* Omitted from being defaulted to show 200 records */
+    public function getOmittedGridClasses() {
+        return [
+            'Soularpanic_CmsmartAdminTheme_Block_Dashboard_Catalog_Product_Grid',
+            'Soularpanic_CmsmartAdminTheme_Block_Dashboard_Customers_Grid',
+            'Soularpanic_CmsmartAdminTheme_Block_Dashboard_Orders_Grid'
+        ];
     }
 
     public function endsWith($needle, $haystack) {
