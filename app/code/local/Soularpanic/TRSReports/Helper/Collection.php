@@ -26,7 +26,7 @@ class Soularpanic_TRSReports_Helper_Collection
             [ 'product_id' => 'entity_id',
                 'product_sku' => 'sku' ])
             ->joinLeft($_productNameTable,
-                "{$_productNameTable}.attribute_id = '{$productNameAttr->getId()}' and {$_productNameTable}.entity_id = {$_alias}.entity_id",
+                "{$_productNameTable}.attribute_id = '{$productNameAttr->getId()}' and {$_productNameTable}.store_id = '0' and {$_productNameTable}.entity_id = {$_alias}.entity_id",
                 [ 'product_name' => "{$_productNameTable}.value" ])
             ->joinLeft([ 'tppl' => $this->getTable('trsreports/product_piece_link') ],
                 "$_alias.entity_id = tppl.product_id",
@@ -45,8 +45,7 @@ class Soularpanic_TRSReports_Helper_Collection
                     "tree_name" => 'name',
                     "tree_sku" => "sku",
                     "line_name" => "(ifnull(tpt.name, ifnull(tpp.name, $_productNameTable.value)))",
-                    "line_sku" => "(ifnull(tpt.sku, ifnull(tpp.pieced_product_sku, $_alias.sku)))" ])
-            ->group('product_id');
+                    "line_sku" => "(ifnull(tpt.sku, ifnull(tpp.pieced_product_sku, $_alias.sku)))" ]);
         $this->log("Product Line select:\n".$select->__toString());
         return $select;
     }
