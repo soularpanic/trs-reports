@@ -31,7 +31,7 @@ var MoreDetailsGrid = Class.create({
         new Ajax.Request(url, {
             onSuccess: function(response) {
                 parentRow.insert({
-                    after: "<tr id=\"" + context.CONTAINER_PREFIX + containerId + "\" style=\"background:#728993;\"><td colspan=\"" + tableColumns + "\">" + response.responseText + "</td></tr>"
+                    after: "<tr id=\"" + context.CONTAINER_PREFIX + containerId + "\" style=\"background:#ffffff;\"><td colspan=\"" + tableColumns + "\">" + response.responseText + "</td></tr>"
                 });
             }
         })
@@ -44,9 +44,14 @@ var MoreDetailsGrid = Class.create({
     },
 
     clickMoreDetailsHandler: function(evt) {
-        var target = $(evt.target).up('tr');
-        var url = $(evt.target).readAttribute('data-url');
-        var containerId = $(evt.target).readAttribute('data-containerId');
+        this.doToggleDetails(evt.target);
+    },
+
+    doToggleDetails: function(elt) {
+        var _elt = $(elt);
+        var target = _elt.up('tr');
+        var url = _elt.readAttribute('data-url');
+        var containerId = _elt.readAttribute('data-containerId');
         this.toggleMoreDetails(target, containerId, url);
     }
 });
