@@ -25,16 +25,17 @@ class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
         $_productLinesSelect = $_helper->getProductLinesSelect();
         $_inventory = $_helper->getProductInventory($this->_from, $this->_to);
 
+        $_averagePeriodWeeks = Mage::helper('trsreports/report_config')->getFutureForecastAveragePeriod();
 
         $_modeSelect = $_helper->_getNewSelect();
         $_modeSelectAlias = 'mode';
         $_modeSelect->from([ $this->getTable('sales/order_item') ],
             [ 'product_id' => 'product_id',
-                'period_start' => "DATE_SUB('$futureStart', INTERVAL 1 YEAR)",
-                'period_end' => "DATE_ADD(DATE_SUB('$futureEnd', INTERVAL 1 YEAR), INTERVAL '23:59:59' HOUR_SECOND)",
+                'period_start' => "DATE_SUB('$futureStart', INTERVAL $_averagePeriodWeeks WEEK)",
+                'period_end' => "DATE_ADD(DATE_SUB('$futureEnd', INTERVAL $_averagePeriodWeeks WEEK), INTERVAL '23:59:59' HOUR_SECOND)",
                 'fallback_start' => 'MIN(created_at)',
                 'fallback_end' => 'NOW()',
-                'use_period' => "DATEDIFF(DATE_SUB('$futureStart', INTERVAL 1 YEAR), MIN(created_at)) >= 0"
+                'use_period' => "DATEDIFF(DATE_SUB('$futureStart', INTERVAL $_averagePeriodWeeks WEEK), MIN(created_at)) >= 0"
             ])
             ->group('product_id');
         $_helper->log("\n\n=== MODE SELECT: ===\n".$_modeSelect->__toString());
