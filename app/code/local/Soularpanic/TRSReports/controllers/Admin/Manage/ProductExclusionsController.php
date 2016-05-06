@@ -47,4 +47,8 @@ class Soularpanic_TRSReports_Admin_Manage_ProductExclusionsController
         $this->_redirectReferer();
     }
 
+    protected function _isAllowed() {
+        return Mage::getSingleton('admin/session')->isAllowed('report/trsreports/trsreport_manage/trsreport_manage_exclusions');
+    }
+
 }
