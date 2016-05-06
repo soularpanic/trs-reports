@@ -31,11 +31,11 @@ class Soularpanic_TRSReports_Model_Resource_Report_FutureForecast_Collection
         $_modeSelectAlias = 'mode';
         $_modeSelect->from([ $this->getTable('sales/order_item') ],
             [ 'product_id' => 'product_id',
-                'period_start' => "DATE_SUB('$futureStart', INTERVAL $_averagePeriodWeeks WEEK)",
-                'period_end' => "DATE_ADD(DATE_SUB('$futureEnd', INTERVAL $_averagePeriodWeeks WEEK), INTERVAL '23:59:59' HOUR_SECOND)",
-                'fallback_start' => 'MIN(created_at)',
+                'period_start' => "DATE_SUB('$futureStart', INTERVAL 52 WEEK)",
+                'period_end' => "DATE_ADD(DATE_SUB('$futureEnd', INTERVAL 52 WEEK), INTERVAL '23:59:59' HOUR_SECOND)",
+                'fallback_start' => "GREATEST(MIN(created_at), DATE_SUB(NOW(), INTERVAL $_averagePeriodWeeks WEEK))",
                 'fallback_end' => 'NOW()',
-                'use_period' => "DATEDIFF(DATE_SUB('$futureStart', INTERVAL $_averagePeriodWeeks WEEK), MIN(created_at)) >= 0"
+                'use_period' => "DATEDIFF(DATE_SUB('$futureStart', INTERVAL 52 WEEK), MIN(created_at)) >= 0"
             ])
             ->group('product_id');
         $_helper->log("\n\n=== MODE SELECT: ===\n".$_modeSelect->__toString());
